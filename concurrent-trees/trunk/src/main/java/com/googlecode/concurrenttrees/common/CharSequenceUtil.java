@@ -108,6 +108,10 @@ public class CharSequenceUtil {
         return new StringBuilder().append(first).append(second);
     }
 
+    public static CharSequence reverse(CharSequence input) {
+        return new StringBuilder(input.length()).append(input).reverse();
+    }
+
     /**
      * Returns a {@link CharSequence} which wraps the given {@code char[]}. Note that this {@link CharSequence} will
      * reflect any changes to the {@code char[]}.

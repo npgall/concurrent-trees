@@ -15,9 +15,11 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
+import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -34,7 +36,7 @@ import static com.googlecode.concurrenttrees.radix.ConcurrentRadixTree.SearchRes
  *
  * @author Niall Gallagher
  */
-public class ConcurrentRadixTree<O> implements RadixTree<O> {
+public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     
     private final NodeFactory nodeFactory;
 
@@ -473,9 +475,13 @@ public class ConcurrentRadixTree<O> implements RadixTree<O> {
                 if (value != null) {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
+                    // Call the transformKeyForResult method to allow key to be transformed before returning to client.
+                    // Used by subclasses such as ReverseRadixTree implementations...
+                    CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+
                     // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
                     // because equals() and hashCode() is not specified by the CharSequence API contract...
-                    String keyString = CharSequenceUtil.toString(nodeKeyPair.key);
+                    String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
                     keys.add(keyString);
                 }
             }
@@ -529,14 +535,23 @@ public class ConcurrentRadixTree<O> implements RadixTree<O> {
                 if (value != null) {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
+                    // Call the transformKeyForResult method to allow key to be transformed before returning to client.
+                    // Used by subclasses such as ReverseRadixTree implementations...
+                    CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+
                     // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
                     // because equals() and hashCode() is not specified by the CharSequence API contract...
-                    String keyString = CharSequenceUtil.toString(nodeKeyPair.key);
+                    String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
                     keyValuePairs.add(new KeyValuePairImpl<O>(keyString, value));
                 }
             }
         });
         return keyValuePairs;
+    }
+
+    @Override
+    public Node getNode() {
+        return root;
     }
 
     /**
@@ -665,6 +680,25 @@ public class ConcurrentRadixTree<O> implements RadixTree<O> {
     interface NodeKeyPairHandler {
         void handle(NodeKeyPair nodeKeyPair);
     }
+
+    /**
+     * A hook method which may be overridden by subclasses, to transform a key just before it is returned to
+     * the application, for example by the {@link #getKeysForPrefix(CharSequence)} or the
+     * {@link #getKeyValuePairsForPrefix(CharSequence)} methods.
+     * <p/>
+     * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.reverseradix.ReverseRadixTree}
+     * implementations, where keys are stored in the tree in reverse order but results should be returned in normal
+     * order.
+     * <p/>
+     * <b>This default implementation simply returns the given key unmodified.</b>
+     *
+     * @param rawKey The raw key as stored in the tree
+     * @return A transformed version of the key
+     */
+    protected CharSequence transformKeyForResult(CharSequence rawKey) {
+        return rawKey;
+    }
+
 
     // ------------- Helper method for searching the tree and associated SearchResult object -------------
 
