@@ -84,49 +84,4 @@ public class NodeUtil {
             throw new IllegalStateException("Duplicate edge detected in list of nodes supplied: " + nodes);
         }
     }
-
-    /**
-     * Generates a semi-graphical string representation of the tree descending from the given node.
-     * <p/>
-     * Example output:<br/>
-     * <pre>
-     * ○
-     * └── ○ B (1)
-     *     └── ○ A (2)
-     *         └── ○ N (3)
-     *             ├── ○ AN (5)
-     *             │   └── ○ A (6)
-     *             └── ○ DANA (4)
-     * </pre>
-     *
-     * @param node The node from which the semi-graphical representation should be generated
-     * @return A semi-graphical string representation of the tree descending from the given node
-     */
-    public static String prettyPrint(Node node) {
-        StringBuilder sb = new StringBuilder();
-        prettyPrint(node, sb, "", true, true);
-        return sb.toString();
-    }
-
-    static void prettyPrint(Node node, StringBuilder sb, String prefix, boolean isTail, boolean isRoot) {
-        StringBuilder label = new StringBuilder();
-        if (isRoot) {
-            label.append("○");
-            if (node.getIncomingEdge().length() > 0) {
-                label.append(" ");
-            }
-        }
-        label.append(node.getIncomingEdge());
-        if (node.getValue() != null) {
-            label.append(" (").append(node.getValue()).append(")");
-        }
-        sb.append(prefix).append(isTail ? isRoot ? "" : "└── ○ " : "├── ○ ").append(label).append("\n");
-        List<Node> children = node.getOutgoingEdges();
-        for (int i = 0; i < children.size() - 1; i++) {
-            prettyPrint(children.get(i), sb, prefix + (isTail ? isRoot ? "" : "    " : "│   "), false, false);
-        }
-        if (!children.isEmpty()) {
-            prettyPrint(children.get(children.size() - 1), sb, prefix + (isTail ? isRoot ? "" : "    " : "│   "), true, false);
-        }
-    }
 }

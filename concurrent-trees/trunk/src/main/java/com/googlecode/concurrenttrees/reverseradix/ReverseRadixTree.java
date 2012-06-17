@@ -1,19 +1,4 @@
-/**
- * Copyright 2012 Niall Gallagher
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.googlecode.concurrenttrees.radix;
+package com.googlecode.concurrenttrees.reverseradix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 
@@ -29,7 +14,7 @@ import java.util.Set;
  *
  * @author Niall Gallagher
  */
-public interface RadixTree<O> {
+public interface ReverseRadixTree<O> {
 
     /**
      * Returns the value associated with the given key (exact match), or returns <code>null</code> if no such value
@@ -66,40 +51,40 @@ public interface RadixTree<O> {
     O putIfAbsent(CharSequence key, O value);
 
     /**
-     * Returns the set of keys in the tree for which the given key is a prefix.
+     * Returns the set of keys in the tree for which the given key is a postfix.
      * <p/>
      * This is <i>inclusive</i> - if the given key is an exact match for a key in the tree,
      * that key is also returned.
      *
-     * @param key A key which is a prefix of sought keys in the tree
-     * @return The set of keys in the tree for which the given key is a prefix, inclusive
+     * @param key A key which is a postfix of sought keys in the tree
+     * @return The set of keys in the tree for which the given key is a postfix, inclusive
      */
-    Set<CharSequence> getKeysForPrefix(CharSequence key);
+    Set<CharSequence> getKeysForPostfix(CharSequence key);
 
     /**
-     * Returns a collection of values associated with keys in the tree for which the given key is a prefix.
+     * Returns a collection of values associated with keys in the tree for which the given key is a postfix.
      * <p/>
      * This is <i>inclusive</i> - if the given key is an exact match for a key in the tree,
      * that value associated with that key is also returned.
      *
-     * @param key A key which is a prefix of keys in the tree for which associated values are sought
-     * @return A collection of values associated with keys in the tree for which the given key is a prefix
+     * @param key A key which is a postfix of keys in the tree for which associated values are sought
+     * @return A collection of values associated with keys in the tree for which the given key is a postfix
      */
-    Collection<O> getValuesForPrefix(CharSequence key);
+    Collection<O> getValuesForPostfix(CharSequence key);
 
     /**
      * Returns a set of {@link KeyValuePair} objects for which the given key
-     * is a prefix of the pairs' keys in the index.
+     * is a postfix of the pairs' keys in the index.
      * <p/>
      * This is <i>inclusive</i> - if the given key is an exact match for a key in the tree,
      * that pair for that key is also returned.
      *
-     * @param key A key which is a prefix of keys in the tree for which {@link KeyValuePair} objects
+     * @param key A key which is a postfix of keys in the tree for which {@link KeyValuePair} objects
      * are sought
-     * @return A set of {@link KeyValuePair} objects for which the given key is a prefix of the
+     * @return A set of {@link KeyValuePair} objects for which the given key is a postfix of the
      * pairs' keys in the index
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForPrefix(CharSequence key);
+    Set<KeyValuePair<O>> getKeyValuePairsForPostfix(CharSequence key);
 
     /**
      * Removes the object associated with the given key (exact match).
