@@ -153,22 +153,22 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysForPrefix(CharSequence key) {
+    public Set<CharSequence> getKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
-            SearchResult searchResult = searchTree(key);
+            SearchResult searchResult = searchTree(prefix);
             Classification classification = searchResult.classification;
             switch (classification) {
                 case EXACT_MATCH: {
-                    return getDescendantKeys(key, searchResult.nodeFound);
+                    return getDescendantKeys(prefix, searchResult.nodeFound);
                 }
                 case KEY_ENDS_MID_EDGE: {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
                     CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    key = CharSequenceUtil.concatenate(key, edgeSuffix);
-                    return getDescendantKeys(key, searchResult.nodeFound);
+                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    return getDescendantKeys(prefix, searchResult.nodeFound);
                 }
                 default: {
                     // Incomplete match means key is not a prefix of any node...
@@ -185,22 +185,22 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForPrefix(CharSequence key) {
+    public Collection<O> getValuesForKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
-            SearchResult searchResult = searchTree(key);
+            SearchResult searchResult = searchTree(prefix);
             Classification classification = searchResult.classification;
             switch (classification) {
                 case EXACT_MATCH: {
-                    return getDescendantValues(key, searchResult.nodeFound);
+                    return getDescendantValues(prefix, searchResult.nodeFound);
                 }
                 case KEY_ENDS_MID_EDGE: {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
                     CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    key = CharSequenceUtil.concatenate(key, edgeSuffix);
-                    return getDescendantValues(key, searchResult.nodeFound);
+                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    return getDescendantValues(prefix, searchResult.nodeFound);
                 }
                 default: {
                     // Incomplete match means key is not a prefix of any node...
@@ -217,22 +217,22 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForPrefix(CharSequence key) {
+    public Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
-            SearchResult searchResult = searchTree(key);
+            SearchResult searchResult = searchTree(prefix);
             Classification classification = searchResult.classification;
             switch (classification) {
                 case EXACT_MATCH: {
-                    return getDescendantKeyValuePairs(key, searchResult.nodeFound);
+                    return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
                 }
                 case KEY_ENDS_MID_EDGE: {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
                     CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    key = CharSequenceUtil.concatenate(key, edgeSuffix);
-                    return getDescendantKeyValuePairs(key, searchResult.nodeFound);
+                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
                 }
                 default: {
                     // Incomplete match means key is not a prefix of any node...
@@ -705,8 +705,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
     /**
      * A hook method which may be overridden by subclasses, to transform a key just before it is returned to
-     * the application, for example by the {@link #getKeysForPrefix(CharSequence)} or the
-     * {@link #getKeyValuePairsForPrefix(CharSequence)} methods.
+     * the application, for example by the {@link #getKeysStartingWith(CharSequence)} or the
+     * {@link #getKeyValuePairsForKeysStartingWith(CharSequence)} methods.
      * <p/>
      * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.reverseradix.ReverseRadixTree}
      * implementations, where keys are stored in the tree in reverse order but results should be returned in normal

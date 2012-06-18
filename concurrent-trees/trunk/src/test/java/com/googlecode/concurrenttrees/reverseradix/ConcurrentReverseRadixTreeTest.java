@@ -66,10 +66,10 @@ public class ConcurrentReverseRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[TOAST, TEST]", tree.getKeysForPostfix("ST").toString());
-        assertEquals("[TEAM]", tree.getKeysForPostfix("M").toString());
-        assertEquals("[TEAM, TOAST, TEST]", tree.getKeysForPostfix("").toString());
-        assertEquals("[]", tree.getKeysForPostfix("Z").toString());
+        assertEquals("[TOAST, TEST]", tree.getKeysEndingWith("ST").toString());
+        assertEquals("[TEAM]", tree.getKeysEndingWith("M").toString());
+        assertEquals("[TEAM, TOAST, TEST]", tree.getKeysEndingWith("").toString());
+        assertEquals("[]", tree.getKeysEndingWith("Z").toString());
     }
 
     @Test
@@ -79,10 +79,10 @@ public class ConcurrentReverseRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[3, 1]", tree.getValuesForPostfix("ST").toString());
-        assertEquals("[2]", tree.getValuesForPostfix("M").toString());
-        assertEquals("[2, 3, 1]", tree.getValuesForPostfix("").toString());
-        assertEquals("[]", tree.getValuesForPostfix("Z").toString());
+        assertEquals("[3, 1]", tree.getValuesForKeysEndingWith("ST").toString());
+        assertEquals("[2]", tree.getValuesForKeysEndingWith("M").toString());
+        assertEquals("[2, 3, 1]", tree.getValuesForKeysEndingWith("").toString());
+        assertEquals("[]", tree.getValuesForKeysEndingWith("Z").toString());
     }
 
     @Test
@@ -92,10 +92,10 @@ public class ConcurrentReverseRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[(TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForPostfix("ST").toString());
-        assertEquals("[(TEAM, 2)]", tree.getKeyValuePairsForPostfix("M").toString());
-        assertEquals("[(TEAM, 2), (TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForPostfix("").toString());
-        assertEquals("[]", tree.getKeyValuePairsForPostfix("Z").toString());
+        assertEquals("[(TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForKeysEndingWith("ST").toString());
+        assertEquals("[(TEAM, 2)]", tree.getKeyValuePairsForKeysEndingWith("M").toString());
+        assertEquals("[(TEAM, 2), (TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForKeysEndingWith("").toString());
+        assertEquals("[]", tree.getKeyValuePairsForKeysEndingWith("Z").toString());
     }
 
     @Test
