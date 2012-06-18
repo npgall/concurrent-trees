@@ -10,6 +10,12 @@ import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import java.util.*;
 
 /**
+ * An implementation of {@link ReverseRadixTree} which supports lock-free concurrent reads, and allows items to be added
+ * to and to be removed from the tree <i>atomically</i> by background thread(s), without blocking reads.
+ * <p/>
+ * This implementation is a lightweight wrapper around {@link ConcurrentRadixTree}, see that class for
+ * implementation details.
+ *
  * @author Niall Gallagher
  */
 public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, PrettyPrintable {
@@ -21,11 +27,12 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
         }
 
         public ConcurrentReverseRadixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
+            //noinspection deprecation
             super(nodeFactory, restrictConcurrency);
         }
 
-        // Override this hook method to reverse the order of keys about to be returned to the application,
-        // because ReverseRadixTree will store trees in reverse order...
+        // Override this hook method to reverse the order of keys stored in the tree and about to be returned to the
+        // application, this undoes the reversing of keys when added to the tree in the first place...
         @Override
         protected CharSequence transformKeyForResult(CharSequence rawKey) {
             return CharSequenceUtil.reverse(rawKey);
@@ -92,24 +99,24 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysForPostfix(CharSequence key) {
-        return radixTree.getKeysForPrefix(CharSequenceUtil.reverse(key));
+    public Set<CharSequence> getKeysEndingWith(CharSequence suffix) {
+        return radixTree.getKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForPostfix(CharSequence key) {
-        return radixTree.getValuesForPrefix(CharSequenceUtil.reverse(key));
+    public Collection<O> getValuesForKeysEndingWith(CharSequence suffix) {
+        return radixTree.getValuesForKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForPostfix(CharSequence key) {
-        return radixTree.getKeyValuePairsForPrefix(CharSequenceUtil.reverse(key));
+    public Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
+        return radixTree.getKeyValuePairsForKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
     /**
