@@ -368,11 +368,37 @@ public class ConcurrentRadixTreeTest {
         assertTrue(removed);
 
         //    ○                 // FOO removed, which involved recreating the root to change its child edges
-        //    └── ○ DINGO (2)
+        //    └── ○ BAR (2)
 
         expected =
                 "○\n" +
                 "└── ○ BAR (2)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRemove_LastRemainingKey() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("FOO", 1);
+
+        //    ○
+        //    └── ○ FOO (1)
+
+        String expected, actual;
+        expected =
+                "○\n" +
+                "└── ○ FOO (1)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+
+        boolean removed = tree.remove("FOO");
+        assertTrue(removed);
+
+        //    ○                 // FOO removed, which involved recreating the root with no remaining edges
+
+        expected =
+                "○\n";
         actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
@@ -477,6 +503,38 @@ public class ConcurrentRadixTreeTest {
                 "    └── ○ D (2)\n";
         actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRemove_MergeSplitNode() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+
+        String expected, actual;
+        expected =
+                "○\n" +
+                "└── ○ T\n" +
+                "    ├── ○ E\n" +
+                "    │   ├── ○ AM (2)\n" +
+                "    │   └── ○ ST (1)\n" +
+                "    └── ○ OAST (3)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+
+        boolean removed = tree.remove("TEST");
+        assertTrue(removed);
+
+        expected =
+                "○\n" +
+                "└── ○ T\n" +
+                "    ├── ○ EAM (2)\n" +
+                "    └── ○ OAST (3)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+
+        System.out.println(actual);
     }
 
     @Test

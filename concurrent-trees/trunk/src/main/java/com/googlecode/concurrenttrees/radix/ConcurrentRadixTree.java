@@ -290,8 +290,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     else {
                         // Node has no children. Delete this node from its parent,
                         // which involves re-creating the parent rather than simply updating its child edge
-                        // (this is why we need parentNodesParent)...
+                        // (this is why we need parentNodesParent).
+                        // However if this would leave the parent with only one remaining child edge,
+                        // and the parent itself has no value (is a split node), and the parent is not the root node
+                        // (a special case which we never merge), then we also need to merge the parent with its
+                        // remaining child.
+
                         List<Node> currentEdgesFromParent = searchResult.parentNode.getOutgoingEdges();
+                        // Create a list of the outgoing edges of the parent which will remain
+                        // if we remove this child...
                         // Use a non-resizable list, as a sanity check to force ArrayIndexOutOfBounds...
                         List<Node> newEdgesOfParent = Arrays.asList(new Node[searchResult.parentNode.getOutgoingEdges().size() - 1]);
                         for (int i = 0, added = 0, numParentEdges = currentEdgesFromParent.size(); i < numParentEdges; i++) {
@@ -300,9 +307,24 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                                 newEdgesOfParent.set(added++, node);
                             }
                         }
-                        // Create new parent node (note the parent might actually be the root node)...
+
+                        // Note the parent might actually be the root node (which we should never merge)...
                         boolean parentIsRoot = (searchResult.parentNode == root);
-                        Node newParent = nodeFactory.createNode(searchResult.parentNode.getIncomingEdge(), searchResult.parentNode.getValue(), newEdgesOfParent, parentIsRoot);
+                        Node newParent;
+                        if (newEdgesOfParent.size() == 1 && searchResult.parentNode.getValue() == null && !parentIsRoot) {
+                            // Parent is a non-root split node with only one remaining child, which can now be merged.
+                            Node parentsRemainingChild = newEdgesOfParent.get(0);
+                            // Merge the parent with its only remaining child...
+                            CharSequence concatenatedEdges = CharSequenceUtil.concatenate(searchResult.parentNode.getIncomingEdge(), parentsRemainingChild.getIncomingEdge());
+                            newParent = nodeFactory.createNode(concatenatedEdges, parentsRemainingChild.getValue(), parentsRemainingChild.getOutgoingEdges(), parentIsRoot);
+                        }
+                        else {
+                            // Parent is a node which either has a value of its own, has more than one remaining
+                            // child, or is actually the root node (we never merge the root node).
+                            // Create new parent node which is the same as is currently just without the edge to the
+                            // node being deleted...
+                            newParent = nodeFactory.createNode(searchResult.parentNode.getIncomingEdge(), searchResult.parentNode.getValue(), newEdgesOfParent, parentIsRoot);
+                        }
                         // Re-add the parent node to its parent...
                         if (parentIsRoot) {
                             // Replace the root node...
