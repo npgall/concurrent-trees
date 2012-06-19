@@ -1,22 +1,22 @@
 package com.googlecode.concurrenttrees.suffix.metadata.concrete;
 
-import com.googlecode.concurrenttrees.suffix.metadata.SuffixMetadata;
+import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * A non-optimized implementation of the {@link SuffixMetadata} interface. Stores all variables and supports all
+ * A non-optimized implementation of the {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} interface. Stores all variables and supports all
  * behaviours required by the tree, but not very memory efficient (contains fields which might contain empty lists).
  *
  * @author Niall Gallagher
  */
-public class DefaultSuffixMetadata<Document extends CharSequence> implements SuffixMetadata<Document> {
+public class DefaultSuffixAnnotation<Document extends CharSequence> implements SuffixAnnotation<Document> {
 
     private final List<Document> documentsEndingWithSuffix;
     private final List<Document> documentsExactlyMatchingSuffix;
 
-    public DefaultSuffixMetadata(List<Document> documentsEndingWithSuffix, List<Document> documentsExactlyMatchingSuffix) {
+    public DefaultSuffixAnnotation(List<Document> documentsEndingWithSuffix, List<Document> documentsExactlyMatchingSuffix) {
         if (documentsEndingWithSuffix instanceof CopyOnWriteArrayList) {
             this.documentsEndingWithSuffix = documentsEndingWithSuffix;
         }
