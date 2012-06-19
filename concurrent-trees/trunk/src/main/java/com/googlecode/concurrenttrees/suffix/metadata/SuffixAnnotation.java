@@ -10,23 +10,23 @@ import java.util.List;
  *
  * @author Niall Gallagher
  */
-public interface SuffixMetadata<Document extends CharSequence> {
+public interface SuffixAnnotation<Document extends CharSequence> {
 
     /**
      * Returns the original documents which end with the suffix represented by the node having this
-     * {@link SuffixMetadata} value. Typically these will be references to the original documents rather than copies.
+     * {@link SuffixAnnotation}. Typically these will be references to the original documents rather than copies.
      *
      * @return The original documents which end with the suffix represented by the node having this
-     * {@link SuffixMetadata} value
+     * {@link SuffixAnnotation}
      */
     List<Document> getDocumentsEndingWithSuffix();
 
     /**
      * Returns the original documents which are an exact match for the suffix represented by the node having this
-     * {@link SuffixMetadata} value. Typically these will be references to the original documents rather
+     * {@link SuffixAnnotation}. Typically these will be references to the original documents rather
      * than copies.
      * <p/>
-     * In other words, the suffix represented by a node having this {@link SuffixMetadata} value,
+     * In other words, the suffix represented by a node having this {@link SuffixAnnotation},
      * does not represent a suffix of the original documents, but an exact match for the entire contents of the original
      * documents. As such, ancestors of this node represent prefixes of these documents, and the root node represents
      * the start of those documents.
@@ -43,7 +43,7 @@ public interface SuffixMetadata<Document extends CharSequence> {
      * The search key will be a prefix of all of those documents.
      *
      * @return The original documents which are an exact match for the suffix represented by the node having this
-     * {@link SuffixMetadata} value
+     * {@link SuffixAnnotation}
      */
     List<Document> getDocumentsExactlyMatchingSuffix();
 }

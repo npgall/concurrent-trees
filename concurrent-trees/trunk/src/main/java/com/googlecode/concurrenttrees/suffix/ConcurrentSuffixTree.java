@@ -3,9 +3,11 @@ package com.googlecode.concurrenttrees.suffix;
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.suffix.metadata.SuffixMetadata;
-import com.googlecode.concurrenttrees.suffix.metadata.SuffixMetadataFactory;
+import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
+import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation;
+import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotationFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Niall Gallagher
  */
-public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
+public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
 
     class ConcurrentSuffixTreeImpl<V> extends ConcurrentRadixTree<V> {
 
@@ -38,9 +40,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
         }
     }
 
-    private final SuffixMetadataFactory<CharSequence> suffixMetadataFactory;
+    private final SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory;
     // Associate the original document with
-    private final ConcurrentSuffixTreeImpl<SuffixMetadata<CharSequence>> radixTree;
+    private final ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>> radixTree;
     private final ConcurrentMap<String, O> valueMap;
 
     /**
@@ -49,13 +51,13 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
      * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
      * on-demand, and which might return node implementations optimized for storing the values supplied to it for
      * the creation of each node
-     * @param suffixMetadataFactory An object which creates {@link SuffixMetadata} objects
-     * on-demand, and which might return {@link SuffixMetadata} object implementations optimized for storing the values
+     * @param suffixAnnotationFactory An object which creates {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} objects
+     * on-demand, and which might return {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} object implementations optimized for storing the values
      * supplied to it for the creation of each object
      */
-    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixMetadataFactory<CharSequence> suffixMetadataFactory) {
-        this.suffixMetadataFactory = suffixMetadataFactory;
-        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixMetadata<CharSequence>>(nodeFactory);
+    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory) {
+        this.suffixAnnotationFactory = suffixAnnotationFactory;
+        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>>(nodeFactory);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
@@ -70,8 +72,8 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
      * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
      * on-demand, and which might return node implementations optimized for storing the values supplied to it for the
      * creation of each node
-     * @param suffixMetadataFactory An object which creates {@link SuffixMetadata} objects
-     * on-demand, and which might return {@link SuffixMetadata} object implementations optimized for storing the values
+     * @param suffixAnnotationFactory An object which creates {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} objects
+     * on-demand, and which might return {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} object implementations optimized for storing the values
      * supplied to it for the creation of each object
      * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
      * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
@@ -80,10 +82,10 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
      * @deprecated This method allowing concurrency to be restricted will be removed in future.
      */
     @Deprecated
-    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixMetadataFactory<CharSequence> suffixMetadataFactory, boolean restrictConcurrency) {
-        this.suffixMetadataFactory = suffixMetadataFactory;
+    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory, boolean restrictConcurrency) {
+        this.suffixAnnotationFactory = suffixAnnotationFactory;
         //noinspection deprecation
-        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixMetadata<CharSequence>>(nodeFactory, restrictConcurrency);
+        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>>(nodeFactory, restrictConcurrency);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
@@ -136,23 +138,23 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
         for (Iterator<CharSequence> iterator = suffixes.iterator(); iterator.hasNext(); ) {
             CharSequence suffix = iterator.next();
             boolean isExactMatchForDocument = !iterator.hasNext();
-            SuffixMetadata<CharSequence> suffixMetadata = radixTree.get(suffix);
-            if (suffixMetadata == null) {
+            SuffixAnnotation<CharSequence> suffixAnnotation = radixTree.get(suffix);
+            if (suffixAnnotation == null) {
                 // Create new metadata...
                 List<CharSequence> documentsEndingWithSuffix = Arrays.asList(suffix);
                 List<CharSequence> documentsExactlyMatchingSuffix = isExactMatchForDocument ? Arrays.asList(suffix) : Collections.<CharSequence>emptyList();
-                suffixMetadata = suffixMetadataFactory.createSuffixMetadata(documentsEndingWithSuffix, documentsExactlyMatchingSuffix);
-                radixTree.put(suffix, suffixMetadata);
+                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(documentsEndingWithSuffix, documentsExactlyMatchingSuffix);
+                radixTree.put(suffix, suffixAnnotation);
             }
             else {
                 // Update existing metadata...
-                // TODO: optimize for specific implementation of DefaultSuffixMetadata - avoid recreating lists?
-                List<CharSequence> existingDocumentsEndingWithSuffix = suffixMetadata.getDocumentsEndingWithSuffix();
+                // TODO: optimize for specific implementation of DefaultSuffixAnnotation - avoid recreating lists?
+                List<CharSequence> existingDocumentsEndingWithSuffix = suffixAnnotation.getDocumentsEndingWithSuffix();
                 List<CharSequence> newDocumentsEndingWithSuffix = new ArrayList<CharSequence>(existingDocumentsEndingWithSuffix.size() + 1);
                 newDocumentsEndingWithSuffix.addAll(existingDocumentsEndingWithSuffix);
                 newDocumentsEndingWithSuffix.add(suffix);
 
-                List<CharSequence> existingDocumentsExactlyMatchingSuffix = suffixMetadata.getDocumentsExactlyMatchingSuffix();
+                List<CharSequence> existingDocumentsExactlyMatchingSuffix = suffixAnnotation.getDocumentsExactlyMatchingSuffix();
                 List<CharSequence> newDocumentsExactlyMatchingSuffix;
                 if (isExactMatchForDocument) {
                     newDocumentsExactlyMatchingSuffix = new ArrayList<CharSequence>(existingDocumentsExactlyMatchingSuffix.size() + 1);
@@ -162,9 +164,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
                 else {
                     newDocumentsExactlyMatchingSuffix = existingDocumentsExactlyMatchingSuffix;
                 }
-                suffixMetadata = suffixMetadataFactory.createSuffixMetadata(newDocumentsEndingWithSuffix, newDocumentsExactlyMatchingSuffix);
-                // Replace the existing SuffixMetadata with the new one containing the additions...
-                radixTree.put(suffix, suffixMetadata);
+                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(newDocumentsEndingWithSuffix, newDocumentsExactlyMatchingSuffix);
+                // Replace the existing SuffixAnnotation with the new one containing the additions...
+                radixTree.put(suffix, suffixAnnotation);
             }
         }
     }
@@ -217,5 +219,10 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O> {
     @Override
     public boolean remove(CharSequence key) {
         throw new UnsupportedOperationException("Not implemented");
+    }
+
+    @Override
+    public Node getNode() {
+        return radixTree.getNode();
     }
 }
