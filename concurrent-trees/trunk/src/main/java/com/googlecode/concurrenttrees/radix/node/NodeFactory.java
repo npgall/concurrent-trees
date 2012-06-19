@@ -18,7 +18,7 @@ package com.googlecode.concurrenttrees.radix.node;
 import java.util.List;
 
 /**
- * An interface for a concrete which creates new {@link Node} objects on demand, to encapsulate specified variables.
+ * An interface for a factory which creates new {@link Node} objects on demand, to encapsulate specified variables.
  * Factory objects can choose to return implementations of the {@link Node} interface which are memory-optimized for
  * storing only the given variables, potentially further optimized based on variable values.
  *

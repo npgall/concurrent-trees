@@ -23,6 +23,8 @@ import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import java.util.List;
 
 /**
+ * A basic implementation of {@link NodeFactory} which creates {@link DefaultNode} objects.
+ *
  * @author Niall Gallagher
  */
 public class DefaultNodeFactory implements NodeFactory {

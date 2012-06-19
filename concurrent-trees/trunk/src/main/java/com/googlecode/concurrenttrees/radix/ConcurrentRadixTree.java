@@ -84,23 +84,23 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
     // ------------- Helper methods for serializing writes -------------
 
-    void acquireWriteLock() {
+    protected void acquireWriteLock() {
         readWriteLock.writeLock().lock();
     }
 
-    void releaseWriteLock() {
+    protected void releaseWriteLock() {
         readWriteLock.writeLock().unlock();
     }
 
     // Temporary helper methods for read locks, read locks will be removed in future...
 
-    void acquireReadLockIfNecessary() {
+    protected void acquireReadLockIfNecessary() {
         if (restrictConcurrency) { // restrictConcurrency is final
             readWriteLock.readLock().lock();
         }
     }
 
-    void releaseReadLockIfNecessary() {
+    protected void releaseReadLockIfNecessary() {
         if (restrictConcurrency) {  // restrictConcurrency is final
             readWriteLock.readLock().unlock();
         }
