@@ -37,7 +37,6 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
         protected CharSequence transformKeyForResult(CharSequence rawKey) {
             return CharSequenceUtil.reverse(rawKey);
         }
-
     }
     private final ConcurrentRadixTree<O> radixTree;
 

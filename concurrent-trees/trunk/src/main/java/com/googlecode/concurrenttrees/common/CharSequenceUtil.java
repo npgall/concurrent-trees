@@ -142,6 +142,9 @@ public class CharSequenceUtil {
         if (charSequence == null) {
             return null;
         }
+        if (charSequence instanceof String) {
+            return (String)charSequence;
+        }
         return new StringBuilder(charSequence.length()).append(charSequence).toString();
     }
 }
