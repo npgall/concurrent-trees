@@ -1,14 +1,17 @@
 package com.googlecode.concurrenttrees.suffix;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
-import com.googlecode.concurrenttrees.reverseradix.ConcurrentReverseRadixTree;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
 
@@ -113,6 +116,25 @@ public class ConcurrentSuffixTreeTest {
                 "    └── ○ DANA ([BANDANA])\n";
         String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testPut_ReplaceValue() throws Exception {
+        ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
+        tree.put("BANANA", 1);
+        tree.put("BANANA", 2);
+
+        String expected =
+                "○\n" +
+                "├── ○ A ([BANANA])\n" +
+                "│   └── ○ NA ([BANANA])\n" +
+                "│       └── ○ NA ([BANANA])\n" +
+                "├── ○ BANANA ([BANANA])\n" +
+                "└── ○ NA ([BANANA])\n" +
+                "    └── ○ NA ([BANANA])\n";
+        String actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+        assertEquals(Integer.valueOf(2), tree.getValueForExactKey("BANANA"));
     }
 
     @Test
@@ -358,6 +380,33 @@ public class ConcurrentSuffixTreeTest {
     public void testRestrictConcurrency() {
         ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(nodeFactory, true);
         assertNotNull(tree);
+    }
+
+    @Test
+    public void testCreateSetForOriginalKeys() {
+        // Test the default (production) implementation of this method, should return a set based on ConcurrentHashMap...
+        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(nodeFactory, true);
+        assertTrue(tree.createSetForOriginalKeys().getClass().equals(Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>()).getClass()));
+    }
+
+    @Test
+    public void testNullValueHandlingOnRaceCondition_ValueSet() {
+        Set<Integer> results = new HashSet<Integer>();
+        //noinspection NullableProblems
+        ConcurrentSuffixTree.addIfNotNull(null, results);
+        assertTrue(results.isEmpty());
+        ConcurrentSuffixTree.addIfNotNull(1, results);
+        assertTrue(results.contains(1));
+    }
+
+    @Test
+    public void testNullValueHandlingOnRaceCondition_KeyValuePairSet() {
+        Set<KeyValuePair<Integer>> results = new HashSet<KeyValuePair<Integer>>();
+        //noinspection NullableProblems
+        ConcurrentSuffixTree.addIfNotNull("FOO", null, results);
+        assertTrue(results.isEmpty());
+        ConcurrentSuffixTree.addIfNotNull("FOO", 1, results);
+        assertTrue(results.contains(new ConcurrentRadixTree.KeyValuePairImpl("FOO", 1)));
     }
 
     /**
