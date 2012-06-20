@@ -21,6 +21,14 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
+ * API of a generalized suffix tree, that is a tree which allows values to be looked up based on any suffix of the keys
+ * with which they were associated, as well as based on exact matches for keys. A suffix tree essentially allows
+ * <i><u>"equals"</u></i>, <i><u>"ends with"</u></i> and <i><u>"contains"</u></i> lookup.
+ * <p/>
+ * See documentation on each method for details.
+ *
+ * @param <O> The type of the values associated with keys in the tree
+ *
  * @author Niall Gallagher
  */
 public interface SuffixTree<O> {
