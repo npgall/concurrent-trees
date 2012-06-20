@@ -69,12 +69,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
-    @Override
-    public O getValueForExactKey(CharSequence key) {
-        String keyString = CharSequenceUtil.toString(key);
-        return valueMap.get(keyString);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public O put(CharSequence key, O value) {
         radixTree.acquireWriteLock();
@@ -98,6 +95,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public O putIfAbsent(CharSequence key, O value) {
         radixTree.acquireWriteLock();
@@ -124,6 +124,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean remove(CharSequence key) {
         radixTree.acquireWriteLock();
@@ -174,34 +177,123 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public O getValueForExactKey(CharSequence key) {
+        // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
+        // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+        String keyString = CharSequenceUtil.toString(key);
+        return valueMap.get(keyString);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<CharSequence> getKeysEndingWith(CharSequence suffix) {
-        throw new UnsupportedOperationException("Not implemented");
+        Set<? extends CharSequence> originalKeys = radixTree.getValueForExactKey(suffix);
+        if (originalKeys == null) {
+            return Collections.emptySet();
+        }
+        // Cast to Set<CharSequence>, as we have internally implemented tree with strings...
+        @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+        Set<CharSequence> results = (Set<CharSequence>) originalKeys;
+        return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<O> getValuesForKeysEndingWith(CharSequence suffix) {
-        throw new UnsupportedOperationException("Not implemented");
+        Set<String> originalKeys = radixTree.getValueForExactKey(suffix);
+        if (originalKeys == null) {
+            return Collections.emptySet();
+        }
+        List<O> results = new ArrayList<O>(originalKeys.size());
+        for (String originalKey : originalKeys) {
+            O value = valueMap.get(originalKey);
+            if (value != null) {
+                results.add(value);
+            }
+            // else race condition, key/value was removed while iterating, skip value for that key
+        }
+        return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
-        throw new UnsupportedOperationException("Not implemented");
+        Set<String> originalKeys = radixTree.getValueForExactKey(suffix);
+        if (originalKeys == null) {
+            return Collections.emptySet();
+        }
+        Set<KeyValuePair<O>> results = new HashSet<KeyValuePair<O>>(originalKeys.size());
+        for (String originalKey : originalKeys) {
+            O value = valueMap.get(originalKey);
+            if (value != null) {
+                results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value));
+            }
+            // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
+        }
+        return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<CharSequence> getKeysContaining(CharSequence fragment) {
-        throw new UnsupportedOperationException("Not implemented");
+        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
+        Set<CharSequence> results = new LinkedHashSet<CharSequence>();
+        for (Set<String> originalKeySet : originalKeysSets) {
+            for (String originalKey : originalKeySet) {
+                results.add(originalKey);
+            }
+        }
+        return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<O> getValuesForKeysContaining(CharSequence fragment) {
-        throw new UnsupportedOperationException("Not implemented");
+        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
+        List<O> results = new LinkedList<O>();
+        for (Set<String> originalKeySet : originalKeysSets) {
+            for (String originalKey : originalKeySet) {
+                O value = valueMap.get(originalKey);
+                if (value != null) {
+                    results.add(value);
+                }
+                // else race condition, key/value was removed while iterating, skip value for that key
+            }
+        }
+        return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence fragment) {
-        throw new UnsupportedOperationException("Not implemented");
+        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
+        Set<KeyValuePair<O>> results = new LinkedHashSet<KeyValuePair<O>>();
+        for (Set<String> originalKeySet : originalKeysSets) {
+            for (String originalKey : originalKeySet) {
+                O value = valueMap.get(originalKey);
+                if (value != null) {
+                    results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value));
+                }
+                // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
+            }
+        }
+        return results;
     }
 
     @Override
