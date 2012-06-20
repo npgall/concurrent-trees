@@ -1,4 +1,4 @@
-package com.googlecode.concurrenttrees.invertedradix;
+package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 

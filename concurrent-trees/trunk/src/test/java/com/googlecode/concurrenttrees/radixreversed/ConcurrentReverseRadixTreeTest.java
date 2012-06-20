@@ -1,4 +1,4 @@
-package com.googlecode.concurrenttrees.reverseradix;
+package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;

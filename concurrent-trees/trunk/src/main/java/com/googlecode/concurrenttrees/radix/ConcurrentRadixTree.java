@@ -696,7 +696,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * the application, for example by the {@link #getKeysStartingWith(CharSequence)} or the
      * {@link #getKeyValuePairsForKeysStartingWith(CharSequence)} methods.
      * <p/>
-     * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.reverseradix.ReverseRadixTree}
+     * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.radixreversed.ReverseRadixTree}
      * implementations, where keys are stored in the tree in reverse order but results should be returned in normal
      * order.
      * <p/>

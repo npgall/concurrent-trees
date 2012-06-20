@@ -1,4 +1,4 @@
-package com.googlecode.concurrenttrees.reverseradix;
+package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
