@@ -571,11 +571,6 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         return keyValuePairs;
     }
 
-    @Override
-    public Node getNode() {
-        return root;
-    }
-
     /**
      * Implementation of the {@link KeyValuePair} interface.
      */
@@ -594,7 +589,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
          * @param key The key as a string
          * @param value The value
          */
-        KeyValuePairImpl(String key, Object value) {
+        public KeyValuePairImpl(String key, Object value) {
             this.key = key;
             // We have to cast to generic type here, because Node objects are not generically typed.
             // Background: Node objects are not generically typed, because array's can't be generically typed,
@@ -881,6 +876,13 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     ", classification=" + classification +
                     '}';
         }
+    }
+
+    // ------------- Helper method for pretty-printing tree (not public API) -------------
+
+    @Override
+    public Node getNode() {
+        return root;
     }
 
 }
