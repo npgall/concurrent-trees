@@ -1,49 +1,71 @@
 package com.googlecode.concurrenttrees.suffix.metadata;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Used internally by {@link com.googlecode.concurrenttrees.suffix.ConcurrentSuffixTree} as values which it associates
  * with suffixes it adds to a {@link com.googlecode.concurrenttrees.radix.RadixTree}.
  *
- * @param <Document> The actual type of the documents (could represent as {@link CharSequence} or {@link String})
+ * @param <OriginalKey> The type of the key from which the suffix was generated (could represent as
+ * {@link CharSequence} or {@link String})
  *
  * @author Niall Gallagher
  */
-public interface SuffixAnnotation<Document extends CharSequence> {
+public interface SuffixAnnotation<OriginalKey extends CharSequence> {
 
     /**
-     * Returns the original documents which end with the suffix represented by the node having this
-     * {@link SuffixAnnotation}. Typically these will be references to the original documents rather than copies.
-     *
-     * @return The original documents which end with the suffix represented by the node having this
-     * {@link SuffixAnnotation}
-     */
-    List<Document> getDocumentsEndingWithSuffix();
-
-    /**
-     * Returns the original documents which are an exact match for the suffix represented by the node having this
-     * {@link SuffixAnnotation}. Typically these will be references to the original documents rather
+     * Returns the (mutable) collection of original keys from which the suffix was generated. Multiple original keys can
+     * share a common suffix hence this is a collection. Typically these will be references to the original keys rather
      * than copies.
      * <p/>
-     * In other words, the suffix represented by a node having this {@link SuffixAnnotation},
-     * does not represent a suffix of the original documents, but an exact match for the entire contents of the original
-     * documents. As such, ancestors of this node represent prefixes of these documents, and the root node represents
-     * the start of those documents.
+     * This is a {@link Collection} rather than a {@link Set} to support adding {@link CharSequence} objects which do
+     * not properly support {@link #equals(Object)} and {@link #hashCode()}. Duplicates should not be added.
      * <p/>
-     * This is useful for speeding up "starts with" searches:
+     * The collection returned should support concurrent access.
+     *
+     * @return The original keys from which the suffix was generated
+     */
+    Collection<OriginalKey> getOriginalKeys();
+
+    /**
+     * Returns the original key which is equal to the suffix, or null if this suffix is not equal to any original key.
+     * Typically this will be a reference to an original key rather than a copy.
+     * <p/>
+     * When a key is added to the suffix tree, all possible suffixes of that key are inserted into the tree. One of
+     * those suffixes is actually equal to the entire original key. Only one of these suffixes inserted will be
+     * equal to the original key, therefore this will be null for most suffixes. However other keys inserted
+     * subsequently might cause exiting nodes to become flagged as equal to other keys.
+     * <p/>
+     * This is useful for speeding up "starts with" searches. The path in the tree to a node representing a suffix
+     * which is equal to an original key, encodes the entire original key through the sequence of edges. As such,
+     * ancestors of that node represent prefixes of that original key.
+     * <p/>
+     * An algorithm supporting "starts with" searches:
      * <ol>
      *     <li>
      *         Find the node which exactly matches the search key, and then find all of that node's descendants
      *     </li>
      *     <li>
-     *         Add the "exact match documents" from these nodes to a result list to be returned
+     *         Add the "original keys equal to suffixes" from all of these nodes to a result list to be returned
      *     </li>
      * </ol>
-     * The search key will be a prefix of all of those documents.
+     * The search key will be a prefix of all of those original keys.
+     * <p/>
+     * Implementation hint: the original key returned by this method should be included in the set returned by
+     * {@link #getOriginalKeys()}
      *
-     * @return The original documents which are an exact match for the suffix represented by the node having this
-     * {@link SuffixAnnotation}
+     * @return The original key which equals the suffix, or null if this suffix does not equal an original key
      */
-    List<Document> getDocumentsExactlyMatchingSuffix();
+    OriginalKey getOriginalKeyEqualToSuffix();
+
+    /**
+     * Sets the original key equal to this suffix.
+     *
+     * @param originalKey The original key to store, can be null to remove an association
+     * @throws IllegalStateException If an original key equal to this suffix is already stored
+     */
+    void setOriginalKeyEqualToSuffix(OriginalKey originalKey);
+
 }
