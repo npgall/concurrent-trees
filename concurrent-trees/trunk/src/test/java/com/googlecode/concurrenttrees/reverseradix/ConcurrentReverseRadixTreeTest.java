@@ -60,7 +60,7 @@ public class ConcurrentReverseRadixTreeTest {
     }
 
     @Test
-    public void testGetKeysForPostfix() throws Exception {
+    public void testGetKeysEndingWith() throws Exception {
         ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
@@ -73,7 +73,7 @@ public class ConcurrentReverseRadixTreeTest {
     }
 
     @Test
-    public void testGetValuesForPostfix() throws Exception {
+    public void testGetValuesForKeysEndingWith() throws Exception {
         ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
@@ -86,7 +86,7 @@ public class ConcurrentReverseRadixTreeTest {
     }
 
     @Test
-    public void testGetKeyValuePairsForPostfix() throws Exception {
+    public void testGetKeyValuePairsForKeysEndingWith() throws Exception {
         ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
@@ -127,8 +127,6 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testRestrictConcurrency() {
-        // Test coverage for the temp support for read locks...
-        @SuppressWarnings({"deprecation"})
         ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory, true);
         assertNotNull(tree);
     }

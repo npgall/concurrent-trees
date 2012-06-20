@@ -23,7 +23,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
 
         public ConcurrentSuffixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            //noinspection deprecation
             super(nodeFactory, restrictConcurrency);
         }
 
@@ -155,7 +154,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         for (CharSequence suffix : suffixes) {
             Set<String> originalKeyRefs = radixTree.getValueForExactKey(suffix);
             if (originalKeyRefs == null) {
-                originalKeyRefs = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+                originalKeyRefs = createSetForOriginalKeys();
                 radixTree.put(suffix, originalKeyRefs);
             }
             originalKeyRefs.add(keyAsString);
@@ -175,6 +174,22 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
             }
             // else leave the suffix in the tree, as it is a common suffix of another key.
         }
+    }
+
+    /**
+     * Creates a new {@link Set} in which original keys from which a suffix was generated can be stored.
+     * <p/>
+     * By default this method creates a new concurrent set based on {@link ConcurrentHashMap}.
+     * <p/>
+     * Subclasses could override this method to create an alternative set.
+     * <p/>
+     * Specifically it is expected that this would be useful in unit tests,
+     * where sets with consistent iteration order would be useful.
+     *
+     * @return A new {@link Set} in which original keys from which a suffix was generated can be stored
+     */
+    protected Set<String> createSetForOriginalKeys() {
+        return Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     }
 
     /**
@@ -264,7 +279,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     @Override
     public Collection<O> getValuesForKeysContaining(CharSequence fragment) {
         Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
-        List<O> results = new LinkedList<O>();
+        Set<O> results = new LinkedHashSet<O>(); // **** TODO: using a set here, to avoid excessive duplicates, use set elsewhere?
         for (Set<String> originalKeySet : originalKeysSets) {
             for (String originalKey : originalKeySet) {
                 O value = valueMap.get(originalKey);
