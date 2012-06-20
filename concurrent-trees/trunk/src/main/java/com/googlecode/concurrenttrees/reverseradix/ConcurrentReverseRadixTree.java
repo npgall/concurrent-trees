@@ -99,7 +99,7 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForKeysEndingWith(CharSequence suffix) {
+    public Set<O> getValuesForKeysEndingWith(CharSequence suffix) {
         return radixTree.getValuesForKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 

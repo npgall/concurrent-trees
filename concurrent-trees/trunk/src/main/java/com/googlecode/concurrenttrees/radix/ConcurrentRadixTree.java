@@ -179,7 +179,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForKeysStartingWith(CharSequence prefix) {
+    public Set<O> getValuesForKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(prefix);
@@ -198,7 +198,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                 }
                 default: {
                     // Incomplete match means key is not a prefix of any node...
-                    return Collections.emptyList();
+                    return Collections.emptySet();
                 }
             }
         }
@@ -507,12 +507,11 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
     /**
      * Returns a {@link Collection} of values which are associated with keys in the tree for which the given key is a
-     * prefix. This collection might contain duplicates, depending on the objects which the application associated with
-     * keys in the tree.
+     * prefix.
      */
     @SuppressWarnings({"JavaDoc"})
-    <O> Collection<O> getDescendantValues(CharSequence startKey, Node startNode) {
-        final Collection<O> values = new LinkedList<O>();
+    <O> Set<O> getDescendantValues(CharSequence startKey, Node startNode) {
+        final Set<O> values = new LinkedHashSet<O>();
         traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
             @Override
             public void handle(NodeKeyPair nodeKeyPair) {
