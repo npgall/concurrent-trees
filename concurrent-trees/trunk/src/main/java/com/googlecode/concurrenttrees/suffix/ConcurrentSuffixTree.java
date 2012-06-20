@@ -40,9 +40,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
     }
 
-    private final SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory;
-    // Associate the original document with
-    private final ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>> radixTree;
+    private final ConcurrentSuffixTreeImpl<Set<String>> radixTree;
     private final ConcurrentMap<String, O> valueMap;
 
     /**
@@ -51,13 +49,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
      * on-demand, and which might return node implementations optimized for storing the values supplied to it for
      * the creation of each node
-     * @param suffixAnnotationFactory An object which creates {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} objects
-     * on-demand, and which might return {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} object implementations optimized for storing the values
-     * supplied to it for the creation of each object
      */
-    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory) {
-        this.suffixAnnotationFactory = suffixAnnotationFactory;
-        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>>(nodeFactory);
+    public ConcurrentSuffixTree(NodeFactory nodeFactory) {
+        this.radixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
@@ -68,13 +62,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * writes, for safety until the algorithms in {@link ConcurrentSuffixTree} which support multi-threaded
      * reads while writes are ongoing can be more thoroughly tested.
      *
-     *
      * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
      * on-demand, and which might return node implementations optimized for storing the values supplied to it for the
      * creation of each node
-     * @param suffixAnnotationFactory An object which creates {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} objects
-     * on-demand, and which might return {@link com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation} object implementations optimized for storing the values
-     * supplied to it for the creation of each object
      * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
      * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
      * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
@@ -82,10 +72,9 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * @deprecated This method allowing concurrency to be restricted will be removed in future.
      */
     @Deprecated
-    public ConcurrentSuffixTree(NodeFactory nodeFactory, SuffixAnnotationFactory<CharSequence> suffixAnnotationFactory, boolean restrictConcurrency) {
-        this.suffixAnnotationFactory = suffixAnnotationFactory;
+    public ConcurrentSuffixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
         //noinspection deprecation
-        this.radixTree = new ConcurrentSuffixTreeImpl<SuffixAnnotation<CharSequence>>(nodeFactory, restrictConcurrency);
+        this.radixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory, restrictConcurrency);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
@@ -99,14 +88,19 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     public O put(CharSequence key, O value) {
         radixTree.acquireWriteLock();
         try {
-            // Create string version of char sequence for use as key in value map.
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
             // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
             String keyString = CharSequenceUtil.toString(key);
-            O previousValue = valueMap.get(keyString);
 
-            addSuffixesToRadixTree(key);
-            valueMap.put(keyString, value);
-            return previousValue;
+            // Put/replace value in map before we add suffixes to the tree
+            // (prevents reading threads finding suffixes with no value)...
+            final O replacedValue = valueMap.put(keyString, value);
+
+            // We only need to modify the tree if we have not added this key before...
+            if (replacedValue == null) {
+                addSuffixesToRadixTree(keyString);
+            }
+            return replacedValue; // might be null
         }
         finally {
             radixTree.releaseWriteLock();
@@ -117,51 +111,75 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     public O putIfAbsent(CharSequence key, O value) {
         radixTree.acquireWriteLock();
         try {
-            // Create string version of char sequence for use as key in value map.
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
             // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
             String keyString = CharSequenceUtil.toString(key);
-            O previousValue = valueMap.get(keyString);
-            if (previousValue != null) {
-                return previousValue;
+
+            // Put/replace value in map only if key is absent, before we add suffixes to the tree
+            // (prevents reading threads finding suffixes with no value)...
+            final O existingValue = valueMap.putIfAbsent(keyString, value);
+
+            // We only need to modify the tree if we have not added this key before...
+            if (existingValue == null) {
+                // Key is not already in tree, add it now...
+                addSuffixesToRadixTree(keyString);
             }
-            addSuffixesToRadixTree(key);
-            valueMap.put(keyString, value);
-            return previousValue; // should be null
+            // else we have not made any changes
+
+            return existingValue; // might be null
         }
         finally {
             radixTree.releaseWriteLock();
         }
     }
 
-    void addSuffixesToRadixTree(CharSequence key) {
-        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(key);
-        for (Iterator<CharSequence> iterator = suffixes.iterator(); iterator.hasNext(); ) {
-            CharSequence suffix = iterator.next();
-            boolean isExactMatchForKey = !iterator.hasNext();
-            SuffixAnnotation<CharSequence> suffixAnnotation = radixTree.get(suffix);
-            if (suffixAnnotation == null) {
-                // Create new metadata...
-                List<CharSequence> documentsEndingWithSuffix = Arrays.asList(suffix);
-                CharSequence originalKeyEqualToSuffix = isExactMatchForKey ? suffix : null;
-                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(documentsEndingWithSuffix, originalKeyEqualToSuffix);
-                radixTree.put(suffix, suffixAnnotation);
-            }
-            else {
-                // Update existing metadata...
-                // TODO: optimize for specific implementation of DefaultSuffixAnnotation - avoid recreating lists?
-                Collection<CharSequence> existingKeysEndingWithSuffix = suffixAnnotation.getOriginalKeys();
-                List<CharSequence> newKeysEndingWithSuffix = new ArrayList<CharSequence>(existingKeysEndingWithSuffix.size() + 1);
-                newKeysEndingWithSuffix.addAll(existingKeysEndingWithSuffix);
-                newKeysEndingWithSuffix.add(suffix);
+    @Override
+    public boolean remove(CharSequence key) {
+        radixTree.acquireWriteLock();
+        try {
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
+            // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+            String keyString = CharSequenceUtil.toString(key);
+            O value = valueMap.get(keyString);
 
-                CharSequence originalKeyEqualToSuffix = suffixAnnotation.getOriginalKeyEqualToSuffix();
-                if (isExactMatchForKey) {
-                    originalKeyEqualToSuffix = suffix;
-                }
-                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(newKeysEndingWithSuffix, originalKeyEqualToSuffix);
-                // Replace the existing SuffixAnnotation with the new one containing the additions...
-                radixTree.put(suffix, suffixAnnotation);
+            if (value == null) {
+                // Key was not stored, no need to do anything, return false...
+                return false;
             }
+            // Remove suffixes from the tree...
+            removeSuffixesFromRadixTree(keyString);
+            valueMap.remove(keyString);
+            return true;
+        }
+        finally {
+            radixTree.releaseWriteLock();
+        }
+    }
+
+    void addSuffixesToRadixTree(String keyAsString) {
+        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
+        for (CharSequence suffix : suffixes) {
+            Set<String> originalKeyRefs = radixTree.get(suffix);
+            if (originalKeyRefs == null) {
+                originalKeyRefs = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+                radixTree.put(suffix, originalKeyRefs);
+            }
+            originalKeyRefs.add(keyAsString);
+        }
+    }
+
+    void removeSuffixesFromRadixTree(String keyAsString) {
+        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
+        for (CharSequence suffix : suffixes) {
+            Set<String> originalKeyRefs = radixTree.get(suffix);
+            originalKeyRefs.remove(keyAsString);
+
+            if (originalKeyRefs.isEmpty()) {
+                // We just removed the last original key which shares this suffix.
+                // Remove the suffix from the tree entirely...
+                radixTree.remove(suffix);
+            }
+            // else leave the suffix in the tree, as it is a common suffix of another key.
         }
     }
 
@@ -207,11 +225,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
 
     @Override
     public Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence prefix) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @Override
-    public boolean remove(CharSequence key) {
         throw new UnsupportedOperationException("Not implemented");
     }
 
