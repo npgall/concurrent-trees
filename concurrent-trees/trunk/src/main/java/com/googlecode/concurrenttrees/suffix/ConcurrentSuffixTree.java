@@ -27,6 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * An implementation of {@link SuffixTree} which supports lock-free concurrent reads, and allows items to be
+ * added to and to be removed from the tree <i>atomically</i> by background thread(s), without blocking reads.
+ * <p/>
+ * This implementation is based on {@link ConcurrentRadixTree}.
+ *
  * @author Niall Gallagher
  */
 public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
