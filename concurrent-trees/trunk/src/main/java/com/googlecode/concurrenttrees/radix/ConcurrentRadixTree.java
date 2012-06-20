@@ -40,7 +40,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     
     private final NodeFactory nodeFactory;
 
-    volatile Node root;
+    protected volatile Node root;
 
     // Write operations acquire write lock.
     // Read operations are lock-free by default, but can be forced to acquire read locks via constructor flag...
