@@ -74,8 +74,8 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
      * {@inheritDoc}
      */
     @Override
-    public O get(CharSequence key) {
-        return radixTree.get(CharSequenceUtil.reverse(key));
+    public O getValueForExactKey(CharSequence key) {
+        return radixTree.getValueForExactKey(CharSequenceUtil.reverse(key));
     }
 
     /**

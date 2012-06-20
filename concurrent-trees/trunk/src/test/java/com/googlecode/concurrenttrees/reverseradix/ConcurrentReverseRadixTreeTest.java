@@ -21,7 +21,7 @@ public class ConcurrentReverseRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals(Integer.valueOf(2), tree.get("TEAM"));
+        assertEquals(Integer.valueOf(2), tree.getValueForExactKey("TEAM"));
     }
 
     @Test

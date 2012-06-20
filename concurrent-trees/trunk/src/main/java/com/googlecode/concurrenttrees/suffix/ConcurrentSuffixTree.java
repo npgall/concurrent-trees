@@ -6,8 +6,6 @@ import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
-import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation;
-import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotationFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,10 +55,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
 
     /**
      * Creates a new {@link ConcurrentSuffixTree} which will use the given {@link NodeFactory} to create nodes.
-     * <p/>
-     * As a temporary measure, allows the concurrency of {@link ConcurrentSuffixTree} to be restricted in the face of
-     * writes, for safety until the algorithms in {@link ConcurrentSuffixTree} which support multi-threaded
-     * reads while writes are ongoing can be more thoroughly tested.
      *
      * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
      * on-demand, and which might return node implementations optimized for storing the values supplied to it for the
@@ -69,17 +63,14 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
      * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
      * by other threads
-     * @deprecated This method allowing concurrency to be restricted will be removed in future.
      */
-    @Deprecated
     public ConcurrentSuffixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
-        //noinspection deprecation
         this.radixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory, restrictConcurrency);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 
     @Override
-    public O get(CharSequence key) {
+    public O getValueForExactKey(CharSequence key) {
         String keyString = CharSequenceUtil.toString(key);
         return valueMap.get(keyString);
     }
@@ -159,7 +150,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     void addSuffixesToRadixTree(String keyAsString) {
         Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
         for (CharSequence suffix : suffixes) {
-            Set<String> originalKeyRefs = radixTree.get(suffix);
+            Set<String> originalKeyRefs = radixTree.getValueForExactKey(suffix);
             if (originalKeyRefs == null) {
                 originalKeyRefs = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
                 radixTree.put(suffix, originalKeyRefs);
@@ -171,7 +162,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     void removeSuffixesFromRadixTree(String keyAsString) {
         Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
         for (CharSequence suffix : suffixes) {
-            Set<String> originalKeyRefs = radixTree.get(suffix);
+            Set<String> originalKeyRefs = radixTree.getValueForExactKey(suffix);
             originalKeyRefs.remove(keyAsString);
 
             if (originalKeyRefs.isEmpty()) {
@@ -181,21 +172,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
             }
             // else leave the suffix in the tree, as it is a common suffix of another key.
         }
-    }
-
-    @Override
-    public Set<CharSequence> getKeysStartingWith(CharSequence prefix) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @Override
-    public Collection<O> getValuesForKeysStartingWith(CharSequence prefix) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
-        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
@@ -214,17 +190,17 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     }
 
     @Override
-    public Set<CharSequence> getKeysContaining(CharSequence prefix) {
+    public Set<CharSequence> getKeysContaining(CharSequence fragment) {
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public Collection<O> getValuesForKeysContaining(CharSequence prefix) {
+    public Collection<O> getValuesForKeysContaining(CharSequence fragment) {
         throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence prefix) {
+    public Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence fragment) {
         throw new UnsupportedOperationException("Not implemented");
     }
 

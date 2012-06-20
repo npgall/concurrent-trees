@@ -34,15 +34,6 @@ import java.util.Set;
 public interface RadixTree<O> {
 
     /**
-     * Returns the value associated with the given key (exact match), or returns null if no such value
-     * is associated with the key.
-     *
-     * @param key The key with which a sought value might be associated
-     * @return The value associated with the given key (exact match), or null if no value was associated with the key
-     */
-    O get(CharSequence key);
-
-    /**
      * Associates the given value with the given key; replacing any previous value associated with the key.
      * Returns the previous value associated with the key, if any.
      * <p/>
@@ -66,6 +57,25 @@ public interface RadixTree<O> {
      * value was successfully associated
      */
     O putIfAbsent(CharSequence key, O value);
+
+    /**
+     * Removes the value associated with the given key (exact match).
+     * If no value is associated with the key, does nothing.
+     *
+     * @param key The key for which an associated value should be removed
+     * @return True if a value was removed (and therefore was associated with the key), false if no value was
+     * associated/removed
+     */
+    boolean remove(CharSequence key);
+
+    /**
+     * Returns the value associated with the given key (exact match), or returns null if no such value
+     * is associated with the key.
+     *
+     * @param key The key with which a sought value might be associated
+     * @return The value associated with the given key (exact match), or null if no value was associated with the key
+     */
+    O getValueForExactKey(CharSequence key);
 
     /**
      * Returns the set of keys in the tree which start with the given prefix.
@@ -100,14 +110,4 @@ public interface RadixTree<O> {
      * @return The set of {@link KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
      */
     Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
-
-    /**
-     * Removes the value associated with the given key (exact match).
-     * If no value is associated with the key, does nothing.
-     *
-     * @param key The key for which an associated value should be removed
-     * @return True if a value was removed (and therefore was associated with the key), false if no value was
-     * associated/removed
-     */
-    boolean remove(CharSequence key);
 }

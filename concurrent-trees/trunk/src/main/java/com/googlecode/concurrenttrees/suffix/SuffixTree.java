@@ -11,15 +11,6 @@ import java.util.Set;
 public interface SuffixTree<O> {
 
     /**
-     * Returns the value associated with the given key (exact match), or returns null if no such value
-     * is associated with the key.
-     *
-     * @param key The key with which a sought value might be associated
-     * @return The value associated with the given key (exact match), or null if no value was associated with the key
-     */
-    O get(CharSequence key);
-
-    /**
      * Associates the given value with the given key; replacing any previous value associated with the key.
      * Returns the previous value associated with the key, if any.
      * <p/>
@@ -43,39 +34,25 @@ public interface SuffixTree<O> {
      * value was successfully associated
      */
     O putIfAbsent(CharSequence key, O value);
-    /**
-     * Returns the set of keys in the tree which start with the given prefix.
-     * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, that key is also
-     * returned.
-     *
-     * @param prefix A prefix of sought keys in the tree
-     * @return The set of keys in the tree which start with the given prefix, inclusive
-     */
-    Set<CharSequence> getKeysStartingWith(CharSequence prefix);
 
     /**
-     * Returns the set of values associated with keys in the tree which start with the given prefix.
-     * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the value associated
-     * with that key is also returned.
+     * Removes the value associated with the given key (exact match).
+     * If no value is associated with the key, does nothing.
      *
-     * @param prefix A prefix of keys in the tree for which associated values are sought
-     * @return The set of values associated with keys in the tree which start with the given prefix, inclusive
+     * @param key The key for which an associated value should be removed
+     * @return True if a value was removed (and therefore was associated with the key), false if no value was
+     * associated/removed
      */
-    Collection<O> getValuesForKeysStartingWith(CharSequence prefix);
+    boolean remove(CharSequence key);
 
     /**
-     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree, where the keys start
-     * with the given prefix.
-     * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the {@link KeyValuePair}
-     * for that key is also returned.
+     * Returns the value associated with the given key (exact match), or returns null if no such value
+     * is associated with the key.
      *
-     * @param prefix A prefix of keys in the tree for which associated {@link KeyValuePair}s are sought
-     * @return The set of {@link KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
+     * @param key The key with which a sought value might be associated
+     * @return The value associated with the given key (exact match), or null if no value was associated with the key
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
+    O getValueForExactKey(CharSequence key);
 
     /**
      * Returns the set of keys in the tree which end with the given suffix.
@@ -112,46 +89,36 @@ public interface SuffixTree<O> {
     Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix);
 
     /**
-     * Returns the set of keys in the tree which start with the given prefix.
+     * Returns the set of keys in the tree which contain the given fragment.
      * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, that key is also
+     * This is <i>inclusive</i> - if the given fragment is an exact match for a key in the tree, that key is also
      * returned.
      *
-     * @param prefix A prefix of sought keys in the tree
-     * @return The set of keys in the tree which start with the given prefix, inclusive
+     * @param fragment A fragment of sought keys in the tree
+     * @return The set of keys in the tree which contain the given fragment, inclusive
      */
-    Set<CharSequence> getKeysContaining(CharSequence prefix);
+    Set<CharSequence> getKeysContaining(CharSequence fragment);
 
     /**
-     * Returns the set of values associated with keys in the tree which start with the given prefix.
+     * Returns the set of values associated with keys in the tree which contain the given fragment.
      * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the value associated
+     * This is <i>inclusive</i> - if the given fragment is an exact match for a key in the tree, the value associated
      * with that key is also returned.
      *
-     * @param prefix A prefix of keys in the tree for which associated values are sought
-     * @return The set of values associated with keys in the tree which start with the given prefix, inclusive
+     * @param fragment A fragment of keys in the tree for which associated values are sought
+     * @return The set of values associated with keys in the tree which contain the given fragment, inclusive
      */
-    Collection<O> getValuesForKeysContaining(CharSequence prefix);
+    Collection<O> getValuesForKeysContaining(CharSequence fragment);
 
     /**
-     * Returns the set of {@link com.googlecode.concurrenttrees.common.KeyValuePair}s for keys and their associated values in the tree, where the keys start
-     * with the given prefix.
+     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree, where the keys
+     * contain the given fragment.
      * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the {@link com.googlecode.concurrenttrees.common.KeyValuePair}
-     * for that key is also returned.
+     * This is <i>inclusive</i> - if the given fragment is an exact match for a key in the tree, the
+     * {@link KeyValuePair} for that key is also returned.
      *
-     * @param prefix A prefix of keys in the tree for which associated {@link com.googlecode.concurrenttrees.common.KeyValuePair}s are sought
-     * @return The set of {@link com.googlecode.concurrenttrees.common.KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
+     * @param fragment A fragment of keys in the tree for which associated {@link KeyValuePair}s are sought
+     * @return The set of {@link KeyValuePair}s for keys in the tree which contain the given fragment, inclusive
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence prefix);
-
-    /**
-     * Removes the value associated with the given key (exact match).
-     * If no value is associated with the key, does nothing.
-     *
-     * @param key The key for which an associated value should be removed
-     * @return True if a value was removed (and therefore was associated with the key), false if no value was
-     * associated/removed
-     */
-    boolean remove(CharSequence key);
+    Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence fragment);
 }
