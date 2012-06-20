@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.concurrenttrees.reverseradix;
+package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 
-import java.util.Collection;
 import java.util.Set;
 
 /**
