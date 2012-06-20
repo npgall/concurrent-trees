@@ -20,7 +20,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import java.util.Set;
 
 /**
- * API of a reverse radix tree, that is a tree which allows values to be looked up based on <i>suffixes</i> of the keys
+ * API of a reversed radix tree, that is a tree which allows values to be looked up based on <i>suffixes</i> of the keys
  * with which they were associated, as well as based on exact matches for keys. A reverse radix tree essentially allows
  * <i><u>"equals"</u></i> and <i><u>"ends with"</u></i> lookup.
  * <p/>
