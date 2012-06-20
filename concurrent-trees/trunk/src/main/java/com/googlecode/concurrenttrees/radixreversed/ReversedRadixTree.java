@@ -36,7 +36,7 @@ import java.util.Set;
  * @see com.googlecode.concurrenttrees.radix.RadixTree
  * @author Niall Gallagher
  */
-public interface ReverseRadixTree<O> {
+public interface ReversedRadixTree<O> {
 
     /**
      * Associates the given value with the given key; replacing any previous value associated with the key.
