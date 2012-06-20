@@ -10,12 +10,12 @@ import java.util.List;
  *
  * @author Niall Gallagher
  */
-public class PrettyPrintUtil {
+public class PrettyPrinter {
 
     /**
      * Private constructor, not used.
      */
-    PrettyPrintUtil() {
+    PrettyPrinter() {
     }
 
     /**
