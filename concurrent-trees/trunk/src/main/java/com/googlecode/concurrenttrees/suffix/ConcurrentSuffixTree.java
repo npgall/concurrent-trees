@@ -75,8 +75,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     public O put(CharSequence key, O value) {
         radixTree.acquireWriteLock();
         try {
-            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
-            // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
             String keyString = CharSequenceUtil.toString(key);
 
             // Put/replace value in map before we add suffixes to the tree
@@ -101,8 +100,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     public O putIfAbsent(CharSequence key, O value) {
         radixTree.acquireWriteLock();
         try {
-            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
-            // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
             String keyString = CharSequenceUtil.toString(key);
 
             // Put/replace value in map only if key is absent, before we add suffixes to the tree
@@ -130,8 +128,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     public boolean remove(CharSequence key) {
         radixTree.acquireWriteLock();
         try {
-            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
-            // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+            // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
             String keyString = CharSequenceUtil.toString(key);
             O value = valueMap.get(keyString);
 
@@ -197,8 +194,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      */
     @Override
     public O getValueForExactKey(CharSequence key) {
-        // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence.
-        // TODO: optimize/avoid converting to string. Although if already a string, this is a no-op...
+        // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
         String keyString = CharSequenceUtil.toString(key);
         return valueMap.get(keyString);
     }
@@ -222,12 +218,12 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForKeysEndingWith(CharSequence suffix) {
+    public Set<O> getValuesForKeysEndingWith(CharSequence suffix) {
         Set<String> originalKeys = radixTree.getValueForExactKey(suffix);
         if (originalKeys == null) {
             return Collections.emptySet();
         }
-        List<O> results = new ArrayList<O>(originalKeys.size());
+        Set<O> results = new LinkedHashSet<O>();
         for (String originalKey : originalKeys) {
             O value = valueMap.get(originalKey);
             // Delegate to helper method to facilitate unit testing...
@@ -277,7 +273,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     @Override
     public Collection<O> getValuesForKeysContaining(CharSequence fragment) {
         Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
-        Set<O> results = new LinkedHashSet<O>(); // **** TODO: using a set here, to avoid excessive duplicates, use set elsewhere?
+        Set<O> results = new LinkedHashSet<O>();
         for (Set<String> originalKeySet : originalKeysSets) {
             for (String originalKey : originalKeySet) {
                 O value = valueMap.get(originalKey);

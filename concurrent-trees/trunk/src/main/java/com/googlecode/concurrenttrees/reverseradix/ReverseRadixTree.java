@@ -99,11 +99,14 @@ public interface ReverseRadixTree<O> {
      * <p/>
      * This is <i>inclusive</i> - if the given suffix is an exact match for a key in the tree, the value associated
      * with that key is also returned.
+     * <p/>
+     * Note that although the same value might originally have been associated with multiple keys, the set returned
+     * does not contain duplicates (as determined by the value objects' implementation of {@link #equals(Object)}).
      *
      * @param suffix A suffix of keys in the tree for which associated values are sought
      * @return The set of values associated with keys in the tree which end with the given suffix, inclusive
      */
-    Collection<O> getValuesForKeysEndingWith(CharSequence suffix);
+    Set<O> getValuesForKeysEndingWith(CharSequence suffix);
 
     /**
      * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree, where the keys end
