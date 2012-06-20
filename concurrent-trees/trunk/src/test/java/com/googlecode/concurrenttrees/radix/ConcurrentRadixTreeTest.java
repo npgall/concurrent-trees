@@ -538,6 +538,40 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
+    public void testRemove_DoNotMergeSplitNodeWithValue() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+        tree.put("TE", 4);
+
+        String expected, actual;
+        expected =
+                "○\n" +
+                "└── ○ T\n" +
+                "    ├── ○ E (4)\n" +
+                "    │   ├── ○ AM (2)\n" +
+                "    │   └── ○ ST (1)\n" +
+                "    └── ○ OAST (3)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+
+        boolean removed = tree.remove("TEST");
+        assertTrue(removed);
+
+        expected =
+                "○\n" +
+                "└── ○ T\n" +
+                "    ├── ○ E (4)\n" +
+                "    │   └── ○ AM (2)\n" +
+                "    └── ○ OAST (3)\n";
+        actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+
+        System.out.println(actual);
+    }
+
+    @Test
     public void testRemove_NoSuchKey() {
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
         tree.put("FOO", 1);

@@ -230,9 +230,8 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         List<O> results = new ArrayList<O>(originalKeys.size());
         for (String originalKey : originalKeys) {
             O value = valueMap.get(originalKey);
-            if (value != null) {
-                results.add(value);
-            }
+            // Delegate to helper method to facilitate unit testing...
+            addIfNotNull(value, results);
             // else race condition, key/value was removed while iterating, skip value for that key
         }
         return results;
@@ -250,9 +249,8 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         Set<KeyValuePair<O>> results = new HashSet<KeyValuePair<O>>(originalKeys.size());
         for (String originalKey : originalKeys) {
             O value = valueMap.get(originalKey);
-            if (value != null) {
-                results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value));
-            }
+            // Delegate to helper method to facilitate unit testing...
+            addIfNotNull(originalKey, value, results);
             // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
         }
         return results;
@@ -283,9 +281,8 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         for (Set<String> originalKeySet : originalKeysSets) {
             for (String originalKey : originalKeySet) {
                 O value = valueMap.get(originalKey);
-                if (value != null) {
-                    results.add(value);
-                }
+                // Delegate to helper method to facilitate unit testing...
+                addIfNotNull(value, results);
                 // else race condition, key/value was removed while iterating, skip value for that key
             }
         }
@@ -302,13 +299,34 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         for (Set<String> originalKeySet : originalKeysSets) {
             for (String originalKey : originalKeySet) {
                 O value = valueMap.get(originalKey);
-                if (value != null) {
-                    results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value));
-                }
+                // Delegate to helper method to facilitate unit testing...
+                addIfNotNull(originalKey, value, results);
                 // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
             }
         }
         return results;
+    }
+
+    /**
+     * Utility method to add a value to the set if the value is not null.
+     * Logic is factored out to this method to support unit testing where value is only null if race conditions occur.
+     */
+    @SuppressWarnings({"JavaDoc"})
+    static <O> void addIfNotNull(O value, Collection<O> results) {
+        if (value != null) {
+            results.add(value);
+        }
+    }
+
+    /**
+     * Utility method to add a {@link KeyValuePair} to the set if the value is not null.
+     * Logic is factored out to this method to support unit testing where value is only null if race conditions occur.
+     */
+    @SuppressWarnings({"JavaDoc"})
+    static <O> void addIfNotNull(String key, O value, Collection<KeyValuePair<O>> results) {
+        if (value != null) {
+            results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(key, value));
+        }
     }
 
     @Override
