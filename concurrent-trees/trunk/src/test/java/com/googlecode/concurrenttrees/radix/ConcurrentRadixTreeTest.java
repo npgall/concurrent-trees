@@ -806,8 +806,6 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRestrictConcurrency() {
-        // Test coverage for the temp support for read locks...
-        @SuppressWarnings({"deprecation"})
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory, true);
         tree.acquireReadLockIfNecessary();
         tree.releaseReadLockIfNecessary();

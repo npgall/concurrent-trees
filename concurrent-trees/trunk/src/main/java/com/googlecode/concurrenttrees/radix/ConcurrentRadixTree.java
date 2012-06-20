@@ -42,9 +42,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
     volatile Node root;
 
-    // Temporary measure to allow concurrency to optionally be restricted,
-    // until algorithms have been more thoroughly tested...
+    // Write operations acquire write lock.
+    // Read operations are lock-free by default, but can be forced to acquire read locks via constructor flag...
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    // If true, force reading threads to acquire read lock (they will block on writes).
     private final boolean restrictConcurrency;
 
     /**
@@ -54,16 +55,11 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * implementations optimized for storing the values supplied to it for the creation of each node
      */
     public ConcurrentRadixTree(NodeFactory nodeFactory) {
-        //noinspection deprecation
         this(nodeFactory, false);
     }
 
     /**
      * Creates a new {@link ConcurrentRadixTree} which will use the given {@link NodeFactory} to create nodes.
-     * <p/>
-     * As a temporary measure, allows the concurrency of {@link ConcurrentRadixTree} to be restricted in the face of
-     * writes, for safety until the algorithms in {@link ConcurrentRadixTree} which support multi-threaded
-     * reads while writes are ongoing can be more thoroughly tested.
      * 
      * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node 
      * implementations optimized for storing the values supplied to it for the creation of each node
@@ -71,9 +67,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
      * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
      * by other threads
-     * @deprecated This method allowing concurrency to be restricted will be removed in future.
      */
-    @Deprecated
     public ConcurrentRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
         this.nodeFactory = nodeFactory;
         this.restrictConcurrency = restrictConcurrency;

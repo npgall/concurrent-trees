@@ -27,7 +27,6 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
         }
 
         public ConcurrentReverseRadixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            //noinspection deprecation
             super(nodeFactory, restrictConcurrency);
         }
 
@@ -52,10 +51,6 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
 
     /**
      * Creates a new {@link ConcurrentReverseRadixTree} which will use the given {@link NodeFactory} to create nodes.
-     * <p/>
-     * As a temporary measure, allows the concurrency of {@link ConcurrentReverseRadixTree} to be restricted in the face of
-     * writes, for safety until the algorithms in {@link ConcurrentReverseRadixTree} which support multi-threaded
-     * reads while writes are ongoing can be more thoroughly tested.
      *
      * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node
      * implementations optimized for storing the values supplied to it for the creation of each node
@@ -63,9 +58,7 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
      * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
      * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
      * by other threads
-     * @deprecated This method allowing concurrency to be restricted will be removed in future.
      */
-    @Deprecated
     public ConcurrentReverseRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
         this.radixTree = new ConcurrentReverseRadixTreeImpl<O>(nodeFactory, restrictConcurrency);
     }
