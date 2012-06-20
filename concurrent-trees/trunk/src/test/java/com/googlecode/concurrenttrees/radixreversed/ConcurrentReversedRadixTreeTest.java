@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * @author Niall Gallagher
  */
-public class ConcurrentReverseRadixTreeTest {
+public class ConcurrentReversedRadixTreeTest {
 
     private final NodeFactory nodeFactory = new DefaultNodeFactory();
 
