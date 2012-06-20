@@ -133,7 +133,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public O get(CharSequence key) {
+    public O getValueForExactKey(CharSequence key) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(key);

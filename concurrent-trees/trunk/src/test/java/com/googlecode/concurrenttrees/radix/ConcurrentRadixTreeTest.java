@@ -165,7 +165,7 @@ public class ConcurrentRadixTreeTest {
         assertNotNull(existing);
 
         assertEquals(Integer.valueOf(1), existing);
-        assertEquals(Integer.valueOf(2), tree.get("FOO"));
+        assertEquals(Integer.valueOf(2), tree.getValueForExactKey("FOO"));
     }
 
     @Test
@@ -179,7 +179,7 @@ public class ConcurrentRadixTreeTest {
         assertNotNull(existing);
 
         assertEquals(Integer.valueOf(1), existing);
-        assertEquals(Integer.valueOf(1), tree.get("FOO"));
+        assertEquals(Integer.valueOf(1), tree.getValueForExactKey("FOO"));
     }
 
     @Test
@@ -262,13 +262,13 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ ST (1)
         //        └── ○ OAST (3)
 
-        assertEquals(Integer.valueOf(1), tree.get("TEST"));
-        assertEquals(Integer.valueOf(2), tree.get("TEAM"));
-        assertEquals(Integer.valueOf(3), tree.get("TOAST"));
-        assertNull(tree.get("T"));
-        assertNull(tree.get("TE"));
-        assertNull(tree.get("E")); // sanity check, no such edge from root
-        assertNull(tree.get("")); // sanity check, root never has a value
+        assertEquals(Integer.valueOf(1), tree.getValueForExactKey("TEST"));
+        assertEquals(Integer.valueOf(2), tree.getValueForExactKey("TEAM"));
+        assertEquals(Integer.valueOf(3), tree.getValueForExactKey("TOAST"));
+        assertNull(tree.getValueForExactKey("T"));
+        assertNull(tree.getValueForExactKey("TE"));
+        assertNull(tree.getValueForExactKey("E")); // sanity check, no such edge from root
+        assertNull(tree.getValueForExactKey("")); // sanity check, root never has a value
     }
 
     @Test
