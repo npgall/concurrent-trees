@@ -10,7 +10,7 @@ import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import java.util.*;
 
 /**
- * An implementation of {@link ReverseRadixTree} which supports lock-free concurrent reads, and allows items to be added
+ * An implementation of {@link ReversedRadixTree} which supports lock-free concurrent reads, and allows items to be added
  * to and to be removed from the tree <i>atomically</i> by background thread(s), without blocking reads.
  * <p/>
  * This implementation is a lightweight wrapper around {@link ConcurrentRadixTree}, see that class for
@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author Niall Gallagher
  */
-public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, PrettyPrintable {
+public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, PrettyPrintable {
 
     class ConcurrentReverseRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
 
@@ -40,17 +40,17 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
     private final ConcurrentRadixTree<O> radixTree;
 
     /**
-     * Creates a new {@link ConcurrentReverseRadixTree} which will use the given {@link NodeFactory} to create nodes.
+     * Creates a new {@link ConcurrentReversedRadixTree} which will use the given {@link NodeFactory} to create nodes.
      *
      * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node
      * implementations optimized for storing the values supplied to it for the creation of each node
      */
-    public ConcurrentReverseRadixTree(NodeFactory nodeFactory) {
+    public ConcurrentReversedRadixTree(NodeFactory nodeFactory) {
         this.radixTree = new ConcurrentReverseRadixTreeImpl<O>(nodeFactory);
     }
 
     /**
-     * Creates a new {@link ConcurrentReverseRadixTree} which will use the given {@link NodeFactory} to create nodes.
+     * Creates a new {@link ConcurrentReversedRadixTree} which will use the given {@link NodeFactory} to create nodes.
      *
      * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node
      * implementations optimized for storing the values supplied to it for the creation of each node
@@ -59,7 +59,7 @@ public class ConcurrentReverseRadixTree<O> implements ReverseRadixTree<O>, Prett
      * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
      * by other threads
      */
-    public ConcurrentReverseRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
+    public ConcurrentReversedRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
         this.radixTree = new ConcurrentReverseRadixTreeImpl<O>(nodeFactory, restrictConcurrency);
     }
 

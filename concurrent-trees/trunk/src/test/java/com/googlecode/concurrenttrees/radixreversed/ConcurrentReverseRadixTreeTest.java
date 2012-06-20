@@ -16,7 +16,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testGet() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -26,7 +26,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testPut() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -43,7 +43,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testPutIfAbsent() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.putIfAbsent("TEST", 1);
         tree.putIfAbsent("TEAM", 2);
         tree.putIfAbsent("TOAST", 3);
@@ -61,7 +61,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testGetKeysEndingWith() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -74,7 +74,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testGetValuesForKeysEndingWith() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -87,7 +87,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForKeysEndingWith() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -100,7 +100,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testRemove() throws Exception {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory);
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -127,7 +127,7 @@ public class ConcurrentReverseRadixTreeTest {
 
     @Test
     public void testRestrictConcurrency() {
-        ConcurrentReverseRadixTree<Integer> tree = new ConcurrentReverseRadixTree<Integer>(nodeFactory, true);
+        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(nodeFactory, true);
         assertNotNull(tree);
     }
 }

@@ -492,7 +492,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
                     // Call the transformKeyForResult method to allow key to be transformed before returning to client.
-                    // Used by subclasses such as ReverseRadixTree implementations...
+                    // Used by subclasses such as ReversedRadixTree implementations...
                     CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
 
                     // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
@@ -551,7 +551,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
                     // Call the transformKeyForResult method to allow key to be transformed before returning to client.
-                    // Used by subclasses such as ReverseRadixTree implementations...
+                    // Used by subclasses such as ReversedRadixTree implementations...
                     CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
 
                     // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
@@ -696,7 +696,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * the application, for example by the {@link #getKeysStartingWith(CharSequence)} or the
      * {@link #getKeyValuePairsForKeysStartingWith(CharSequence)} methods.
      * <p/>
-     * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.radixreversed.ReverseRadixTree}
+     * This hook is expected to be used by  {@link com.googlecode.concurrenttrees.radixreversed.ReversedRadixTree}
      * implementations, where keys are stored in the tree in reverse order but results should be returned in normal
      * order.
      * <p/>
