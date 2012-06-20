@@ -137,34 +137,28 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(key);
         for (Iterator<CharSequence> iterator = suffixes.iterator(); iterator.hasNext(); ) {
             CharSequence suffix = iterator.next();
-            boolean isExactMatchForDocument = !iterator.hasNext();
+            boolean isExactMatchForKey = !iterator.hasNext();
             SuffixAnnotation<CharSequence> suffixAnnotation = radixTree.get(suffix);
             if (suffixAnnotation == null) {
                 // Create new metadata...
                 List<CharSequence> documentsEndingWithSuffix = Arrays.asList(suffix);
-                List<CharSequence> documentsExactlyMatchingSuffix = isExactMatchForDocument ? Arrays.asList(suffix) : Collections.<CharSequence>emptyList();
-                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(documentsEndingWithSuffix, documentsExactlyMatchingSuffix);
+                CharSequence originalKeyEqualToSuffix = isExactMatchForKey ? suffix : null;
+                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(documentsEndingWithSuffix, originalKeyEqualToSuffix);
                 radixTree.put(suffix, suffixAnnotation);
             }
             else {
                 // Update existing metadata...
                 // TODO: optimize for specific implementation of DefaultSuffixAnnotation - avoid recreating lists?
-                List<CharSequence> existingDocumentsEndingWithSuffix = suffixAnnotation.getDocumentsEndingWithSuffix();
-                List<CharSequence> newDocumentsEndingWithSuffix = new ArrayList<CharSequence>(existingDocumentsEndingWithSuffix.size() + 1);
-                newDocumentsEndingWithSuffix.addAll(existingDocumentsEndingWithSuffix);
-                newDocumentsEndingWithSuffix.add(suffix);
+                Collection<CharSequence> existingKeysEndingWithSuffix = suffixAnnotation.getOriginalKeys();
+                List<CharSequence> newKeysEndingWithSuffix = new ArrayList<CharSequence>(existingKeysEndingWithSuffix.size() + 1);
+                newKeysEndingWithSuffix.addAll(existingKeysEndingWithSuffix);
+                newKeysEndingWithSuffix.add(suffix);
 
-                List<CharSequence> existingDocumentsExactlyMatchingSuffix = suffixAnnotation.getDocumentsExactlyMatchingSuffix();
-                List<CharSequence> newDocumentsExactlyMatchingSuffix;
-                if (isExactMatchForDocument) {
-                    newDocumentsExactlyMatchingSuffix = new ArrayList<CharSequence>(existingDocumentsExactlyMatchingSuffix.size() + 1);
-                    newDocumentsExactlyMatchingSuffix.addAll(existingDocumentsExactlyMatchingSuffix);
-                    newDocumentsExactlyMatchingSuffix.add(suffix);
+                CharSequence originalKeyEqualToSuffix = suffixAnnotation.getOriginalKeyEqualToSuffix();
+                if (isExactMatchForKey) {
+                    originalKeyEqualToSuffix = suffix;
                 }
-                else {
-                    newDocumentsExactlyMatchingSuffix = existingDocumentsExactlyMatchingSuffix;
-                }
-                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(newDocumentsEndingWithSuffix, newDocumentsExactlyMatchingSuffix);
+                suffixAnnotation = suffixAnnotationFactory.createSuffixAnnotation(newKeysEndingWithSuffix, originalKeyEqualToSuffix);
                 // Replace the existing SuffixAnnotation with the new one containing the additions...
                 radixTree.put(suffix, suffixAnnotation);
             }

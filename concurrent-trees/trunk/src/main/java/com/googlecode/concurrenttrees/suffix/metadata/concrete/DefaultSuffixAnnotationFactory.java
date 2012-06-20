@@ -3,6 +3,7 @@ package com.googlecode.concurrenttrees.suffix.metadata.concrete;
 import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation;
 import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotationFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,16 +11,16 @@ import java.util.List;
  *
  * @author Niall Gallagher
  */
-public class DefaultSuffixAnnotationFactory<Document extends CharSequence> implements SuffixAnnotationFactory<Document> {
+public class DefaultSuffixAnnotationFactory<FullKey extends CharSequence> implements SuffixAnnotationFactory<FullKey> {
 
     @Override
-    public SuffixAnnotation<Document> createSuffixAnnotation(List<Document> documentsEndingWithSuffix, List<Document> documentsExactlyMatchingSuffix) {
-        if (documentsEndingWithSuffix == null) {
-            throw new IllegalStateException("The documentsEndingWithSuffix argument was null");
+    public SuffixAnnotation<FullKey> createSuffixAnnotation(Collection<FullKey> originalKeys, FullKey originalKeyEqualToSuffix) {
+        if (originalKeys == null) {
+            throw new IllegalStateException("The originalKeys argument was null");
         }
-        if (documentsExactlyMatchingSuffix == null) {
-            throw new IllegalStateException("The documentsExactlyMatchingSuffix argument was null");
+        if (originalKeyEqualToSuffix == null) {
+            throw new IllegalStateException("The originalKeyEqualToSuffix argument was null");
         }
-        return new DefaultSuffixAnnotation<Document>(documentsEndingWithSuffix, documentsExactlyMatchingSuffix);
+        return new DefaultSuffixAnnotation<FullKey>(originalKeys, originalKeyEqualToSuffix);
     }
 }

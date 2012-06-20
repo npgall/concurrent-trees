@@ -1,7 +1,9 @@
 package com.googlecode.concurrenttrees.suffix.metadata.concrete;
 
+import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.suffix.metadata.SuffixAnnotation;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -11,33 +13,37 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Niall Gallagher
  */
-public class DefaultSuffixAnnotation<Document extends CharSequence> implements SuffixAnnotation<Document> {
+public class DefaultSuffixAnnotation<FullKey extends CharSequence> implements SuffixAnnotation<FullKey> {
 
-    private final List<Document> documentsEndingWithSuffix;
-    private final List<Document> documentsExactlyMatchingSuffix;
+    private final Collection<FullKey> originalKeys;
+    private volatile FullKey originalKeyEqualToSuffix;
 
-    public DefaultSuffixAnnotation(List<Document> documentsEndingWithSuffix, List<Document> documentsExactlyMatchingSuffix) {
-        if (documentsEndingWithSuffix instanceof CopyOnWriteArrayList) {
-            this.documentsEndingWithSuffix = documentsEndingWithSuffix;
+    public DefaultSuffixAnnotation(Collection<FullKey> originalKeys, FullKey originalKeyEqualToSuffix) {
+        if (originalKeys instanceof CopyOnWriteArrayList) {
+            this.originalKeys = originalKeys;
         }
         else {
-            this.documentsEndingWithSuffix = new CopyOnWriteArrayList<Document>(documentsEndingWithSuffix);
+            this.originalKeys = new CopyOnWriteArrayList<FullKey>(originalKeys);
         }
-        if (documentsExactlyMatchingSuffix instanceof CopyOnWriteArrayList) {
-            this.documentsExactlyMatchingSuffix = documentsExactlyMatchingSuffix;
-        }
-        else {
-            this.documentsExactlyMatchingSuffix = new CopyOnWriteArrayList<Document>(documentsExactlyMatchingSuffix);
-        }
+        this.originalKeyEqualToSuffix = originalKeyEqualToSuffix;
     }
 
     @Override
-    public List<Document> getDocumentsEndingWithSuffix() {
-        return this.documentsEndingWithSuffix;
+    public Collection<FullKey> getOriginalKeys() {
+        return this.originalKeys;
     }
 
     @Override
-    public List<Document> getDocumentsExactlyMatchingSuffix() {
-        return this.documentsExactlyMatchingSuffix;
+    public FullKey getOriginalKeyEqualToSuffix() {
+        return this.originalKeyEqualToSuffix;
+    }
+
+    @Override
+    public synchronized void setOriginalKeyEqualToSuffix(FullKey fullKey) {
+        FullKey existingValue = this.originalKeyEqualToSuffix;
+        if (existingValue != null) {
+            throw new IllegalStateException("OriginalKeyEqualToSuffix already set: " + CharSequenceUtil.toString(existingValue));
+        }
+        this.originalKeyEqualToSuffix = fullKey;
     }
 }
