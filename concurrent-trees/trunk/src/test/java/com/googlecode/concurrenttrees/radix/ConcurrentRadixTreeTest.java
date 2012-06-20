@@ -16,7 +16,7 @@
 package com.googlecode.concurrenttrees.radix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
-import com.googlecode.concurrenttrees.common.PrettyPrinter;
+import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
@@ -65,7 +65,7 @@ public class ConcurrentRadixTreeTest {
                 "            │   └── ○ A (6)\n" +
                 "            └── ○ DANA (4)\n";
 
-        String actual = PrettyPrinter.prettyPrint(wrapNodeForPrinting(root));
+        String actual = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root));
         assertEquals(expected, actual);
     }
 
@@ -76,7 +76,7 @@ public class ConcurrentRadixTreeTest {
         String expected =
                 "○\n" +
                 "└── ○ A (1)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -89,7 +89,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "├── ○ A (2)\n" +
                 "└── ○ B (1)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -103,7 +103,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -117,7 +117,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (2)\n" +
                 "    └── ○ BAR (1)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -132,7 +132,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO\n" + // We never explicitly inserted FOO
                 "    ├── ○ BAR (1)\n" +
                 "    └── ○ D (2)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -150,7 +150,7 @@ public class ConcurrentRadixTreeTest {
                 "    │   ├── ○ AM (2)\n" +
                 "    │   └── ○ ST (1)\n" +
                 "    └── ○ OAST (3)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -289,7 +289,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO (1)\n" +
                 "    ├── ○ BAR (2)\n" +
                 "    └── ○ D (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOO");
@@ -305,7 +305,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO\n" +
                 "    ├── ○ BAR (2)\n" +
                 "    └── ○ D (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -328,7 +328,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n" +
                 "        └── ○ BAZ (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOO");
@@ -342,7 +342,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "└── ○ FOOBAR (2)\n" +
                 "    └── ○ BAZ (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -361,7 +361,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "├── ○ BAR (2)\n" +
                 "└── ○ FOO (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOO");
@@ -373,7 +373,7 @@ public class ConcurrentRadixTreeTest {
         expected =
                 "○\n" +
                 "└── ○ BAR (2)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -389,7 +389,7 @@ public class ConcurrentRadixTreeTest {
         expected =
                 "○\n" +
                 "└── ○ FOO (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOO");
@@ -399,7 +399,7 @@ public class ConcurrentRadixTreeTest {
 
         expected =
                 "○\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -419,7 +419,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOOBAR");
@@ -431,7 +431,7 @@ public class ConcurrentRadixTreeTest {
         expected =
                 "○\n" +
                 "└── ○ FOO (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -454,7 +454,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n" +
                 "        └── ○ BAZ (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOOBARBAZ");
@@ -468,7 +468,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -490,7 +490,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO\n" +
                 "    ├── ○ BAR (1)\n" +
                 "    └── ○ D (2)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("FOO");
@@ -501,7 +501,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ FOO\n" +             // we expect no change
                 "    ├── ○ BAR (1)\n" +
                 "    └── ○ D (2)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -520,7 +520,7 @@ public class ConcurrentRadixTreeTest {
                 "    │   ├── ○ AM (2)\n" +
                 "    │   └── ○ ST (1)\n" +
                 "    └── ○ OAST (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("TEST");
@@ -531,7 +531,7 @@ public class ConcurrentRadixTreeTest {
                 "└── ○ T\n" +
                 "    ├── ○ EAM (2)\n" +
                 "    └── ○ OAST (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         System.out.println(actual);
@@ -553,7 +553,7 @@ public class ConcurrentRadixTreeTest {
                 "    │   ├── ○ AM (2)\n" +
                 "    │   └── ○ ST (1)\n" +
                 "    └── ○ OAST (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("TEST");
@@ -565,7 +565,7 @@ public class ConcurrentRadixTreeTest {
                 "    ├── ○ E (4)\n" +
                 "    │   └── ○ AM (2)\n" +
                 "    └── ○ OAST (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         System.out.println(actual);
@@ -582,7 +582,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +
                 "├── ○ BAR (2)\n" +
                 "└── ○ FOO (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("BAZ");
@@ -592,7 +592,7 @@ public class ConcurrentRadixTreeTest {
                 "○\n" +                     // we expect no change
                 "├── ○ BAR (2)\n" +
                 "└── ○ FOO (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -747,7 +747,7 @@ public class ConcurrentRadixTreeTest {
                 "            │   └── ○ A (6)\n" +
                 "            └── ○ DANA (4)\n";
         
-        assertEquals(expected, PrettyPrinter.prettyPrint(tree));
+        assertEquals(expected, PrettyPrintUtil.prettyPrint(tree));
         assertEquals(2, n3.getOutgoingEdges().size());
         assertTrue(n3.getOutgoingEdges().contains(n4));
         assertTrue(n3.getOutgoingEdges().contains(n5));

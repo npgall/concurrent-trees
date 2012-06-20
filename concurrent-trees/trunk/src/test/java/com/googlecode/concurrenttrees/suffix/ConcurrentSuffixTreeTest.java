@@ -1,7 +1,7 @@
 package com.googlecode.concurrenttrees.suffix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
-import com.googlecode.concurrenttrees.common.PrettyPrinter;
+import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
@@ -54,7 +54,7 @@ public class ConcurrentSuffixTreeTest {
                 "├── ○ BANANA ([BANANA])\n" +
                 "└── ○ NA ([BANANA])\n" +
                 "    └── ○ NA ([BANANA])\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -114,7 +114,7 @@ public class ConcurrentSuffixTreeTest {
                 "    ├── ○ A ([BANANA, BANDANA])\n" +
                 "    │   └── ○ NA ([BANANA])\n" +
                 "    └── ○ DANA ([BANDANA])\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -132,7 +132,7 @@ public class ConcurrentSuffixTreeTest {
                 "├── ○ BANANA ([BANANA])\n" +
                 "└── ○ NA ([BANANA])\n" +
                 "    └── ○ NA ([BANANA])\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
         assertEquals(Integer.valueOf(2), tree.getValueForExactKey("BANANA"));
     }
@@ -151,7 +151,7 @@ public class ConcurrentSuffixTreeTest {
                 "├── ○ BANANA ([BANANA])\n" +
                 "└── ○ NA ([BANANA])\n" +
                 "    └── ○ NA ([BANANA])\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
         assertEquals(Integer.valueOf(1), tree.getValueForExactKey("BANANA"));
     }
@@ -179,7 +179,7 @@ public class ConcurrentSuffixTreeTest {
                 "    ├── ○ A ([BANANA, BANDANA])\n" +
                 "    │   └── ○ NA ([BANANA])\n" +
                 "    └── ○ DANA ([BANDANA])\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("BANDANA");
@@ -193,7 +193,7 @@ public class ConcurrentSuffixTreeTest {
                 "├── ○ BANANA ([BANANA])\n" +
                 "└── ○ NA ([BANANA])\n" +
                 "    └── ○ NA ([BANANA])\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
         assertNull(tree.getValueForExactKey("BANDANA"));
     }
@@ -221,7 +221,7 @@ public class ConcurrentSuffixTreeTest {
                 "    ├── ○ A ([BANANA, BANDANA])\n" +
                 "    │   └── ○ NA ([BANANA])\n" +
                 "    └── ○ DANA ([BANDANA])\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("BANANA");
@@ -238,7 +238,7 @@ public class ConcurrentSuffixTreeTest {
                 "└── ○ N\n" +
                 "    ├── ○ A ([BANDANA])\n" +
                 "    └── ○ DANA ([BANDANA])\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
         assertNull(tree.getValueForExactKey("BANANA"));
     }
@@ -266,13 +266,13 @@ public class ConcurrentSuffixTreeTest {
                 "    ├── ○ A ([BANANA, BANDANA])\n" +
                 "    │   └── ○ NA ([BANANA])\n" +
                 "    └── ○ DANA ([BANDANA])\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         boolean removed = tree.remove("APPLE");
         assertFalse(removed);
 
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 

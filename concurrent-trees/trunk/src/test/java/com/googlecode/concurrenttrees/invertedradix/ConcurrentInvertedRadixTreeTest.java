@@ -1,9 +1,11 @@
 package com.googlecode.concurrenttrees.invertedradix;
 
-import com.googlecode.concurrenttrees.common.PrettyPrinter;
+import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
 import org.junit.Test;
+
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +27,7 @@ public class ConcurrentInvertedRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 

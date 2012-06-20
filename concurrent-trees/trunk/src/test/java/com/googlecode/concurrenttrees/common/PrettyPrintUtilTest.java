@@ -1,8 +1,10 @@
 package com.googlecode.concurrenttrees.common;
 
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import junit.framework.TestCase;
 import org.junit.Assert;
@@ -14,7 +16,7 @@ import java.util.Collections;
 /**
  * @author Niall Gallagher
  */
-public class PrettyPrinterTest extends TestCase {
+public class PrettyPrintUtilTest extends TestCase {
 
     @Test
     public void testPrettyPrint() throws Exception {
@@ -28,7 +30,7 @@ public class PrettyPrinterTest extends TestCase {
                 "            │   └── ○ A (6)\n" +
                 "            └── ○ DANA (4)\n";
 
-        String actual1 = PrettyPrinter.prettyPrint(wrapNodeForPrinting(root));
+        String actual1 = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root));
         Assert.assertEquals(expected1, actual1);
 
         String expected2 =
@@ -39,7 +41,7 @@ public class PrettyPrinterTest extends TestCase {
                 "        │   └── ○ A (6)\n" +
                 "        └── ○ DANA (4)\n";
 
-        String actual2 = PrettyPrinter.prettyPrint(wrapNodeForPrinting(root.getOutgoingEdge('B')));
+        String actual2 = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root.getOutgoingEdge('B')));
         Assert.assertEquals(expected2, actual2);
     }
 
@@ -77,6 +79,6 @@ public class PrettyPrinterTest extends TestCase {
 
     @Test
     public void testConstructor() {
-        assertNotNull(new PrettyPrinter());
+        assertNotNull(new PrettyPrintUtil());
     }
 }

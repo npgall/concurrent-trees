@@ -1,6 +1,6 @@
 package com.googlecode.concurrenttrees.reverseradix;
 
-import com.googlecode.concurrenttrees.common.PrettyPrinter;
+import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class ConcurrentReverseRadixTreeTest {
                 "└── ○ TS\n" +
                 "    ├── ○ AOT (3)\n" +
                 "    └── ○ ET (1)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -55,7 +55,7 @@ public class ConcurrentReverseRadixTreeTest {
                 "└── ○ TS\n" +
                 "    ├── ○ AOT (3)\n" +
                 "    └── ○ ET (1)\n";
-        String actual = PrettyPrinter.prettyPrint(tree);
+        String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
@@ -112,7 +112,7 @@ public class ConcurrentReverseRadixTreeTest {
                 "└── ○ TS\n" +
                 "    ├── ○ AOT (3)\n" +
                 "    └── ○ ET (1)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
 
         tree.remove("TEST");
@@ -121,7 +121,7 @@ public class ConcurrentReverseRadixTreeTest {
                 "○\n" +
                 "├── ○ MAET (2)\n" +
                 "└── ○ TSAOT (3)\n";
-        actual = PrettyPrinter.prettyPrint(tree);
+        actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 
