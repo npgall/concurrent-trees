@@ -93,6 +93,15 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      */
     @Override
     public O put(CharSequence key, O value) {
+        if (key == null) {
+            throw new IllegalArgumentException("The key argument was null");
+        }
+        if (key.length() == 0) {
+            throw new IllegalArgumentException("The key argument was zero-length");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("The value argument was null");
+        }
         radixTree.acquireWriteLock();
         try {
             // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
@@ -322,7 +331,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         }
         return results;
     }
-
+    
     /**
      * Utility method to add a value to the set if the value is not null.
      * Logic is factored out to this method to support unit testing where value is only null if race conditions occur.

@@ -23,24 +23,11 @@ import java.util.Collections;
 /**
  * @author Niall Gallagher
  */
-public class DefaultNodeFactoryTest {
-
-
-    @Test(expected = IllegalStateException.class)
-    public void testCreateNode_NullEdge() throws Exception {
-        //noinspection NullableProblems
-        new DefaultNodeFactory().createNode(null, 1, Collections.<Node>emptyList(), false);
-    }
+public class NaiveCharArrayNodeTest {
 
     @Test(expected = IllegalStateException.class)
-    public void testCreateNode_EmptyEdgeNonRoot() throws Exception {
-        //noinspection NullableProblems
-        new DefaultNodeFactory().createNode("", 1, Collections.<Node>emptyList(), false);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testCreateNode_NullEdges() throws Exception {
-        //noinspection NullableProblems
-        new DefaultNodeFactory().createNode("FOO", 1, null, false);
+    public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
+        Node node = new NaiveCharArrayNode("FOO", null, Collections.<Node>emptyList());
+        node.updateOutgoingEdge(new NaiveCharArrayNode("BAR", null, Collections.<Node>emptyList()));
     }
 }

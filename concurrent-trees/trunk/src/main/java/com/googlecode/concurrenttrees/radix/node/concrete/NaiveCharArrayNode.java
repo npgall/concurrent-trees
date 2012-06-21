@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  *
  * @author Niall Gallagher
  */
-public class DefaultNode implements Node {
+public class NaiveCharArrayNode implements Node {
 
 
     // Characters in the edge arriving at this node from a parent node.
@@ -65,7 +65,7 @@ public class DefaultNode implements Node {
     // This value can be null...
     private final Object value;
 
-    DefaultNode(CharSequence edgeCharSequence, Object value, List<Node> outgoingEdges) {
+    NaiveCharArrayNode(CharSequence edgeCharSequence, Object value, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[outgoingEdges.size()]);
         // Sort the child nodes...
         Arrays.sort(childNodeArray, new NodeCharacterComparator());

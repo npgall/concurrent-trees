@@ -19,7 +19,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  */
 public class ConcurrentRadixTreeTest {
 
-    private final NodeFactory nodeFactory = new DefaultNodeFactory();
+    private final NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
 
     @Test
     public void testBuildTreeByHand() {
@@ -221,6 +221,13 @@ public class ConcurrentRadixTreeTest {
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
         //noinspection NullableProblems
         tree.put("FOO", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPutInternal_ArgumentValidation3() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        //noinspection NullableProblems
+        tree.put("", 1);
     }
 
     @Test(expected = IllegalStateException.class)

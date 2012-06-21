@@ -15,19 +15,19 @@
  */
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
+import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 
 import java.util.List;
 
 /**
- * A basic implementation of {@link NodeFactory} which creates {@link DefaultNode} objects.
+ * A basic implementation of {@link com.googlecode.concurrenttrees.radix.node.NodeFactory} which creates {@link NaiveCharArrayNode} objects.
  *
  * @author Niall Gallagher
  */
-public class DefaultNodeFactory implements NodeFactory {
+public class NaiveCharSequenceNodeFactory implements NodeFactory {
 
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
@@ -42,7 +42,7 @@ public class DefaultNodeFactory implements NodeFactory {
         }
         NodeUtil.ensureNoDuplicateEdges(childNodes);
 
-        return new DefaultNode(edgeCharacters, value, childNodes);
+        return new NaiveCharSequenceNode(edgeCharacters, value, childNodes);
     }
 
 }
