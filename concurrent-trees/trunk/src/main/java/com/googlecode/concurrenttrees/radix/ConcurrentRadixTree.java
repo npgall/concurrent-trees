@@ -358,6 +358,9 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         if (key == null) {
             throw new IllegalArgumentException("The key argument was null");
         }
+        if (key.length() == 0) {
+            throw new IllegalArgumentException("The key argument was zero-length");
+        }
         if (value == null) {
             throw new IllegalArgumentException("The value argument was null");
         }

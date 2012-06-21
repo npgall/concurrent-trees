@@ -19,7 +19,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
  */
 public class ConcurrentSuffixTreeTest {
 
-    private final NodeFactory nodeFactory = new DefaultNodeFactory();
+    private final NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
 
     @Test
     public void testPut_SingleKey() throws Exception {
@@ -169,6 +169,27 @@ public class ConcurrentSuffixTreeTest {
         String actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
         assertEquals(Integer.valueOf(1), tree.getValueForExactKey("BANANA"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPut_ArgumentValidation1() {
+        ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
+        //noinspection NullableProblems
+        tree.put(null, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPut_ArgumentValidation2() {
+        ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
+        //noinspection NullableProblems
+        tree.put("FOO", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPut_ArgumentValidation3() {
+        ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
+        //noinspection NullableProblems
+        tree.put("", 1);
     }
 
     @Test

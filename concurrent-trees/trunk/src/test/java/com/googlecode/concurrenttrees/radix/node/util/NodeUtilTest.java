@@ -17,7 +17,7 @@ package com.googlecode.concurrenttrees.radix.node.util;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class NodeUtilTest {
     @Test
     @SuppressWarnings({"NullableProblems"})
     public void testBinarySearchForEdge() throws Exception {
-        NodeFactory nodeFactory = new DefaultNodeFactory();
+        NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
         Node[] nodes = new Node[] {
                 nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
                 nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
@@ -50,7 +50,7 @@ public class NodeUtilTest {
     @Test
     @SuppressWarnings({"NullableProblems"})
     public void testEnsureNoDuplicateEdges_Positive() throws Exception {
-        NodeFactory nodeFactory = new DefaultNodeFactory();
+        NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
         List<Node> nodes = Arrays.asList(
                 nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
                 nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
@@ -61,7 +61,7 @@ public class NodeUtilTest {
     @Test
     @SuppressWarnings({"NullableProblems"})
     public void testEnsureNoDuplicateEdges_Negative() throws Exception {
-        NodeFactory nodeFactory = new DefaultNodeFactory();
+        NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
         List<Node> nodes = Arrays.asList(
                 nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
                 nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),

@@ -17,7 +17,7 @@ package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  */
 public class ConcurrentReversedRadixTreeTest {
 
-    private final NodeFactory nodeFactory = new DefaultNodeFactory();
+    private final NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
 
     @Test
     public void testGet() throws Exception {
