@@ -1,4 +1,4 @@
-# Output from:
+# Output from: src/test/java/com/googlecode/concurrenttrees/examples/shakespeare/FindLongestCommonSubstring.java
 
 Building suffix tree...
 Added manuscript: antony_and_cleopatra
