@@ -9,6 +9,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Finds the longest common substring in a collection of documents.
+ * See <a href="http://en.wikipedia.org/wiki/Longest_common_substring_problem">Longest common substring problem</a>.
+ * <p/>
+ * This class internally extends {@link ConcurrentRadixTree} and combines it with elements from
+ * {@link com.googlecode.concurrenttrees.suffix.ConcurrentSuffixTree}, but implements its own traversal algorithm.
+ *
  * @author Niall Gallagher
  */
 public class LCSubstringSolver {
@@ -38,10 +44,102 @@ public class LCSubstringSolver {
         protected void traverseDescendants(CharSequence startKey, Node startNode, NodeKeyPairHandler nodeHandler) {
             super.traverseDescendants(startKey, startNode, nodeHandler);
         }
+
+        /**
+         * The main algorithm to find the longest common substring.
+         * <ol>
+         *     <li>
+         *         Traverses all nodes in the suffix tree
+         *     </li>
+         *     <li>
+         *         For each node checks if the path from the root via edges to that node is
+         *         longer than the longest common substring encountered so far (and so is a candidate)
+         *     </li>
+         *     <li>
+         *         Calls helper method {@link #subTreeReferencesAllOriginalDocuments(CharSequence, Node)},
+         *         supplying the candidate node. That method returns true if nodes in the sub-tree descending from
+         *         that node collectively references all of the original documents added to the solver
+         *     </li>
+         *     <li>
+         *         If the nodes in the sub-tree do collectively reference all documents, then
+         *         the path from root to the current node is a substring of all documents
+         *     </li>
+         *     <li>
+         *         Updates the longest common substring encountered so far if the conditions above hold for the
+         *         current node
+         *     </li>
+         *     <li>
+         *         Continues traversing the tree until all nodes have been checked
+         *     </li>
+         * </ol>
+         * Implementation note: Method {@link #subTreeReferencesAllOriginalDocuments(CharSequence, Node)} will
+         * stop traversal early if it finds all original documents early. This method currently does not apply a similar
+         * optimization, and will actually descend into and apply the same tests to branches which the helper method
+         * already indicated are dead-ends(!). Future work might be to use this knowledge, skip dead-end branches, but
+         * it would involve not using any of the traversal logic from superclasses and overriding it all here for this
+         * one use case.
+         *
+         * @return The longest common substring
+         */
+        CharSequence getLongestCommonSubstring() {
+            Node root = suffixTree.getNode();
+            final CharSequence[] longestCommonSubstringSoFar = new CharSequence[] {""};
+            final int[] longestCommonSubstringSoFarLength = new int[] {0};
+            suffixTree.traverseDescendants("", root, new ConcurrentSuffixTreeImpl.NodeKeyPairHandler() {
+                @Override
+                public boolean handle(ConcurrentRadixTree.NodeKeyPair nodeKeyPair) {
+                    if (nodeKeyPair.key.length() > longestCommonSubstringSoFarLength[0]
+                        && subTreeReferencesAllOriginalDocuments(nodeKeyPair.key, nodeKeyPair.node)) {
+                        longestCommonSubstringSoFarLength[0] = nodeKeyPair.key.length();
+                        longestCommonSubstringSoFar[0] = nodeKeyPair.key;
+                    }
+                    // Continue traversal...
+                    return true;
+                }
+            });
+            return longestCommonSubstringSoFar[0];
+        }
+
+        /**
+         * Returns true if the given node and its descendants collectively reference all original documents added to
+         * the solver.
+         * <p/>
+         * This method will traverse the entire sub-tree until it has encountered all of the original documents. If
+         * it encounters all of the original documents early, before exhausting all nodes, returns early.
+         *
+         * @param startKey The key associated with the start node (concatenation of edges from root leading to it)
+         * @param startNode The root of the sub-tree to traverse
+         * @return True if the given node and its descendants collectively reference all original documents added to
+         * the solver, false if the sub-tree does not reference all documents added to the solver
+         */
+        boolean subTreeReferencesAllOriginalDocuments(CharSequence startKey, Node startNode) {
+            final Set<String> documentsEncounteredSoFar = new HashSet<String>(originalDocuments.size());
+            final boolean[] result = new boolean[] {false};
+            traverseDescendants(startKey, startNode, new ConcurrentSuffixTreeImpl.NodeKeyPairHandler() {
+                @Override
+                public boolean handle(NodeKeyPair nodeKeyPair) {
+                    @SuppressWarnings({"unchecked"})
+                    Set<String> documentsReferencedByThisNode = (Set<String>) nodeKeyPair.node.getValue();
+                    if (documentsReferencedByThisNode != null) {
+                        documentsEncounteredSoFar.addAll(documentsReferencedByThisNode);
+                        if (documentsEncounteredSoFar.equals(originalDocuments)) {
+                            // We have now found all of the original documents
+                            // referenced from descendants of the start node...
+                            result[0] = true;
+                            // Stop traversal...
+                            return false;
+                        }
+                    }
+                    // Continue traversal...
+                    return true;
+                }
+            });
+            return result[0];
+        }
     }
 
-    private final ConcurrentSuffixTreeImpl<Set<String>> suffixTree;
-    private final Set<String> originalDocuments;
+    final ConcurrentSuffixTreeImpl<Set<String>> suffixTree;
+    final Set<String> originalDocuments;
 
     /**
      * Creates a new {@link LCSubstringSolver} which will use the given {@link NodeFactory} to create nodes.
@@ -72,9 +170,9 @@ public class LCSubstringSolver {
     }
 
     /**
-     * Adds a {@link CharSequence} document to the suffix tree.
+     * Adds a {@link CharSequence} document to the solver.
      *
-     * @param document The {@link CharSequence} to add to the suffix tree
+     * @param document The {@link CharSequence} to add to the solver
      * @return True if the document was added, false if it was not because it had been added previously
      */
     public boolean add(CharSequence document) {
@@ -116,22 +214,15 @@ public class LCSubstringSolver {
         }
     }
 
+    /**
+     * Finds the longest common substring in the documents added to the solver so far.
+     *
+     * @return The longest common substring
+     */
     public CharSequence getLongestCommonSubstring() {
-        throw new UnsupportedOperationException("Not implemented");
+        return suffixTree.getLongestCommonSubstring();
     }
 
-    /**
-     * Creates a new {@link Set} in which original keys from which a suffix was generated can be stored.
-     * <p/>
-     * By default this method creates a new concurrent set based on {@link ConcurrentHashMap}.
-     * <p/>
-     * Subclasses could override this method to create an alternative set.
-     * <p/>
-     * Specifically it is expected that this would be useful in unit tests,
-     * where sets with consistent iteration order would be useful.
-     *
-     * @return A new {@link Set} in which original keys from which a suffix was generated can be stored
-     */
     protected Set<String> createSetForOriginalKeys() {
         return Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     }

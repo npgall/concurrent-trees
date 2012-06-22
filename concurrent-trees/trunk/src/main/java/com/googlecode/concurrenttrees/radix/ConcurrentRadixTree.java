@@ -684,10 +684,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * Encapsulates a node and its associated key. Used internally by {@link #traverseDescendants}.
      */
     protected static class NodeKeyPair {
-        protected final Node node;
-        protected final CharSequence key;
+        public final Node node;
+        public final CharSequence key;
 
-        protected NodeKeyPair(Node node, CharSequence key) {
+        public NodeKeyPair(Node node, CharSequence key) {
             this.node = node;
             this.key = key;
         }

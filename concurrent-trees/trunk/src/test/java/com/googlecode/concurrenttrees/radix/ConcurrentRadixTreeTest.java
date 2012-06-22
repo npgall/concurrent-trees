@@ -540,8 +540,6 @@ public class ConcurrentRadixTreeTest {
                 "    └── ○ OAST (3)\n";
         actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
-
-        System.out.println(actual);
     }
 
     @Test
@@ -574,8 +572,6 @@ public class ConcurrentRadixTreeTest {
                 "    └── ○ OAST (3)\n";
         actual = PrettyPrintUtil.prettyPrint(tree);
         assertEquals(expected, actual);
-
-        System.out.println(actual);
     }
 
     @Test
