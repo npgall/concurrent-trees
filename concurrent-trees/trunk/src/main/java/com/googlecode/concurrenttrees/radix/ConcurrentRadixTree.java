@@ -489,7 +489,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         final Set<CharSequence> keys = new LinkedHashSet<CharSequence>();
         traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
             @Override
-            public void handle(NodeKeyPair nodeKeyPair) {
+            public boolean handle(NodeKeyPair nodeKeyPair) {
                 Object value = nodeKeyPair.node.getValue();
                 if (value != null) {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
@@ -503,6 +503,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
                     keys.add(keyString);
                 }
+                return true;
             }
         });
         return keys;
@@ -517,7 +518,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         final Set<O> values = new LinkedHashSet<O>();
         traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
             @Override
-            public void handle(NodeKeyPair nodeKeyPair) {
+            public boolean handle(NodeKeyPair nodeKeyPair) {
                 Object value = nodeKeyPair.node.getValue();
                 if (value != null) {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
@@ -530,6 +531,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     O valueTyped = (O)value;
                     values.add(valueTyped);
                 }
+                return true;
             }
         });
         return values;
@@ -548,7 +550,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         final Set<KeyValuePair<O>> keyValuePairs = new LinkedHashSet<KeyValuePair<O>>();
         traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
             @Override
-            public void handle(NodeKeyPair nodeKeyPair) {
+            public boolean handle(NodeKeyPair nodeKeyPair) {
                 Object value = nodeKeyPair.node.getValue();
                 if (value != null) {
                     // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
@@ -562,6 +564,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
                     keyValuePairs.add(new KeyValuePairImpl<O>(keyString, value));
                 }
+                return true;
             }
         });
         return keyValuePairs;
@@ -653,14 +656,18 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      *
      * @param startKey The key which matches the given start node
      * @param startNode The start node
-     * @param nodeHandler An object which does something with each encountered node
+     * @param nodeHandler An object which does something with each encountered node, and which can indicate if traversal
+     * should continue or stop
      */
-    void traverseDescendants(CharSequence startKey, Node startNode, NodeKeyPairHandler nodeHandler) {
+    protected void traverseDescendants(CharSequence startKey, Node startNode, NodeKeyPairHandler nodeHandler) {
         Deque<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
         stack.push(new NodeKeyPair(startNode, startKey));
         while (!stack.isEmpty()) {
             NodeKeyPair current = stack.pop();
-            nodeHandler.handle(current);
+            boolean continueTraversal = nodeHandler.handle(current);
+            if (!continueTraversal) {
+                return;
+            }
             List<Node> childNodes = current.node.getOutgoingEdges();
 
             // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
@@ -676,11 +683,11 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     /**
      * Encapsulates a node and its associated key. Used internally by {@link #traverseDescendants}.
      */
-    static class NodeKeyPair {
-        final Node node;
-        final CharSequence key;
+    protected static class NodeKeyPair {
+        protected final Node node;
+        protected final CharSequence key;
 
-        NodeKeyPair(Node node, CharSequence key) {
+        protected NodeKeyPair(Node node, CharSequence key) {
             this.node = node;
             this.key = key;
         }
@@ -690,8 +697,12 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * Interface implemented by methods which call {@link #traverseDescendants}, implementing some action to perform
      * for each node encountered.
      */
-    interface NodeKeyPairHandler {
-        void handle(NodeKeyPair nodeKeyPair);
+    protected interface NodeKeyPairHandler {
+        /**
+         * @param nodeKeyPair The node-key pair to handle
+         * @return True if traversal should continue, false if it should stop
+         */
+        boolean handle(NodeKeyPair nodeKeyPair);
     }
 
     /**
