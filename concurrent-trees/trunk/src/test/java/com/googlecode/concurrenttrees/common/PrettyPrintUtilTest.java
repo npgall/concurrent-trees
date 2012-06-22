@@ -23,16 +23,17 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
 /**
  * @author Niall Gallagher
  */
-public class PrettyPrintUtilTest extends TestCase {
+public class PrettyPrintUtilTest {
 
     @Test
-    public void testPrettyPrint() throws Exception {
+    public void testPrettyPrint_ToString() throws Exception {
         Node root = getHandBuiltTestTree();
         String expected1 =
                 "○\n" +
@@ -56,6 +57,45 @@ public class PrettyPrintUtilTest extends TestCase {
 
         String actual2 = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root.getOutgoingEdge('B')));
         Assert.assertEquals(expected2, actual2);
+    }
+
+    @Test
+    public void testPrettyPrint_ToAppendable() throws Exception {
+        Node root = getHandBuiltTestTree();
+        String expected1 =
+                "○\n" +
+                "└── ○ B (1)\n" +
+                "    └── ○ A (2)\n" +
+                "        └── ○ N (3)\n" +
+                "            ├── ○ AN (5)\n" +
+                "            │   └── ○ A (6)\n" +
+                "            └── ○ DANA (4)\n";
+
+        StringBuilder appendable = new StringBuilder();
+        PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root), appendable);
+        Assert.assertEquals(expected1, appendable.toString());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testPrettyPrint_WrapIOException() {
+        Node root = getHandBuiltTestTree();
+        Appendable appendable = new Appendable() {
+            @Override
+            public Appendable append(CharSequence csq) throws IOException {
+                throw new IOException("Intentional exception");
+            }
+
+            @Override
+            public Appendable append(CharSequence csq, int start, int end) throws IOException {
+                throw new IOException("Intentional exception");
+            }
+
+            @Override
+            public Appendable append(char c) throws IOException {
+                throw new IOException("Intentional exception");
+            }
+        };
+        PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root), appendable);
     }
 
     static Node getHandBuiltTestTree() {
@@ -92,6 +132,6 @@ public class PrettyPrintUtilTest extends TestCase {
 
     @Test
     public void testConstructor() {
-        assertNotNull(new PrettyPrintUtil());
+        Assert.assertNotNull(new PrettyPrintUtil());
     }
 }
