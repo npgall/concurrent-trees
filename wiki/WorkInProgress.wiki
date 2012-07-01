@@ -1,0 +1,10 @@
+_"A tree is a tree. How many more do you have to look at?"_ -- Ronald Reagan
+
+= Concurrent Trees =
+
+This project provides implementations of concurrent [http://en.wikipedia.org/wiki/Radix_tree Radix Trees] and concurrent [http://en.wikipedia.org/wiki/Suffix_tree Suffix Trees] for Java.
+
+A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying a _prefix_ of the key rather than the whole key. This basic concept makes radix trees useful for:
+  # Associating values with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
+  # Scanning documents for large numbers of keywords in a scalable way (i.e. faster than naively running document.contains("keyword") for every keyword)
+  # Building indexes on documents (or associated objects) for subsequent retrieval via "starts with", "ends with" or "equals" queries
