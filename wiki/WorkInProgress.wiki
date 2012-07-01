@@ -4,9 +4,11 @@ _"A tree is a tree. How many more do you have to look at?"_ -- Ronald Reagan
 
 This project provides implementations of concurrent [http://en.wikipedia.org/wiki/Radix_tree Radix Trees] and concurrent [http://en.wikipedia.org/wiki/Suffix_tree Suffix Trees] for Java.
 
-A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying a _prefix_ of the key rather than the whole key. This makes radix trees useful for:
-  # Associating values with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
-  # Scanning documents for large numbers of keywords in a scalable way (i.e. faster than naively running document.contains("keyword") for every keyword)
-  # Building indexes on documents (or associated objects) for subsequent retrieval via "starts with", "ends with" or "equals" queries
+A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying a _prefix_ of the key rather than the whole key. Radix trees can be used to:
+  # Associate values with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
+  # Scan documents for large numbers of keywords in a scalable way (i.e. faster than naively running document.contains("keyword") for every keyword)
+  # Build indexes on documents (or associated objects) for subsequent retrieval via "starts with", "ends with" or "equals" queries
 
-A *Suffix Tree* (also known as PAT tree or position tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying any suffix of the key rather than the whole key. Suffix trees support building indexes on documents for subsequent retrieval via "ends with" or "contains" queries, but importantly they also support more complex analysis of a collections of documents.
+A *Suffix Tree* (also known as PAT tree or position tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying any _suffix_ of the key rather than the whole key. Suffix trees can be used to:
+  # Build indexes on documents for subsequent retrieval via "ends with" or "contains" queries
+  # Perform more complex analyses of collections of documents, such as finding common substrings
