@@ -25,7 +25,7 @@ As such reading threads should never encounter latency due to ongoing writes or 
 == Architecture and Concurrency Mechanism ==
 All of the trees in this project (derivatives of the Radix Tree, the Suffix Tree, and derivatives of the Suffix Tree) are based on the implementation of the Concurrent Radix Tree.
 
-The Concurrent Radix Tree supports lock-free reads while allowing concurrent writes, by _calculating the changes which would be made to the tree were it mutable_, and assembling those changes as a *patch*, which is then applied to the tree in a *single atomic operation*.
+The Concurrent Radix Tree supports lock-free reads while allowing concurrent writes, by _calculating the changes which would be made to the tree were it mutable_, and assembling those changes into a *patch*, which is then applied to the tree in a *single atomic operation*.
 
 ===Atomic updates by patching the tree===
 Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
