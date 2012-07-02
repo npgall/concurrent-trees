@@ -22,10 +22,17 @@ All of the trees (data structures and algorithms) in this project are optimized 
 
 As such reading threads should never encounter latency due to ongoing writes or other concurrent readers.
 
-==Architecture==
+== Architecture and Concurrency Mechanism ==
 All of the trees in this project (derivatives of the Radix Tree, the Suffix Tree, and derivatives of the Suffix Tree) are based on the implementation of the Concurrent Radix Tree.
 
-The Concurrent Radix Tree is designed as follows:
+The Concurrent Radix Tree supports lock-free reads while allowing concurrent writes, by _calculating the changes which would be made to the tree were it mutable_, and assembling those changes as a *patch*, which is then applied to the tree in a *single atomic operation*.
+
+===Atomic updates by patching the tree===
+Inserting an entry into Concurrent Radix Tree which requires existing nodes within the tree to be split.
+[http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
+
+===Restrictions on Mutability===
+To support atomicity of updates as above, nodes in the tree have the following restrictions in their design:
   * Nodes are _mostly-immutable_
   * The characters for an incoming "edge" to a node (a reference from a parent node to a child node which has some characters of a key associated with it) are stored in the child node rather than a dedicated Edge object
   * The incoming edge to a node is immutable (the characters of an edge represented by a child node can never be changed in that child node)
@@ -35,7 +42,6 @@ The Concurrent Radix Tree is designed as follows:
     * The only _mutable_ aspect of a node is that a reference to its child node for an _existing_ outgoing edge as identified by the first character of that edge, can be updated to point to a new child node, as long as the edge of the new child node starts with the same first character
   * Updating the child node reference for an existing edge is an atomic operation
 
-The "rules" above allow updates to be applied to the tree _*atomically*_ by applying a pre-assembled _*patch*_ to the tree. The rules also ensure that any patch to be applied to the tree, is itself fully formed and immutable.
+The restrictions above allow updates to be applied _*atomically*_ by applying a pre-assembled _*patch*_, and they also ensure that any patch to be applied to the tree, is itself fully formed and immutable.
 
-===Atomic updates by patching the tree===
-[http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
+Strictly speaking, some of the restrictions above are _not_ required for the atomicity aspect, but are in the design to reduce memory overhead, as discussed later.
