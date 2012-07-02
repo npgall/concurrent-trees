@@ -64,3 +64,14 @@ Tree implementations and lookup operations supported.
 Utilities included which solve problems using the included trees.
 || *Solver* || *Solves* ||
 ||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html LCSubstringSolver]||[http://en.wikipedia.org/wiki/Longest_common_substring_problem Longest common substring problem]||
+
+== Links ==
+
+  * [http://mobility-rpc.googlecode.com/svn/concurrent-trees/javadoc/apidocs/index.html JavaDocs]
+  * [http://groups.google.com/group/concurrent-trees-discuss Discussion Group]
+
+== Project Status ==
+
+The trees in this project should be considered _beta_ software - they have 100% test coverage but they are still new and have not been tested in a production environment.
+
+More documentation coming soon. Also soon: the trees will be deployed as a library to Maven central.
