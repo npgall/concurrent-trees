@@ -24,12 +24,12 @@ As such reading threads should never encounter latency due to ongoing writes or 
 
 == Tree Design ==
 
-The Concurrent Radix Tree supports lock-free reads while allowing concurrent writes, by _calculating the changes which would be made to the tree were it mutable_, and assembling those changes into a *patch*, which is then applied to the tree in a *single atomic operation*.
+The trees in this project support lock-free reads while allowing concurrent writes, by _calculating the changes to be made to the tree_, and assembling those changes into a *patch*, which is then applied to the tree in a *single atomic operation*.
 
 Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
 [http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
 
-Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. See ConcurrentTreesArchitecture for more details.
+Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see ConcurrentTreesArchitecture.
 
 == Tree Implementations ==
 Tree implementations and lookup operations supported.
