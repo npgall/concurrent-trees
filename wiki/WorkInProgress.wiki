@@ -29,7 +29,7 @@ The trees in this project support lock-free reads while allowing concurrent writ
 Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
 [http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
 
-Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see ConcurrentTreesArchitecture.
+Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see TreeDesign.
 
 == Tree Implementations ==
 Tree implementations and lookup operations supported.
