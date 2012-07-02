@@ -1,0 +1,61 @@
+#labels Deprecated
+_"A tree is a tree. How many more do you have to look at?"_
+
+-- Ronald Reagan
+
+= Concurrent Trees =
+
+This project provides concurrent [http://en.wikipedia.org/wiki/Radix_tree Radix Trees] and concurrent [http://en.wikipedia.org/wiki/Suffix_tree Suffix Trees] for Java.
+
+A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying a _prefix_ of the key rather than the whole key. Radix trees can be used to:
+  # Associate values with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
+  # Scan documents for large numbers of keywords in a scalable way (i.e. faster than naively running document.contains("keyword") for every keyword)
+  # Build indexes on documents (or associated objects) for subsequent retrieval via "starts with", "ends with" or "equals" queries
+
+A *Suffix Tree* (also known as PAT tree or position tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying any _suffix_ of the key rather than the whole key. Suffix trees can be used to:
+  # Build indexes on documents for subsequent retrieval via "ends with" or "contains" queries
+  # Perform more complex analyses of collections of documents, such as finding common substrings
+The implementation in this project is actually a [http://en.wikipedia.org/wiki/Generalized_suffix_tree Generalized Suffix Tree].
+
+=== Concurrency Support ===
+All of the trees (data structures and algorithms) in this project are optimized for *high-concurrency and high performance reads*, and *low-concurrency or background writes*:
+  * Reads are _lock-free_ (reading threads never block, even while writes are ongoing)
+  * Reading threads always see a consistent _version_ of the tree
+  * Reading threads do not block writing threads
+  * Writing threads block each other but never block reading threads
+
+As such reading threads should never encounter latency due to ongoing writes or other concurrent readers.
+
+== Tree Design ==
+
+The trees in this project support lock-free reads while allowing concurrent writes, by treating the tree as a mostly-immutable structure, and assembling the changes to be made to the tree into a *patch*, which is then applied to the tree in a *single atomic operation*.
+
+Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
+[http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
+
+Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see TreeDesign.
+
+== Tree Implementations ==
+Tree implementations and lookup operations supported.
+|| *Tree Interface* || *Implementation* || *Key Equals (exact match)* || *Key Starts With* || *Key Ends With* || *Key Contains* || *Key Is Contained In (scan external document)* ||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/RadixTree.html RadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/ConcurrentRadixTree.html ConcurrentRadixTree]||✔||✔|| || || ||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ReversedRadixTree.html ReversedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ConcurrentReversedRadixTree.html ConcurrentReversedRadixTree]||✔|| ||✔|| || ||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/InvertedRadixTree.html InvertedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/ConcurrentInvertedRadixTree.html ConcurrentInvertedRadixTree]||✔|| || || ||✔||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/SuffixTree.html SuffixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/ConcurrentSuffixTree.html ConcurrentSuffixTree]||✔|| ||✔||✔|| ||
+
+== Solver Utilities ==
+
+Utilities included which solve problems using the included trees.
+|| *Solver* || *Solves* ||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html LCSubstringSolver]||[http://en.wikipedia.org/wiki/Longest_common_substring_problem Longest common substring problem]||
+
+== Links ==
+
+  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/index.html JavaDocs]
+  * [http://groups.google.com/group/concurrent-trees-discuss Discussion Group]
+
+== Project Status ==
+
+The trees in this project should be considered _beta_ software. They have full test coverage, but they are new, and have not yet been tested in a production environment.
+
+Coming soon: more documentation, and the trees will be deployed as a library to Maven central.
