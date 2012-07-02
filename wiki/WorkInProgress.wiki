@@ -12,3 +12,12 @@ A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree
 A *Suffix Tree* (also known as PAT tree or position tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying any _suffix_ of the key rather than the whole key. Suffix trees can be used to:
   # Build indexes on documents for subsequent retrieval via "ends with" or "contains" queries
   # Perform more complex analyses of collections of documents, such as finding common substrings
+
+===Concurrency===
+All of the trees (data structures and algorithms) in this project are optimized for *high-concurrency and high performance reads*, and *low-concurrency or background writes*:
+  * Reads are _lock-free_ (reading threads never block, even while writes are ongoing)
+  * Reading threads always see a consistent _version_ of the tree
+  * Reading threads do not block writing threads
+  * Writing threads block each other but never block reading threads
+
+As such reading threads should never encounter latency due to ongoing writes or other concurrent readers.
