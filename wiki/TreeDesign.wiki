@@ -1,4 +1,4 @@
-The design of trees in this project to support concurrent read/write access.
+The design of trees in this project to support concurrent lock-free reads with ongoing writes.
 
 == Architecture and Concurrency Mechanism ==
 All of the trees in this project (derivatives of the Radix Tree, the Suffix Tree, and derivatives of the Suffix Tree) are based on the implementation of the Concurrent Radix Tree.
