@@ -57,3 +57,10 @@ Tree implementations and lookup operations supported.
 ||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ReversedRadixTree.html ReversedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ConcurrentReversedRadixTree.html ConcurrentReversedRadixTree]||✔|| ||✔|| || ||
 ||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/InvertedRadixTree.html InvertedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/ConcurrentInvertedRadixTree.html ConcurrentInvertedRadixTree]||✔|| || || ||✔||
 ||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/SuffixTree.html SuffixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/ConcurrentSuffixTree.html ConcurrentSuffixTree]||✔|| ||✔||✔|| ||
+
+
+== Solver Utilities ==
+
+Utilities included which solve problems using the included trees.
+|| *Solver* || *Problem* || *Description* ||
+||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html LCSubstringSolver]||[http://en.wikipedia.org/wiki/Longest_common_substring_problem Longest common substring problem]||Determines the longest substring in a collection of documents which is shared by all documents using the suffix tree||
