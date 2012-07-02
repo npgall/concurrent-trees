@@ -13,7 +13,7 @@ A *Suffix Tree* (also known as PAT tree or position tree) allows values to be as
   # Build indexes on documents for subsequent retrieval via "ends with" or "contains" queries
   # Perform more complex analyses of collections of documents, such as finding common substrings
 
-===Concurrency===
+=== Concurrency Support===
 All of the trees (data structures and algorithms) in this project are optimized for *high-concurrency and high performance reads*, and *low-concurrency or background writes*:
   * Reads are _lock-free_ (reading threads never block, even while writes are ongoing)
   * Reading threads always see a consistent _version_ of the tree
