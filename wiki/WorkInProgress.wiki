@@ -21,3 +21,17 @@ All of the trees (data structures and algorithms) in this project are optimized 
   * Writing threads block each other but never block reading threads
 
 As such reading threads should never encounter latency due to ongoing writes or other concurrent readers.
+
+==Architecture==
+All of the trees in this project (derivatives of the Radix Tree, the Suffix Tree, and derivatives of the Suffix Tree) are based on the implementation of the Concurrent Radix Tree.
+
+The Concurrent Radix Tree is designed as follows:
+  * Nodes are _mostly-immutable_
+  * The characters for an incoming "edge" to a node (a reference from a parent node to a child node which has some characters of a key associated with it) are stored in the child node rather than a dedicated Edge object
+  * The incoming edge to a node is immutable (the characters of an edge represented by a child node can never be changed in that child node)
+  * The reference to a value associated with a node is immutable (if any)
+  * The invariant of radix trees that no two outgoing edges from a node can share the same first character is strictly enforced:
+    * The number of outgoing edges from a node is immutable
+    * The only _mutable_ aspect of a node is that a reference to its child node for an _existing_ outgoing edge as identified by the first character of that edge, can be updated to point to a new child node, as long as the edge of the new child node starts with the same first character
+  * Updating the child node reference for an existing edge is an atomic operation
+
