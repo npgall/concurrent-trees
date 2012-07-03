@@ -29,7 +29,7 @@ To support atomicity of updates as above, nodes in the tree have the following r
 
 The restrictions above allow updates to be applied _*atomically*_ by applying a pre-assembled _*patch*_, and they also ensure that any patch to be applied to the tree, is itself fully formed and immutable.
 
-Strictly speaking, some of the restrictions above are _not_ required for the atomicity aspect, but are in the design to reduce memory overhead, as discussed in NodeFactoryAndMemoryUsage.
+Strictly speaking, some of the restrictions above are _not_ required for the atomicity aspect, but are in the design to reduce memory overhead, as discussed in NodeFactoryAndMemoryUsage .
 
 == Traversal ==
   * Algorithms use iteration rather than recursion to traverse the trees
