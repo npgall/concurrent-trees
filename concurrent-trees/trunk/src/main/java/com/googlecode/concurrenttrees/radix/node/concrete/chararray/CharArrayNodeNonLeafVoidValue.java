@@ -13,43 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.concurrenttrees.radix.node.concrete;
+package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
+import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
- * A non-optimized implementation of the {@link Node} interface. Stores all variables and supports all behaviours
- * required by the tree, but not very memory efficient.
- * <p/>
- * See {@link com.googlecode.concurrenttrees.radix.node.NodeFactory} for documentation on how alternative
- * node implementations can be created to reduce memory overhead. See the {@link Node} interface for details on how
- * to write memory-efficient nodes.
- * <p/>
- * This implementation stores references to child nodes in an {@link AtomicReferenceArray}, in ascending sorted order
- * of the first character of the edges which child nodes define.
- * <p/>
- * The {@link #getOutgoingEdge(Character)} method uses binary search to locate a requested node, given the first character
- * of an edge indicated. The node is then read and returned atomically from the {@link AtomicReferenceArray}.
- * <p/>
- * The {@link #updateOutgoingEdge(com.googlecode.concurrenttrees.radix.node.Node)} method ensures that any
- * attempt to update a reference to a child node preserves the constraints defined in the {@link Node} interface. New
- * child nodes are written atomically to the {@link AtomicReferenceArray}.
- * <p/>
- * The constraints defined in the {@link Node} interface ensure that the {@link AtomicReferenceArray} always remains in
- * ascending sorted order regardless of modifications performed concurrently, as long as the modifications comply with
- * the constraints. This node enforces those constraints.
+ * Stores incoming edge as a {@code char[]} and outgoing edges as an {@link AtomicReferenceArray}. Does not store a
+ * value and returns {@link VoidValue} for the value.
  *
  * @author Niall Gallagher
  */
-public class NaiveCharArrayNode implements Node {
+public class CharArrayNodeNonLeafVoidValue implements Node {
 
 
     // Characters in the edge arriving at this node from a parent node.
@@ -61,17 +44,13 @@ public class NaiveCharArrayNode implements Node {
     // nodes provided new edges start with the same first character...
     private final AtomicReferenceArray<Node> outgoingEdges;
 
-    // An arbitrary value which the application associates with a key matching the path to this node in the tree.
-    // This value can be null...
-    private final Object value;
 
-    NaiveCharArrayNode(CharSequence edgeCharSequence, Object value, List<Node> outgoingEdges) {
+    public CharArrayNodeNonLeafVoidValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[outgoingEdges.size()]);
         // Sort the child nodes...
         Arrays.sort(childNodeArray, new NodeCharacterComparator());
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharArray = CharSequenceUtil.toCharArray(edgeCharSequence);
-        this.value = value;
     }
 
     @Override
@@ -86,7 +65,7 @@ public class NaiveCharArrayNode implements Node {
 
     @Override
     public Object getValue() {
-        return value;
+        return VoidValue.SINGLETON;
     }
 
     @Override
@@ -126,7 +105,7 @@ public class NaiveCharArrayNode implements Node {
         StringBuilder sb = new StringBuilder();
         sb.append("Node{");
         sb.append("edge=").append(incomingEdgeCharArray);
-        sb.append(", value=").append(value);
+        sb.append(", value=").append(VoidValue.SINGLETON);
         sb.append(", edges=").append(getOutgoingEdges());
         sb.append("}");
         return sb.toString();

@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeDefault;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -23,24 +24,11 @@ import java.util.Collections;
 /**
  * @author Niall Gallagher
  */
-public class NaiveCharArrayNodeFactoryTest {
-
-
-    @Test(expected = IllegalStateException.class)
-    public void testCreateNode_NullEdge() throws Exception {
-        //noinspection NullableProblems
-        new NaiveCharArrayNodeFactory().createNode(null, 1, Collections.<Node>emptyList(), false);
-    }
+public class CharArrayNodeDefaultTest {
 
     @Test(expected = IllegalStateException.class)
-    public void testCreateNode_EmptyEdgeNonRoot() throws Exception {
-        //noinspection NullableProblems
-        new NaiveCharArrayNodeFactory().createNode("", 1, Collections.<Node>emptyList(), false);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testCreateNode_NullEdges() throws Exception {
-        //noinspection NullableProblems
-        new NaiveCharArrayNodeFactory().createNode("FOO", 1, null, false);
+    public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
+        Node node = new CharArrayNodeDefault("FOO", null, Collections.<Node>emptyList());
+        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
     }
 }

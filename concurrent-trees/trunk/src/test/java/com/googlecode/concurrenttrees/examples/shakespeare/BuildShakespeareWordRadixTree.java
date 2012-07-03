@@ -4,7 +4,7 @@ package com.googlecode.concurrenttrees.examples.shakespeare;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.examples.shakespeare.util.IOUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,7 +62,7 @@ public class BuildShakespeareWordRadixTree {
     );
 
     public static void main(String[] args) {
-        ConcurrentRadixTree<WordValue> tree = new ConcurrentRadixTree<WordValue>(new NaiveCharArrayNodeFactory());
+        ConcurrentRadixTree<WordValue> tree = new ConcurrentRadixTree<WordValue>(new DefaultCharArrayNodeFactory());
         for (String file : files) {
             Set<String> wordsInFile = IOUtil.loadWordsFromTextFileOnClasspath(file, true); // true = convert to lowercase
             for (String word : wordsInFile) {

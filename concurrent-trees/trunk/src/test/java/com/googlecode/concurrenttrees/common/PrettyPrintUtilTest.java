@@ -17,9 +17,8 @@ package com.googlecode.concurrenttrees.common;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -99,7 +98,7 @@ public class PrettyPrintUtilTest {
     }
 
     static Node getHandBuiltTestTree() {
-        NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
+        NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
         // Build the tree by hand, as if the following strings were added: B, BA, BAN, BANDANA, BANAN, BANANA
 
         //    ○

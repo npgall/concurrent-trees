@@ -19,7 +19,8 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ import static org.junit.Assert.*;
  */
 public class ConcurrentRadixTreeTest {
 
-    private final NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
+    private final NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
 
     @Test
     public void testBuildTreeByHand() {
@@ -207,6 +208,19 @@ public class ConcurrentRadixTreeTest {
 
         existing = tree.putIfAbsent("FOO", 2);
         assertNull(existing);
+    }
+
+    @Test
+    public void testPut_VoidValue() {
+        ConcurrentRadixTree<VoidValue> tree = new ConcurrentRadixTree<VoidValue>(nodeFactory);
+        tree.put("FOO", VoidValue.SINGLETON);
+        tree.put("FOOBAR", VoidValue.SINGLETON);
+        String expected =
+                "○\n" +
+                "└── ○ FOO (-)\n" +
+                "    └── ○ BAR (-)\n";
+        String actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
     }
 
     @Test(expected = IllegalArgumentException.class)

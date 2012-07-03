@@ -1,7 +1,7 @@
 package com.googlecode.concurrenttrees.solver;
 
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharSequenceNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class LCSubstringSolverTest {
 
     @Test
     public void testGetLongestCommonSubstring() throws Exception {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
 
         solver.add(document1);
         solver.add(document2);
@@ -42,7 +42,7 @@ public class LCSubstringSolverTest {
 
     @Test
     public void testAddSuffixesToRadixTree_DuplicateHandling() {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         solver.addSuffixesToRadixTree("FOO");
         // This would not really happen since add method prevents duplicates. Simulate adding duplicate to tree...
         // Would update existing document references instead of creating new...
@@ -51,33 +51,33 @@ public class LCSubstringSolverTest {
                 "○\n" +
                 "├── ○ FOO ([FOO])\n" +
                 "└── ○ O ([FOO])\n" +
-                "    └── ○ O ([FOO])";
+                "    └── ○ O ([FOO])\n";
         Assert.assertEquals(expected, PrettyPrintUtil.prettyPrint(solver.suffixTree));
     }
 
     @Test
     public void testAdd_Duplicate() {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         Assert.assertTrue(solver.add("FOO"));
         Assert.assertFalse(solver.add("FOO"));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testAdd_ArgumentValidation1() {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         solver.add("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testAdd_ArgumentValidation2() {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         //noinspection NullableProblems
         solver.add(null);
     }
 
     @Test
     public void testRestrictConcurrency() {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory(), true);
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory(), true);
         assertNotNull(solver);
     }
 }

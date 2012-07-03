@@ -17,7 +17,7 @@ package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConcurrentInvertedRadixTreeTest {
 
-    private final NodeFactory nodeFactory = new NaiveCharArrayNodeFactory();
+    private final NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
 
     @Test
     public void testPut() throws Exception {
