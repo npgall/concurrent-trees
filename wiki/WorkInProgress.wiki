@@ -181,6 +181,17 @@ Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST,
 
 
 === Concurrent Suffix Tree ===
+==== Objective ====
+  * Create a concurrent suffix tree
+  * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keys ending with "ST", "M"
+  * Find values for keys ending with "ST"
+  * Find key-value pairs for keys ending with "ST"
+  * Find keys containing "TE", "A"
+  * Find values for keys containing "A"
+  * Find key-value pairs for keys containing "A"
+
 ==== Code ====
 {{{
 public static void main(String[] args) {
