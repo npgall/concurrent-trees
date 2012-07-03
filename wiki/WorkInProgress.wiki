@@ -250,7 +250,7 @@ Key-Value pairs for keys containing 'A': [(TEAM, 3), (TOAST, 2)]
 
 === Find Longest Common Substring in a Collection of Documents ===
 ==== Objective ====
-  * Solve the [http://en.wikipedia.org/wiki/Longest_common_substring_problem longest common substring problem] using the included Solver, which is based on the suffix tree
+  * Solve the [http://en.wikipedia.org/wiki/Longest_common_substring_problem longest common substring problem] using the included `LCSubstringSolver`
 
 ==== Code ====
 {{{
