@@ -2,7 +2,15 @@
 == Example Usage ==
 
 === Concurrent Radix Tree ===
-Code:
+*Objective*
+  * Create a concurrent radix tree
+  * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keys starting with "T", "TE"
+  * Find values for keys starting with "T", "TE"
+  * Find key-value pairs for keys starting with "T", "TE"
+
+*Code*
 {{{
 public static void main(String[] args) {
     RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -31,7 +39,7 @@ public static void main(String[] args) {
 }
 }}}
 
-Output:
+*Output*
 {{{
 Tree structure:
 ○
