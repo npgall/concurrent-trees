@@ -33,4 +33,4 @@ Both of the node factories above are _naive_, because although they implement th
 Memory could be reduced further by more sophisticated node factories as follows:
   * Store character data inside nodes as UTF-8 (i.e. single-byte), convert it to 2-byte Java `char` on demand
   * Where an edge contains only two characters (for example), instead of storing a two-character `char[]`, a dedicated implementation of a node could be returned which stores the edge in two primitive `char` fields (`char[]` consumes more memory than primitive fields)
-  * Not all nodes are associated with values (the algorithms create nodes to create branches when necessary; nodes created for this purpose are never associated with values). A node factory could return an implementation which does not have a field for storing a value if no value was supplied
+  * Not all nodes are associated with values (the algorithms create nodes to form branches when necessary; nodes created for this purpose are never associated with values). A node factory could return an implementation which does not have a field for storing a value if no value was supplied
