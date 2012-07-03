@@ -16,9 +16,10 @@ Some output from these programs:
     * Values in this output are the complete words associated with each suffix
     * 75,780 nodes
 
-  * Suffix Tree of the entire ten plays of Shakespeare's Tragedies
-    * 2.1 GB of RAM using `NaiveCharSequenceNodeFactory`
+  * Suffix Tree of the entirety of Shakespeare's Tragedies (10 plays)
+    * 2.1 GB in RAM using `NaiveCharSequenceNodeFactory`
     * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
+    * 248.997 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
     * 1,965,884 nodes
 
   * The Longest Common Substring of Shakespeare's Tragedies (10 plays)
