@@ -223,10 +223,6 @@ public static void main(String[] args) {
     System.out.println("Keys containing 'A': " + tree.getKeysContaining("A"));
     System.out.println("Values for keys containing 'A': " + tree.getValuesForKeysContaining("A"));
     System.out.println("Key-Value pairs for keys containing 'A': " + tree.getKeyValuePairsForKeysContaining("A"));
-    System.out.println();
-    System.out.println("All keys in tree: " + tree.getKeysContaining(""));
-    System.out.println("All values in tree: " + tree.getValuesForKeysContaining(""));
-    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysContaining(""));
 }
 }}}
 
@@ -265,10 +261,6 @@ Keys containing 'TE': [TEAM, TEST]
 Keys containing 'A': [TEAM, TOAST]
 Values for keys containing 'A': [3, 2]
 Key-Value pairs for keys containing 'A': [(TEAM, 3), (TOAST, 2)]
-
-All keys in tree: [TEAM, TOAST, TEST]
-All values in tree: [3, 2, 1]
-All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 }}}
 
 
