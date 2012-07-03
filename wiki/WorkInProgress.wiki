@@ -1,61 +1,269 @@
 #labels Deprecated
-_"A tree is a tree. How many more do you have to look at?"_
 
--- Ronald Reagan
+== Example Usage ==
 
-= Concurrent Trees =
+=== Concurrent Radix Tree ===
+Usage:
+{{{
+public static void main(String[] args) {
+    RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new NaiveCharArrayNodeFactory());
 
-This project provides concurrent [http://en.wikipedia.org/wiki/Radix_tree Radix Trees] and concurrent [http://en.wikipedia.org/wiki/Suffix_tree Suffix Trees] for Java.
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
 
-A *Radix Tree* (also known as patricia trie, radix _trie_ or compact prefix tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying a _prefix_ of the key rather than the whole key. Radix trees can be used to:
-  # Associate values with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
-  # Scan documents for large numbers of keywords in a scalable way (i.e. faster than naively running document.contains("keyword") for every keyword)
-  # Build indexes on documents (or associated objects) for subsequent retrieval via "starts with", "ends with" or "equals" queries
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
 
-A *Suffix Tree* (also known as PAT tree or position tree) allows values to be associated with string keys (like a map) with the twist that values can be retrieved by supplying any _suffix_ of the key rather than the whole key. Suffix trees can be used to:
-  # Build indexes on documents for subsequent retrieval via "ends with" or "contains" queries
-  # Perform more complex analyses of collections of documents, such as finding common substrings
-The implementation in this project is actually a [http://en.wikipedia.org/wiki/Generalized_suffix_tree Generalized Suffix Tree].
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys starting with 'T': " + tree.getKeysStartingWith("T"));
+    System.out.println("Keys starting with 'TE': " + tree.getKeysStartingWith("TE"));
+    System.out.println();
+    System.out.println("Values for keys starting with 'TE': " + tree.getValuesForKeysStartingWith("TE"));
+    System.out.println("Key-Value pairs for keys starting with 'TE': " + tree.getKeyValuePairsForKeysStartingWith("TE"));
+    System.out.println();
+    System.out.println("All keys in tree: " + tree.getKeysStartingWith(""));
+    System.out.println("All values in tree: " + tree.getValuesForKeysStartingWith(""));
+    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysStartingWith(""));
+}
+}}}
 
-=== Concurrency Support ===
-All of the trees (data structures and algorithms) in this project are optimized for *high-concurrency and high performance reads*, and *low-concurrency or background writes*:
-  * Reads are _lock-free_ (reading threads never block, even while writes are ongoing)
-  * Reading threads always see a consistent _version_ of the tree
-  * Reading threads do not block writing threads
-  * Writing threads block each other but never block reading threads
+Output:
+{{{
+Tree structure:
+○
+└── ○ T
+    ├── ○ E
+    │   ├── ○ AM (3)
+    │   └── ○ ST (1)
+    └── ○ OAST (2)
 
-As such reading threads should never encounter latency due to ongoing writes or other concurrent readers.
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
 
-== Tree Design ==
+Keys starting with 'T': [TEAM, TEST, TOAST]
+Keys starting with 'TE': [TEAM, TEST]
 
-The trees in this project support lock-free reads while allowing concurrent writes, by treating the tree as a mostly-immutable structure, and assembling the changes to be made to the tree into a *patch*, which is then applied to the tree in a *single atomic operation*.
+Values for keys starting with 'TE': [3, 1]
+Key-Value pairs for keys starting with 'TE': [(TEAM, 3), (TEST, 1)]
 
-Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
-[http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png]
+All keys in tree: [TEAM, TEST, TOAST]
+All values in tree: [3, 1, 2]
+All key-value pairs in tree: [(TEAM, 3), (TEST, 1), (TOAST, 2)]
+}}}
 
-Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see TreeDesign.
 
-== Tree Implementations ==
-Tree implementations and lookup operations supported.
-|| *Tree Interface* || *Implementation* || *Key Equals (exact match)* || *Key Starts With* || *Key Ends With* || *Key Contains* || *Key Is Contained In (scan external document)* ||
-||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/RadixTree.html RadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/ConcurrentRadixTree.html ConcurrentRadixTree]||✔||✔|| || || ||
-||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ReversedRadixTree.html ReversedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ConcurrentReversedRadixTree.html ConcurrentReversedRadixTree]||✔|| ||✔|| || ||
-||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/InvertedRadixTree.html InvertedRadixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/ConcurrentInvertedRadixTree.html ConcurrentInvertedRadixTree]||✔|| || || ||✔||
-||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/SuffixTree.html SuffixTree]||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/ConcurrentSuffixTree.html ConcurrentSuffixTree]||✔|| ||✔||✔|| ||
+=== Concurrent Reversed Radix Tree ===
+Usage:
+{{{
+public static void main(String[] args) {
+    ReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
 
-== Solver Utilities ==
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
 
-Utilities included which solve problems using the included trees.
-|| *Solver* || *Solves* ||
-||[http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html LCSubstringSolver]||[http://en.wikipedia.org/wiki/Longest_common_substring_problem Longest common substring problem]||
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
 
-== Links ==
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys ending with 'ST': " + tree.getKeysEndingWith("ST"));
+    System.out.println("Keys ending with 'M': " + tree.getKeysEndingWith("M"));
+    System.out.println();
+    System.out.println("Values for keys ending with 'ST': " + tree.getValuesForKeysEndingWith("ST"));
+    System.out.println("Key-Value pairs for keys ending with 'ST': " + tree.getKeyValuePairsForKeysEndingWith("ST"));
+    System.out.println();
+    System.out.println("All keys in tree: " + tree.getKeysEndingWith(""));
+    System.out.println("All values in tree: " + tree.getValuesForKeysEndingWith(""));
+    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysEndingWith(""));
+}
+}}}
 
-  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/index.html JavaDocs]
-  * [http://groups.google.com/group/concurrent-trees-discuss Discussion Group]
+Output:
+{{{
+Tree structure:
+○
+├── ○ MAET (3)
+└── ○ TS
+    ├── ○ AOT (2)
+    └── ○ ET (1)
 
-== Project Status ==
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
 
-The trees in this project should be considered _beta_ software. They have full test coverage, but they are new, and have not yet been tested in a production environment.
+Keys ending with 'ST': [TOAST, TEST]
+Keys ending with 'M': [TEAM]
 
-Coming soon: more documentation, and the trees will be deployed as a library to Maven central.
+Values for keys ending with 'ST': [2, 1]
+Key-Value pairs for keys ending with 'ST': [(TOAST, 2), (TEST, 1)]
+
+All keys in tree: [TEAM, TOAST, TEST]
+All values in tree: [3, 2, 1]
+All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
+}}}
+
+
+=== Concurrent Inverted Radix Tree / Scan Documents For Keywords ===
+Usage:
+{{{
+public static void main(String[] args) {
+    InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
+
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
+
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys contained in 'MY TEAM LIKES TOAST': " + tree.getKeysContainedIn("MY TEAM LIKES TOAST"));
+    System.out.println("Keys contained in 'MY TEAM LIKES TOASTERS': " + tree.getKeysContainedIn("MY TEAM LIKES TOASTERS"));
+    System.out.println("Values for keys contained in 'MY TEAM LIKES TOAST': " + tree.getValuesForKeysContainedIn("MY TEAM LIKES TOAST"));
+    System.out.println("Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': " + tree.getKeyValuePairsForKeysContainedIn("MY TEAM LIKES TOAST"));
+}
+}}}
+
+Output:
+{{{
+Tree structure:
+○
+└── ○ T
+    ├── ○ E
+    │   ├── ○ AM (3)
+    │   └── ○ ST (1)
+    └── ○ OAST (2)
+
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
+
+Keys contained in 'MY TEAM LIKES TOAST': [TEAM, TOAST]
+Keys contained in 'MY TEAM LIKES TOASTERS': [TEAM, TOAST]
+Values for keys contained in 'MY TEAM LIKES TOAST': [3, 2]
+Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST, 2)]
+}}}
+
+
+=== Concurrent Suffix Tree ===
+Usage:
+{{{
+public static void main(String[] args) {
+    System.out.println("Suffixes for 'TEST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEST")));
+    System.out.println("Suffixes for 'TOAST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TOAST")));
+    System.out.println("Suffixes for 'TEAM': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEAM")));
+
+    SuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(new NaiveCharArrayNodeFactory());
+
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
+
+    System.out.println();
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys ending with 'ST': " + tree.getKeysEndingWith("ST"));
+    System.out.println("Keys ending with 'M': " + tree.getKeysEndingWith("M"));
+    System.out.println("Values for keys ending with 'ST': " + tree.getValuesForKeysEndingWith("ST"));
+    System.out.println("Key-Value pairs for keys ending with 'ST': " + tree.getKeyValuePairsForKeysEndingWith("ST"));
+    System.out.println();
+    System.out.println("Keys containing 'TE': " + tree.getKeysContaining("TE"));
+    System.out.println("Keys containing 'A': " + tree.getKeysContaining("A"));
+    System.out.println("Values for keys containing 'A': " + tree.getValuesForKeysContaining("A"));
+    System.out.println("Key-Value pairs for keys containing 'A': " + tree.getKeyValuePairsForKeysContaining("A"));
+    System.out.println();
+    System.out.println("All keys in tree: " + tree.getKeysContaining(""));
+    System.out.println("All values in tree: " + tree.getValuesForKeysContaining(""));
+    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysContaining(""));
+}
+}}}
+
+Output:
+{{{
+Suffixes for 'TEST': [TEST, EST, ST, T]
+Suffixes for 'TOAST': [TOAST, OAST, AST, ST, T]
+Suffixes for 'TEAM': [TEAM, EAM, AM, M]
+
+Tree structure:
+○
+├── ○ A
+│   ├── ○ M ([TEAM])
+│   └── ○ ST ([TOAST])
+├── ○ E
+│   ├── ○ AM ([TEAM])
+│   └── ○ ST ([TEST])
+├── ○ M ([TEAM])
+├── ○ OAST ([TOAST])
+├── ○ ST ([TOAST, TEST])
+└── ○ T ([TOAST, TEST])
+    ├── ○ E
+    │   ├── ○ AM ([TEAM])
+    │   └── ○ ST ([TEST])
+    └── ○ OAST ([TOAST])
+
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
+
+Keys ending with 'ST': [TOAST, TEST]
+Keys ending with 'M': [TEAM]
+Values for keys ending with 'ST': [2, 1]
+Key-Value pairs for keys ending with 'ST': [(TEST, 1), (TOAST, 2)]
+
+Keys containing 'TE': [TEAM, TEST]
+Keys containing 'A': [TEAM, TOAST]
+Values for keys containing 'A': [3, 2]
+Key-Value pairs for keys containing 'A': [(TEAM, 3), (TOAST, 2)]
+
+All keys in tree: [TEAM, TOAST, TEST]
+All values in tree: [3, 2, 1]
+All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
+}}}
+
+
+=== Find Longest Common Substring in a Collection of Documents ===
+Usage:
+{{{
+static final String document1 =
+        "albert einstein, was a german theoretical physicist who developed the theory of general relativity";
+
+static final String document2 =
+        "near the beginning of his career, albert einstein thought that newtonian mechanics was no longer " +
+        "enough to reconcile the laws of classical mechanics with the laws of the electromagnetic field";
+
+static final String document3 =
+        "in late summer 1895, at the age of sixteen, albert einstein sat the entrance examinations for " +
+        "the swiss federal polytechnic in zurich";
+
+public static void main(String[] args) {
+    LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+
+    solver.add(document1);
+    solver.add(document2);
+    solver.add(document3);
+
+    CharSequence longestCommonSubstring = solver.getLongestCommonSubstring();
+    System.out.println("Longest common substring: " + CharSequenceUtil.toString(longestCommonSubstring));
+}
+}}}
+
+Output:
+{{{
+Longest common substring: albert einstein
+}}}
