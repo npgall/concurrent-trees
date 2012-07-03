@@ -20,6 +20,7 @@ import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import org.junit.Test;
@@ -211,8 +212,21 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
-    public void testPut_VoidValue() {
+    public void testPut_VoidValue_CharArrayNodeFactory() {
         ConcurrentRadixTree<VoidValue> tree = new ConcurrentRadixTree<VoidValue>(nodeFactory);
+        tree.put("FOO", VoidValue.SINGLETON);
+        tree.put("FOOBAR", VoidValue.SINGLETON);
+        String expected =
+                "○\n" +
+                "└── ○ FOO (-)\n" +
+                "    └── ○ BAR (-)\n";
+        String actual = PrettyPrintUtil.prettyPrint(tree);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testPut_VoidValue_CharSequenceNodeFactory() {
+        ConcurrentRadixTree<VoidValue> tree = new ConcurrentRadixTree<VoidValue>(new DefaultCharSequenceNodeFactory());
         tree.put("FOO", VoidValue.SINGLETON);
         tree.put("FOOBAR", VoidValue.SINGLETON);
         String expected =
