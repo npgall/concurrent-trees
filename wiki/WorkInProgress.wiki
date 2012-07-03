@@ -1,9 +1,8 @@
 #labels Deprecated
-
 == Example Usage ==
 
 === Concurrent Radix Tree ===
-Usage:
+Code:
 {{{
 public static void main(String[] args) {
     RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -58,7 +57,7 @@ All key-value pairs in tree: [(TEAM, 3), (TEST, 1), (TOAST, 2)]
 
 
 === Concurrent Reversed Radix Tree ===
-Usage:
+Code:
 {{{
 public static void main(String[] args) {
     ReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -112,7 +111,7 @@ All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 
 
 === Concurrent Inverted Radix Tree / Scan Documents For Keywords ===
-Usage:
+Code:
 {{{
 public static void main(String[] args) {
     InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -157,7 +156,7 @@ Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST,
 
 
 === Concurrent Suffix Tree ===
-Usage:
+Code:
 {{{
 public static void main(String[] args) {
     System.out.println("Suffixes for 'TEST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEST")));
@@ -238,7 +237,7 @@ All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 
 
 === Find Longest Common Substring in a Collection of Documents ===
-Usage:
+Code:
 {{{
 static final String document1 =
         "albert einstein, was a german theoretical physicist who developed the theory of general relativity";
