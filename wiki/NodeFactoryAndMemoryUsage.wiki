@@ -4,16 +4,13 @@
 
 The trees in this project are not coupled with the implementation of Node objects.
 
-== Node ==
 [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html Node] is an interface that algorithms in the trees interact with, and so for any node it is possible to abstract its implementation to reduce memory overhead.
-
-== NodeFactory ==
 
 The tree algorithms do not create nodes directly, they request new nodes from a [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/NodeFactory.html NodeFactory] supplied to the constructor of the tree.
 
 == Memory Reduction Techniques ==
 
-A Java object consumes a minimum of perhaps 32 bytes of RAM, and a reference to the object will consume another 4 or 8 bytes (details [http://www.codeinstructions.com/2008/12/java-objects-memory-structure.html here]). The number of fields and the types of fields in the objects additionally increase memory overhead.
+A Java object consumes a minimum of perhaps 32 bytes of RAM, and a reference to the object will consume another 4 or 8 bytes (details [http://www.codeinstructions.com/2008/12/java-objects-memory-structure.html here]). The number of fields and the type of fields in an object additionally increases memory overhead.
 
 Building trees from large text documents, particularly suffix trees, can require many nodes. For example a Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play will require approximately 133,000 nodes. Java by default stores characters as UTF-16. So it is useful to abstract the internal representation of nodes from the algorithms which manipulate them.
 
