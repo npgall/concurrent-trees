@@ -1,0 +1,55 @@
+#summary Example Usage for Concurrent Radix Tree
+
+== Example Usage for Concurrent Radix Tree ==
+=== Objective ===
+  * Create a concurrent radix tree
+  * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keys starting with "T", "TE"
+  * Find values for keys starting with "T", "TE"
+  * Find key-value pairs for keys starting with "T", "TE"
+
+=== Code ===
+{{{
+public static void main(String[] args) {
+    RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new NaiveCharArrayNodeFactory());
+
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
+
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys starting with 'T': " + tree.getKeysStartingWith("T"));
+    System.out.println("Keys starting with 'TE': " + tree.getKeysStartingWith("TE"));
+    System.out.println();
+    System.out.println("Values for keys starting with 'TE': " + tree.getValuesForKeysStartingWith("TE"));
+    System.out.println("Key-Value pairs for keys starting with 'TE': " + tree.getKeyValuePairsForKeysStartingWith("TE"));
+}
+}}}
+
+=== Output ===
+{{{
+Tree structure:
+○
+└── ○ T
+    ├── ○ E
+    │   ├── ○ AM (3)
+    │   └── ○ ST (1)
+    └── ○ OAST (2)
+
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
+
+Keys starting with 'T': [TEAM, TEST, TOAST]
+Keys starting with 'TE': [TEAM, TEST]
+
+Values for keys starting with 'TE': [3, 1]
+Key-Value pairs for keys starting with 'TE': [(TEAM, 3), (TEST, 1)]
+}}}
