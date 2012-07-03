@@ -273,11 +273,11 @@ public static void main(String[] args) {
     solver.add(document3);
 
     CharSequence longestCommonSubstring = solver.getLongestCommonSubstring();
-    System.out.println("Longest common substring: " + CharSequenceUtil.toString(longestCommonSubstring));
+    System.out.println(CharSequenceUtil.toString(longestCommonSubstring));
 }
 }}}
 
 ==== Output ====
 {{{
-Longest common substring: albert einstein
+albert einstein
 }}}
