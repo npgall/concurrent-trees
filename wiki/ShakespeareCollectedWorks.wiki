@@ -6,10 +6,10 @@ Standalone programs to build trees from and analyze The Collected Works of Willi
 
 Some output from these programs:
 
-  * Radix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/radix-tree-shakespeare-collected-works.txt viewable here]
+  * Radix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/radix-tree-words-shakespeare-collected-works.txt viewable here]
     * Values are the works containing those words
     * 29,008 nodes
 
-  * Suffix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/radix-tree-words-shakespeare-collected-works.txt viewable here]
+  * Suffix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/suffix-tree-words-shakespeare-collected-works.txt viewable here]
     * Values in this output are the complete words associated with each suffix
     * 75,780 nodes
