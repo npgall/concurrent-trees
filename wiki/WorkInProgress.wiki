@@ -65,7 +65,15 @@ All key-value pairs in tree: [(TEAM, 3), (TEST, 1), (TOAST, 2)]
 
 
 === Concurrent Reversed Radix Tree ===
-Code:
+==== Objective ====
+  * Create a concurrent reversed radix tree
+  * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keys ending with "ST", "M"
+  * Find values for keys ending with "ST"
+  * Find key-value pairs for keys ending with "ST"
+
+==== Code ====
 {{{
 public static void main(String[] args) {
     ReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -94,7 +102,7 @@ public static void main(String[] args) {
 }
 }}}
 
-Output:
+==== Output ====
 {{{
 Tree structure:
 ○
@@ -119,7 +127,7 @@ All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 
 
 === Concurrent Inverted Radix Tree / Scan Documents For Keywords ===
-Code:
+==== Code ====
 {{{
 public static void main(String[] args) {
     InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
@@ -143,7 +151,7 @@ public static void main(String[] args) {
 }
 }}}
 
-Output:
+==== Output ====
 {{{
 Tree structure:
 ○
@@ -164,7 +172,7 @@ Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST,
 
 
 === Concurrent Suffix Tree ===
-Code:
+==== Code ====
 {{{
 public static void main(String[] args) {
     System.out.println("Suffixes for 'TEST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEST")));
@@ -202,7 +210,7 @@ public static void main(String[] args) {
 }
 }}}
 
-Output:
+==== Output ====
 {{{
 Suffixes for 'TEST': [TEST, EST, ST, T]
 Suffixes for 'TOAST': [TOAST, OAST, AST, ST, T]
@@ -245,7 +253,7 @@ All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 
 
 === Find Longest Common Substring in a Collection of Documents ===
-Code:
+==== Code ====
 {{{
 static final String document1 =
         "albert einstein, was a german theoretical physicist who developed the theory of general relativity";
@@ -270,7 +278,7 @@ public static void main(String[] args) {
 }
 }}}
 
-Output:
+==== Output ====
 {{{
 Longest common substring: albert einstein
 }}}
