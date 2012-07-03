@@ -272,8 +272,8 @@ public static void main(String[] args) {
     solver.add(document2);
     solver.add(document3);
 
-    CharSequence longestCommonSubstring = solver.getLongestCommonSubstring();
-    System.out.println(CharSequenceUtil.toString(longestCommonSubstring));
+    String longestCommonSubstring = CharSequenceUtil.toString(solver.getLongestCommonSubstring());
+    System.out.println(longestCommonSubstring);
 }
 }}}
 
