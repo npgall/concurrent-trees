@@ -1,6 +1,6 @@
 package com.googlecode.concurrenttrees.examples.shakespeare.util;
 
-import com.googlecode.concurrenttrees.examples.shakespeare.BuildShakespeareRadixTree;
+import com.googlecode.concurrenttrees.examples.shakespeare.BuildShakespeareWordRadixTree;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public class IOUtil {
         BufferedReader in = null;
         try {
             Set<String> results = new TreeSet<String>();
-            InputStream is = BuildShakespeareRadixTree.class.getResourceAsStream(resourceName);
+            InputStream is = BuildShakespeareWordRadixTree.class.getResourceAsStream(resourceName);
             if (is == null) {
                 throw new IllegalStateException("File not found on classpath");
             }
@@ -57,7 +57,7 @@ public class IOUtil {
         BufferedReader in = null;
         try {
             StringBuilder sb = new StringBuilder();
-            InputStream is = BuildShakespeareRadixTree.class.getResourceAsStream(resourceName);
+            InputStream is = BuildShakespeareWordRadixTree.class.getResourceAsStream(resourceName);
             if (is == null) {
                 throw new IllegalStateException("File not found on classpath");
             }

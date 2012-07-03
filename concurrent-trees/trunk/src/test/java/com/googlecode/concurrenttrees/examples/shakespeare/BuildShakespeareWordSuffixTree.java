@@ -3,18 +3,20 @@ package com.googlecode.concurrenttrees.examples.shakespeare;
 
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.examples.shakespeare.util.IOUtil;
-import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.suffix.ConcurrentSuffixTree;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Niall Gallagher
  */
-public class BuildShakespeareRadixTree {
+public class BuildShakespeareWordSuffixTree {
 
     static final List<String> files = Arrays.asList(
         "/shakespeare/comedies/a_midsummer_nights_dream.txt",
@@ -62,7 +64,7 @@ public class BuildShakespeareRadixTree {
     );
 
     public static void main(String[] args) {
-        ConcurrentRadixTree<WordValue> tree = new ConcurrentRadixTree<WordValue>(new NaiveCharArrayNodeFactory());
+        ConcurrentSuffixTree<WordValue> tree = new ConcurrentSuffixTree<WordValue>(new NaiveCharArrayNodeFactory());
         for (String file : files) {
             Set<String> wordsInFile = IOUtil.loadWordsFromTextFileOnClasspath(file, true); // true = convert to lowercase
             for (String word : wordsInFile) {
@@ -84,7 +86,7 @@ public class BuildShakespeareRadixTree {
                 textArea.setText(radixTreePrinted);
                 JScrollPane scrollPane = new JScrollPane(textArea);
                 textArea.setEditable(false);
-                JFrame frame = new JFrame("Shakespeare Radix Tree");
+                JFrame frame = new JFrame("Shakespeare Suffix Tree");
                 frame.add(scrollPane);
                 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 frame.setSize(640, 480);
