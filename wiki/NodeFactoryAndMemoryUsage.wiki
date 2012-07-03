@@ -31,7 +31,7 @@ Two basic implementations of `NodeFactory` are currently provided:
 Both of the node factories above are _naive_, because although they implement those two basic strategies, they do not make any effort to reduce the number of fields within each node. Each factory produces only a single type of node for all use cases, regardless of the data which the algorithms supply to the factory to be stored in the node.
 
 Memory could be reduced further by more sophisticated node factories as follows:
-  * Store character data inside nodes as UTF-8 (i.e. single-byte), convert it to 2-byte Java `char` on demand
+  * Store character data inside nodes as UTF-8 (i.e. single-byte), convert it to 2-byte Java `char` on demand; or taking the idea to the extreme - character data could be compressed
   * Where an edge contains only two characters (for example), instead of storing a two-character `char[]`, a dedicated implementation of a node could be returned which stores the edge in two primitive `char` fields (`char[]` consumes more memory than primitive fields)
   * Not all nodes are associated with values (the algorithms create nodes to form branches when necessary; nodes created for this purpose are never associated with values). A node factory could return an implementation which does not have a field for storing a value if no value was supplied
   * Leaf nodes will not need to store references to any child nodes
