@@ -1,0 +1,10 @@
+#summary Frequently Asked Questions
+
+Frequently Asked Questions. For varying values of "frequently".
+
+===Do you have a comic that might have something to do with trees?===
+Yes certainly, glad you asked.
+
+[http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png]
+
+Credit: from [http://xkcd.com/ xkcd.com], [http://xkcd.com/license.html Creative Commons Attribution-NonCommercial 2.5 License]
