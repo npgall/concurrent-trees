@@ -21,11 +21,11 @@ Nodes expose the _edges_ within the tree as `CharSequence` objects, and as such 
 Two basic implementations of `NodeFactory` are currently provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html NaiveCharArrayNodeFactory]
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
-    * This can use more memory for large keys or documents added to the tree (especially for suffix trees, less so for radix trees)
+    * This can use more memory for suffix trees when storing the many suffixes of large documents
     * An advantage of this factory is garbage collection: there is no danger that a large string might be retained in memory by a single node referencing only a small subsequence of the string
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharSequenceNodeFactory.html NaiveCharSequenceNodeFactory]
     * Does not store character data inside the tree, but instead stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
-    * An advantage of this factory is it uses much less memory, especially for suffix trees
+    * An advantage of this factory is it uses much less memory for suffix trees
     * A disadvantage of this factory is garbage collection: if a large document/key is added to the tree, and then a small document is added to the tree, the nodes added for the small document will re-use edges which were previously added for the large document. If the large document is subsequently removed from the tree, edges which are still in use by the small document will not be removed, and so the large document will not be garbage collected
 
 Both of the node factories above are _naive_, because although they implement those two basic strategies, they do not make any effort to reduce the number of fields within each node. Each factory produces only a single type of node for all use cases, regardless of the data which the algorithms supply to the factory to be stored in the node.
