@@ -22,7 +22,7 @@ Two basic implementations of `NodeFactory` are currently provided:
     * This can use more memory for large keys or documents added to the tree (especially for suffix trees, less so for radix trees)
     * The advantage of this factory is garbage collection: there is no danger that a large string might be retained in memory by a single node referencing only a small subsequence of the string
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharSequenceNodeFactory.html NaiveCharSequenceNodeFactory]
-    * Does not store character data inside the tree, but rather stores pointers to character sequences in the input string as start and end offsets, and a reference to the original string in the node
+    * Does not store character data inside the tree, but rather stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
     * An advantage of this factory is it uses much less memory, especially for suffix trees
     * A disadvantage of this factory is garbage collection: if a large document/key is added to the tree, and then a small document is added to the tree, the nodes added for the small document will re-use edges which were previously added for the large document. If the large document is subsequently removed from the tree, edges which are still in use by the small document will not be removed, and so the large document will not be garbage collected
 
