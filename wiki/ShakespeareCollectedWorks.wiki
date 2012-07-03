@@ -16,8 +16,14 @@ Some output from these programs:
     * Values in this output are the complete words associated with each suffix
     * 75,780 nodes
 
+  * Suffix Tree of Shakespeare's Tragedy, Antony and Cleopatra
+    * 280 MB in RAM using `NaiveCharSequenceNodeFactory`
+    * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
+    * 29.438 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
+    * 217,697 nodes
+
   * Suffix Tree of the entirety of Shakespeare's Tragedies (10 plays)
-    * 2.1 GB in RAM using `NaiveCharSequenceNodeFactory`
+    * 2.0 GB in RAM using `NaiveCharSequenceNodeFactory`
     * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
     * 248.997 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
     * 1,965,884 nodes
