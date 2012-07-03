@@ -1,7 +1,7 @@
 package com.googlecode.concurrenttrees.examples.usage;
 
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharSequenceNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
 
 /**
@@ -21,7 +21,7 @@ public class LCSubstringSolverUsage {
             "the swiss federal polytechnic in zurich";
 
     public static void main(String[] args) {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
 
         solver.add(document1);
         solver.add(document2);

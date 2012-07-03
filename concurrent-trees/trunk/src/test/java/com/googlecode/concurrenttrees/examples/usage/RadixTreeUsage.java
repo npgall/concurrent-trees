@@ -3,7 +3,7 @@ package com.googlecode.concurrenttrees.examples.usage;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.RadixTree;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 /**
@@ -12,7 +12,7 @@ import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 public class RadixTreeUsage {
 
     public static void main(String[] args) {
-        RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new NaiveCharArrayNodeFactory());
+        RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 
         tree.put("TEST", 1);
         tree.put("TOAST", 2);

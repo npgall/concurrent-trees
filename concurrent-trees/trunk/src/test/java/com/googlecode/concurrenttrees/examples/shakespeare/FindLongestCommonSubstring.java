@@ -2,7 +2,7 @@ package com.googlecode.concurrenttrees.examples.shakespeare;
 
 
 import com.googlecode.concurrenttrees.examples.shakespeare.util.IOUtil;
-import com.googlecode.concurrenttrees.radix.node.concrete.NaiveCharSequenceNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
 
 import java.util.Arrays;
@@ -28,10 +28,10 @@ public class FindLongestCommonSubstring {
         "/shakespeare/tragedies/titus_andronicus.txt"
     );
 
-    // This program needs 2-3GB of RAM with the NaiveCharSequenceNodeFactory (set -Xmx accordingly).
+    // This program needs 2-3GB of RAM with the DefaultCharSequenceNodeFactory (set -Xmx accordingly).
     // Example output in: test/resources/shakespeare-trees/tragedies-longest-common-substring.txt
     public static void main(String[] args) throws Exception {
-        LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         System.out.println("Building suffix tree...");
         long startTime = System.nanoTime();
         for (String file : files) {
