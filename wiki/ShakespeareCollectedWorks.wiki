@@ -1,6 +1,6 @@
 #summary Programs to analyze The Collected Works of William Shakespeare
 
-The Collected Works of William Shakespeare was used as a dataset to test trees during development. This is not actually a large dataset by today's standards, at <10MB of text files, but nonetheless useful for testing. It's unclear how the Bard would feel about his work being used for this purpose, no offense intended!
+The Collected Works of William Shakespeare was used as a dataset to test trees during development. This is not actually a large dataset by today's standards, at <10 MB of text files, but nonetheless useful for testing. It's unclear how the Bard would feel about his work being used for this purpose, no offense intended!
 
 Standalone programs to build trees from and analyze The Collected Works of William Shakespeare can be found [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/java/com/googlecode/concurrenttrees/examples/shakespeare/ here].
 
@@ -17,15 +17,15 @@ Some output from these programs:
     * 75,780 nodes
 
   * Suffix Tree of Shakespeare's Tragedy, Antony and Cleopatra
-    * 280MB in RAM using `NaiveCharSequenceNodeFactory`
+    * 280 MB in RAM using `NaiveCharSequenceNodeFactory`
     * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
-    * 29.438GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
+    * 29.438 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
     * 217,697 nodes
 
   * Suffix Tree of the entirety of Shakespeare's Tragedies (10 plays)
-    * 2.0GB in RAM using `NaiveCharSequenceNodeFactory`
+    * 2.0 GB in RAM using `NaiveCharSequenceNodeFactory`
     * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
-    * 248.997GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
+    * 248.997 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
     * 1,965,884 nodes
 
   * The Longest Common Substring of Shakespeare's Tragedies (10 plays)
