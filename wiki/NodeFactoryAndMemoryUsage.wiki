@@ -22,7 +22,7 @@ Two basic implementations of `NodeFactory` are currently provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html NaiveCharArrayNodeFactory]
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
     * This can use more memory for large keys or documents added to the tree (especially for suffix trees, less so for radix trees)
-    * The advantage of this factory is garbage collection: there is no danger that a large string might be retained in memory by a single node referencing only a small subsequence of the string
+    * An advantage of this factory is garbage collection: there is no danger that a large string might be retained in memory by a single node referencing only a small subsequence of the string
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharSequenceNodeFactory.html NaiveCharSequenceNodeFactory]
     * Does not store character data inside the tree, but rather stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
     * An advantage of this factory is it uses much less memory, especially for suffix trees
