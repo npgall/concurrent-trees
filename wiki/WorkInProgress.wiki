@@ -32,10 +32,6 @@ public static void main(String[] args) {
     System.out.println();
     System.out.println("Values for keys starting with 'TE': " + tree.getValuesForKeysStartingWith("TE"));
     System.out.println("Key-Value pairs for keys starting with 'TE': " + tree.getKeyValuePairsForKeysStartingWith("TE"));
-    System.out.println();
-    System.out.println("All keys in tree: " + tree.getKeysStartingWith(""));
-    System.out.println("All values in tree: " + tree.getValuesForKeysStartingWith(""));
-    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysStartingWith(""));
 }
 }}}
 
@@ -57,10 +53,6 @@ Keys starting with 'TE': [TEAM, TEST]
 
 Values for keys starting with 'TE': [3, 1]
 Key-Value pairs for keys starting with 'TE': [(TEAM, 3), (TEST, 1)]
-
-All keys in tree: [TEAM, TEST, TOAST]
-All values in tree: [3, 1, 2]
-All key-value pairs in tree: [(TEAM, 3), (TEST, 1), (TOAST, 2)]
 }}}
 
 
@@ -95,10 +87,6 @@ public static void main(String[] args) {
     System.out.println();
     System.out.println("Values for keys ending with 'ST': " + tree.getValuesForKeysEndingWith("ST"));
     System.out.println("Key-Value pairs for keys ending with 'ST': " + tree.getKeyValuePairsForKeysEndingWith("ST"));
-    System.out.println();
-    System.out.println("All keys in tree: " + tree.getKeysEndingWith(""));
-    System.out.println("All values in tree: " + tree.getValuesForKeysEndingWith(""));
-    System.out.println("All key-value pairs in tree: " + tree.getKeyValuePairsForKeysEndingWith(""));
 }
 }}}
 
@@ -119,10 +107,6 @@ Keys ending with 'M': [TEAM]
 
 Values for keys ending with 'ST': [2, 1]
 Key-Value pairs for keys ending with 'ST': [(TOAST, 2), (TEST, 1)]
-
-All keys in tree: [TEAM, TOAST, TEST]
-All values in tree: [3, 2, 1]
-All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 }}}
 
 
