@@ -12,9 +12,9 @@ The tree algorithms do not create nodes directly, they request new nodes from a 
 
 A Java object consumes a minimum of perhaps 32 bytes of RAM, and a reference to the object will consume another 4 or 8 bytes (details [http://www.codeinstructions.com/2008/12/java-objects-memory-structure.html here]). The number of fields and the type of fields in an object additionally increases memory overhead.
 
-Building trees from large text documents, particularly suffix trees, can require many nodes. For example a Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play will require approximately 133,000 nodes. Java by default stores characters as UTF-16. So it is useful to abstract the internal representation of nodes from the algorithms which manipulate them.
+Building trees from large text documents, particularly suffix trees, can require many nodes. For example the `test/` folder contains tests based on the Collected Works of William Shakespeare. A Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play was found to require approximately 133,000 nodes. Java by default stores characters as UTF-16. So it is useful to abstract the internal representation of nodes from the algorithms which manipulate them.
 
-Nodes encapsulate the "edges" within the tree as `CharSequence` objects, and as such they can store character date inside the node - for example as a copied `char[]`, or as start and end offsets onto the original input string from which the `CharSequence` was created.
+Nodes encapsulate the _edges_ within the tree as `CharSequence` objects, and as such they can store character date inside the node - for example as a copied `char[]`, or as start and end offsets onto the original input string from which the `CharSequence` was created.
 
 Two basic implementations of `NodeFactory` are currently provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html NaiveCharArrayNodeFactory] - Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
