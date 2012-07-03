@@ -16,7 +16,7 @@ A Java object consumes a minimum of perhaps 32 bytes of RAM, and a reference to 
 
 Building suffix trees from large text documents, can require many nodes. For example the `test/` folder in the source, contains tests based on the Collected Works of William Shakespeare (not even considered a large data set by today's standards). A Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play was found to require approximately 133,000 nodes. Java by default stores characters as UTF-16. Storing character data within each node in a suffix tree for such a document requires 11GB of RAM. Storing character data outside the suffix tree and using offset pointers instead, reduces this to ~100MB. Significant additional reductions would be possible. So it is useful that `NodeFactory` abstracts the internal representation of nodes from the algorithms which manipulate them.
 
-Nodes expose the _edges_ within the tree as `CharSequence` objects, and as such they can store character data inside the node - for example as a copied `char[]`, or as start and end offsets onto the original input string.
+Nodes expose the _edges_ within the tree as `CharSequence` objects, and as such they can store character data inside the node - for example as a copied `char[]`, or as start and end offsets into the original input string.
 
 Two basic implementations of `NodeFactory` are currently provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html NaiveCharArrayNodeFactory]
