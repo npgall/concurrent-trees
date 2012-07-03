@@ -1,0 +1,15 @@
+#summary Programs to analyze The Collected Works of William Shakespeare
+
+The Collected Works of William Shakespeare was used as a dataset to test trees during development. This is not actually a large dataset by today's standards, at ~4MB of text files, but nonetheless useful for testing. It's unclear how the Bard would feel about his work being used for this purpose, no offense intended!
+
+Standalone programs to build trees from and analyze The Collected Works of William Shakespeare can be found [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/java/com/googlecode/concurrenttrees/examples/shakespeare/ here].
+
+Some output from these programs:
+
+  * Radix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/radix-tree-shakespeare-collected-works.txt viewable here]
+    * Values are the works containing those words
+    * 29,008 nodes
+
+  * Suffix Tree of the *individual words* contained in all of Shakespeare's works: [http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/resources/shakespeare-trees/radix-tree-words-shakespeare-collected-works.txt viewable here]
+    * Values in this output are the complete words associated with each suffix (actual values supplied to the Suffix Tree API are stored outside of the tree)
+    * 75,780 nodes
