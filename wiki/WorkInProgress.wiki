@@ -126,7 +126,16 @@ All key-value pairs in tree: [(TEAM, 3), (TOAST, 2), (TEST, 1)]
 }}}
 
 
-=== Concurrent Inverted Radix Tree / Scan Documents For Keywords ===
+=== Concurrent Inverted Radix Tree ===
+==== Objective ====
+  * Create a concurrent inverted radix tree
+  * Insert *key_words_* "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keywords contained in example document "MY TEAM LIKES TOAST"
+  * Find keywords contained in example document "MY TEAM LIKES TOASTERS"
+  * Find values for keywords contained in example document "MY TEAM LIKES TOAST"
+  * Find keyword-value pairs for keywords contained in example document "MY TEAM LIKES TOAST"
+
 ==== Code ====
 {{{
 public static void main(String[] args) {
