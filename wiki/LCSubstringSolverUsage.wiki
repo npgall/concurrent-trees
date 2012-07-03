@@ -1,4 +1,4 @@
-#summary Example Usage to Find the Longest Common Substring in a Collection of Documents
+#summary Example Usage to find the Longest Common Substring in a collection of documents
 
 == Find the Longest Common Substring in a Collection of Documents ==
 === Objective ===
