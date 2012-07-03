@@ -1,0 +1,54 @@
+#summary Example Usage for Concurrent Reversed Radix Tree
+
+== Example Usage for Concurrent Reversed Radix Tree ==
+=== Objective ===
+  * Create a concurrent reversed radix tree
+  * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
+  * Graphically print the structure of the tree
+  * Find keys ending with "ST", "M"
+  * Find values for keys ending with "ST"
+  * Find key-value pairs for keys ending with "ST"
+
+=== Code ===
+{{{
+public static void main(String[] args) {
+    ReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
+
+    tree.put("TEST", 1);
+    tree.put("TOAST", 2);
+    tree.put("TEAM", 3);
+
+    System.out.println("Tree structure:");
+    // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
+    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+
+    System.out.println();
+    System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
+    System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
+    System.out.println();
+    System.out.println("Keys ending with 'ST': " + tree.getKeysEndingWith("ST"));
+    System.out.println("Keys ending with 'M': " + tree.getKeysEndingWith("M"));
+    System.out.println();
+    System.out.println("Values for keys ending with 'ST': " + tree.getValuesForKeysEndingWith("ST"));
+    System.out.println("Key-Value pairs for keys ending with 'ST': " + tree.getKeyValuePairsForKeysEndingWith("ST"));
+}
+}}}
+
+=== Output ===
+{{{
+Tree structure:
+○
+├── ○ MAET (3)
+└── ○ TS
+    ├── ○ AOT (2)
+    └── ○ ET (1)
+
+Value for 'TEST' (exact match): 1
+Value for 'TOAST' (exact match): 2
+
+Keys ending with 'ST': [TOAST, TEST]
+Keys ending with 'M': [TEAM]
+
+Values for keys ending with 'ST': [2, 1]
+Key-Value pairs for keys ending with 'ST': [(TOAST, 2), (TEST, 1)]
+}}}
