@@ -2,8 +2,8 @@
 
 Frequently Asked Questions. For varying values of "frequently".
 
-===Do you have a comic that might have something to do with trees?===
-Yes certainly, glad you asked.
+===Q: Do you have a comic that might have something to do with trees?===
+A: Yes certainly, glad you asked.
 
 [http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png]
 
