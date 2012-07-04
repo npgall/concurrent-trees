@@ -2,7 +2,7 @@
 
 Frequently Asked Questions. For various values of "frequently".
 
-===Q: Do you have a comic that might have something to do with trees?===
+===Q: Do you have a comic about Depth-First Search?===
 A: Yes certainly, glad you asked.
 
 [http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png]
