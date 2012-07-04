@@ -47,4 +47,4 @@ If an entry is added to a tree as follows, a custom node implementation will be 
 tree.put("FOO", VoidValue.SINGLETON);
 }}}
 
-This can also be useful for applications which do not actually need to associate values with keys; radix and suffix trees can be useful for storing and querying keys alone. 
+This can also be useful for applications which do not actually need to associate values with keys; radix and suffix trees can be useful for storing and querying keys alone.
