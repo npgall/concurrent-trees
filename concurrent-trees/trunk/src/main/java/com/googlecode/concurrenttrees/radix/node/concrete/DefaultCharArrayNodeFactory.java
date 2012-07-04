@@ -34,7 +34,7 @@ import java.util.List;
  *     <li>{@link CharArrayNodeNonLeafNullValue} - does not store a value, returns {@code null} for value</li>
  *     <li>{@link CharArrayNodeNonLeafVoidValue} - does not store a value, returns {@link VoidValue} for value</li>
  *     <li>{@link CharArrayNodeLeafVoidValue} - does not store child edges or a value, returns {@link VoidValue} for value</li>
- *     <li>{@link CharArrayNodeLeafWithValue - does not store child edges, but does store a value</li>
+ *     <li>{@link CharArrayNodeLeafWithValue} - does not store child edges, but does store a value</li>
  * </ul>
  * <p/>
  * When the application supplies {@link VoidValue} for a value, this factory will omit actually storing that value
