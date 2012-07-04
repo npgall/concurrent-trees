@@ -19,7 +19,7 @@ public static void main(String[] args) {
     System.out.println("Suffixes for 'TOAST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TOAST")));
     System.out.println("Suffixes for 'TEAM': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEAM")));
 
-    SuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(new NaiveCharArrayNodeFactory());
+    SuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(new DefaultCharArrayNodeFactory());
 
     tree.put("TEST", 1);
     tree.put("TOAST", 2);
