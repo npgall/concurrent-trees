@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public class CharArrayNodeNonLeafVoidValue implements Node {
 
-
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
     private final char[] incomingEdgeCharArray;

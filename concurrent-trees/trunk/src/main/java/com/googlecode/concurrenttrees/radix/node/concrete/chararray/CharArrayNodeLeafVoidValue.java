@@ -30,7 +30,6 @@ import java.util.List;
  */
 public class CharArrayNodeLeafVoidValue implements Node {
 
-
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
     private final char[] incomingEdgeCharArray;
