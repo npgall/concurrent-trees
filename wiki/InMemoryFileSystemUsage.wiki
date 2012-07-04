@@ -47,7 +47,7 @@ An in-memory file system implemented on top of !ConcurrentRadixTree, is included
         System.out.println("Retrieve Ford F150 brochure contents using exact file name: " + fordF150BrochureRetrieved);
 
         System.out.println();
-        System.out.println("Retrieve all Ford brochure contents recursively:-");
+        System.out.println("Retrieve all Ford brochure contents in directory:-");
         Collection<Brochure> fordBrochuresRetrieved = fileSystem.getFilesInDirectory("/brochures/ford/");
         for (Brochure fordBrochure : fordBrochuresRetrieved) {
             System.out.println(fordBrochure);
@@ -78,7 +78,7 @@ Retrieve All brochure names recursively: [ford_f150_brochure.txt, ford_focus_bro
 
 Retrieve Ford F150 brochure contents using exact file name: Marketing stuff for Ford F150
 
-Retrieve all Ford brochure contents recursively:-
+Retrieve all Ford brochure contents in directory:-
 Marketing stuff for Ford F150
 Marketing stuff for Ford Focus
 
