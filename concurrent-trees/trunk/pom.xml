@@ -124,6 +124,9 @@
                 <version>1.10.b1</version>
                 <configuration>
                     <header>src/etc/header.txt</header>
+                    <excludes>
+                        <exclude>src/test/resources/**</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
