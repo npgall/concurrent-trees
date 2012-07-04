@@ -28,7 +28,6 @@ public class BuildShakespeareSinglePlaySuffixTree {
             System.out.println("Added " + manuscriptName);
         }
         System.out.println("Built Suffix Tree. Estimating size on disk...");
-        Thread.sleep(20000);
         DummyAppendable dummyAppendable = new DummyAppendable();
         PrettyPrintUtil.prettyPrint(tree, dummyAppendable);
         System.out.println("Done. Size on disk estimate:");
