@@ -44,23 +44,23 @@ public class InMemoryFileSystemUsage {
         PrettyPrintUtil.prettyPrint((PrettyPrintable)fileSystem, System.out);
 
         System.out.println();
-        System.out.println("Retrieve Ford brochure names: " + fileSystem.getFileNamesInDirectory("/brochures/ford/"));
-        System.out.println("Retrieve Honda brochure names: " + fileSystem.getFileNamesInDirectory("/brochures/honda/"));
-        System.out.println("Retrieve All brochure names: " + fileSystem.getFileNamesInDirectoryRecursive("/brochures/"));
+        System.out.println("Retrieve Ford brochure names in directory: " + fileSystem.getFileNamesInDirectory("/brochures/ford/"));
+        System.out.println("Retrieve Honda brochure names in directory: " + fileSystem.getFileNamesInDirectory("/brochures/honda/"));
+        System.out.println("Retrieve All brochure names recursively: " + fileSystem.getFileNamesInDirectoryRecursive("/brochures/"));
 
         System.out.println();
         Brochure fordF150BrochureRetrieved = fileSystem.getFile("/brochures/ford/", "ford_f150_brochure.txt");
-        System.out.println("Retrieve Ford F150 brochure contents: " + fordF150BrochureRetrieved);
+        System.out.println("Retrieve Ford F150 brochure contents using exact file name: " + fordF150BrochureRetrieved);
 
         System.out.println();
-        System.out.println("Retrieve all Ford brochures contents:-");
+        System.out.println("Retrieve all Ford brochure contents recursively:-");
         Collection<Brochure> fordBrochuresRetrieved = fileSystem.getFilesInDirectory("/brochures/ford/");
         for (Brochure fordBrochure : fordBrochuresRetrieved) {
             System.out.println(fordBrochure);
         }
 
         System.out.println();
-        System.out.println("Retrieve contents from entire file system:-");
+        System.out.println("Retrieve contents from entire file system recursively:-");
         Collection<Brochure> allFiles = fileSystem.getFilesInDirectoryRecursive("/");
         for (Brochure file : allFiles) {
             System.out.println(file);
