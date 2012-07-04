@@ -13,7 +13,7 @@
 === Code ===
 {{{
 public static void main(String[] args) {
-    InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new NaiveCharArrayNodeFactory());
+    InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 
     tree.put("TEST", 1);
     tree.put("TOAST", 2);
