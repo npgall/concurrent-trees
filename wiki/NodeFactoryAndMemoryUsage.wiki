@@ -2,6 +2,8 @@
 
 = Introduction =
 
+<wiki:toc max_depth="3" />
+
 The trees in this project are not coupled with the implementation of Node objects.
 
 [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html Node] is an interface that algorithms in the trees interact with, and so for any node it is possible to abstract its implementation to reduce memory overhead.
@@ -14,24 +16,35 @@ The following techniques to reduce memory overhead are mostly applicable to suff
 
 A Java object consumes a minimum of perhaps 32 bytes of RAM, and a reference to the object will consume another 4 or 8 bytes. The number of fields and the type of fields in an object additionally increases memory overhead. Details [http://www.codeinstructions.com/2008/12/java-objects-memory-structure.html here].
 
-Building suffix trees from large text documents, can require many nodes. For example the `test/` folder in the source (see also ShakespeareCollectedWorks), contains tests based on the Collected Works of William Shakespeare (not actually a large data set by today's standards). A Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play was found to require approximately 217,697 nodes. Java by default stores characters as UTF-16. Storing character data within each node in a suffix tree for such a document would require >29 GB of RAM. Storing character data outside the suffix tree and using offset pointers instead, reduces this to ~280 MB. Significant additional reductions would be possible. So it is useful that `NodeFactory` abstracts the internal representation of nodes from the algorithms which manipulate them.
+Building suffix trees from large text documents, can require many nodes. For example the `test/` folder in the source (see also ShakespeareCollectedWorks), contains tests based on the Collected Works of William Shakespeare (not actually a large data set by today's standards). A Shakespearean play is approximately 160KB on disk with UTF-8 encoding. A suffix tree for such a play was found to require approximately 217,697 nodes. Java by default stores characters as UTF-16. Storing character data within each node in a suffix tree for such a document would require >29 GB of RAM. Storing character data outside the suffix tree and using offset pointers instead, reduces this to ~280 MB. So it is useful that `NodeFactory` abstracts the internal representation of nodes from the algorithms which manipulate them.
 
 Nodes are only required to expose the _edges_ within the tree as a `CharSequence` _view_ onto the character sequence, and as such they can either store character data inside the node - for example as a copied `char[]`, or outside the tree as start and end offsets into the original input string.
 
 Two basic implementations of `NodeFactory` are currently provided:
-  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html NaiveCharArrayNodeFactory]
+  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharArrayNodeFactory.html DefaultCharArrayNodeFactory]
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
     * This can use more memory for suffix trees when storing the many suffixes of large documents
     * An advantage of this factory is garbage collection: there is no risk that a large string might be retained in memory by a single node referencing only a small subsequence of the string
-  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharSequenceNodeFactory.html NaiveCharSequenceNodeFactory]
+  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/NaiveCharSequenceNodeFactory.html DefaultCharSequenceNodeFactory]
     * Does not store character data inside the tree, but instead stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
     * An advantage of this factory is it uses much less memory for suffix trees
     * A disadvantage of this factory is garbage collection: if a large document/key is added to the tree, and then a small document is added to the tree, the nodes added for the small document will re-use edges which were previously added for the large document. If the large document is subsequently removed from the tree, edges which are still in use by the small document will not be removed, and so the large document will not be garbage collected
 
-Both of the node factories above are _naive_, because although they implement those two basic strategies, they do not make any effort to reduce the number of fields within each node. Each factory produces only a single type of node for all use cases, regardless of the data which the algorithms supply to the factory to be stored in the node.
+Both of the node factories above return different implementations of nodes depending on the data that the tree algorithms supply to the factory to create a new node. For example when a node does not contain a value, these factories will return specific node implementations which omit the value field. Leaf nodes do not need a data structure to reference child nodes, and so additionally some node implementations omit that data structure. Finally, the node factories support inserting keys into the tree which *do not have values at all*. This is discussed below.
 
 Memory could be reduced further by more sophisticated node factories as follows:
   * Store character data inside nodes as UTF-8 (i.e. single-byte), convert it to 2-byte Java `char` on demand; or taking the idea to the extreme - character data could be compressed
   * Where an edge contains only two characters (for example), instead of storing a two-character `char[]`, a dedicated implementation of a node could be returned which stores the edge in two primitive `char` fields (`char[]` consumes more memory than primitive fields)
-  * Not all nodes are associated with values (the algorithms create nodes to form branches when necessary; nodes created for this purpose are never associated with values). A node factory could return an implementation which does not have a field for storing a value if no value was supplied
-  * Leaf nodes will not need to store references to any child nodes
+
+=== `VoidValue` - Inserting Keys Without Values ===
+
+Both of the node factories above support inserting keys into the tree which do not have values, using [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html VoidValue] objects.
+
+If an entry is added to a tree as follows, a custom node implementation will be used which does not actually store a value in the tree at all. This can reduce memory usage by eliminating a field and object reference.
+
+*Insert a key without a value*
+{{{
+tree.put("FOO", VoidValue.SINGLETON);
+}}}
+
+This can also be useful for applications which do not actually need to associate values with keys; radix and suffix trees can be useful for storing and querying keys alone.
