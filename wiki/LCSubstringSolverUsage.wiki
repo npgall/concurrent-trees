@@ -18,7 +18,7 @@ static final String document3 =
         "the swiss federal polytechnic in zurich";
 
 public static void main(String[] args) {
-    LCSubstringSolver solver = new LCSubstringSolver(new NaiveCharSequenceNodeFactory());
+    LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
 
     solver.add(document1);
     solver.add(document2);
