@@ -17,15 +17,15 @@ Some output from these programs:
     * 75,780 nodes
 
   * Suffix Tree of Shakespeare's Tragedy, Antony and Cleopatra
-    * 280 MB in RAM using `NaiveCharSequenceNodeFactory`
-    * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
-    * 29.438 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
+    * 280 MB in RAM using `DefaultCharSequenceNodeFactory`
+    * Insufficient RAM to build tree using `DefaultCharArrayNodeFactory`
+    * 29.438 GB if written to disk (highlights problems suffered by `DefaultCharArrayNodeFactory`)
     * 217,697 nodes
 
   * Suffix Tree of the entirety of Shakespeare's Tragedies (10 plays)
-    * 2.0 GB in RAM using `NaiveCharSequenceNodeFactory`
-    * Insufficient RAM to build tree using `NaiveCharArrayNodeFactory`
-    * 248.997 GB if written to disk (highlights problems suffered by `NaiveCharArrayNodeFactory`)
+    * 2.0 GB in RAM using `DefaultCharSequenceNodeFactory`
+    * Insufficient RAM to build tree using `DefaultCharArrayNodeFactory`
+    * 248.997 GB if written to disk (highlights memory which would be required by `DefaultCharArrayNodeFactory`)
     * 1,965,884 nodes
 
   * The Longest Common Substring of Shakespeare's Tragedies (10 plays)
