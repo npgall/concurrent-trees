@@ -47,4 +47,8 @@ If an entry is added to a tree as follows, a custom node implementation will be 
 tree.put("FOO", VoidValue.SINGLETON);
 }}}
 
-_This optimization applies to Radix Trees only._ The Suffix Tree implementation does not store application-supplied values in the tree in the first place, as it stores references to complete keys in nodes instead (a concept _similar_ to "suffix links" in some existing radix tree literature). Application-supplied values are stored outside of the suffix tree, in a map which would only have as many entries as complete keys added to the tree, so much fewer entries than there would be nodes. Therefore there would not be such a great memory saving in the case of suffix trees.
+_This optimization applies to Concurrent Radix Tree and its derivatives only._ The Concurrent Suffix Tree does not store application-supplied values in the tree in the first place.
+
+In the case of Concurrent Suffix Tree, because application-supplied values are associated with complete keys, and suffixes must also be associated with complete keys, the tree stores references to complete keys in nodes associated with suffixes, and the mapping from complete keys to application-supplied values is maintained outside of the tree.
+
+The compete key-to-value map would only have as many entries as complete keys added to the tree, so much fewer entries than there would be nodes. There would not be a great memory saving in applications using `VoidValue` with Concurrent Suffix Tree, however it would be harmless to do so. In terms of readability, supplying `VoidValue` could still be _recommended_, because it might convey the intent of the application more clearly.
