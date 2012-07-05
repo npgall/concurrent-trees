@@ -1,9 +1,9 @@
 #summary Example Usage for Concurrent Radix Tree
 
+Example Usage for Concurrent Radix Tree.
 <wiki:toc max_depth="2" />
 
-== Example Usage for Concurrent Radix Tree ==
-=== Objective ===
+== General Usage ==
   * Create a concurrent radix tree
   * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
   * Graphically print the structure of the tree
