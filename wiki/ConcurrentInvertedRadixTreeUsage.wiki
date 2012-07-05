@@ -1,7 +1,9 @@
 #summary Example Usage for Concurrent Inverted Radix Tree
 
-== Example Usage for Concurrent Inverted Radix Tree ==
-=== Objective ===
+Example Usage for Concurrent Inverted Radix Tree.
+<wiki:toc max_depth="2" />
+
+== General Usage ==
   * Create a concurrent inverted radix tree
   * Insert *_keywords_* "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
   * Graphically print the structure of the tree
@@ -52,3 +54,13 @@ Keys contained in 'MY TEAM LIKES TOASTERS': [TEAM, TOAST]
 Values for keys contained in 'MY TEAM LIKES TOAST': [3, 2]
 Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST, 2)]
 }}}
+
+== Adding Keys without Values ==
+{{{
+tree.put("FOO", VoidValue.SINGLETON);
+}}}
+Supplying [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html VoidValue] as above, stores the key in the tree without associating it with any value.
+
+Internally, a special type of node will be used which omits a field for storing a value entirely, which can reduce memory usage when values are not needed and there will be a lot of such nodes.
+
+For more details see NodeFactoryAndMemoryUsage.
