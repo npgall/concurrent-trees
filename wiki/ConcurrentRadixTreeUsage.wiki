@@ -57,8 +57,6 @@ Key-Value pairs for keys starting with 'TE': [(TEAM, 3), (TEST, 1)]
 }}}
 
 == Adding Keys without Values ==
-=== Code ===
-
 {{{
 tree.put("FOO", VoidValue.SINGLETON);
 }}}
