@@ -1,10 +1,17 @@
 #summary Frequently Asked Questions
 
 Frequently Asked Questions. For various values of "frequently".
+<wiki:toc max_depth="3" />
 
-===Q: Do you have a comic about Depth-First Search?===
-A: Yes certainly, glad you asked.
+== Does the Concurrent Suffix Tree implement Ukkonen's algorithm? ==
+[http://en.wikipedia.org/wiki/Ukkonen%27s_algorithm Ukkonen's algorithm] is a method to construct a suffix tree in _linear-time_ [O(n) or O(n logn)] by scanning a string from beginning-to-end in a single pass, adding nodes for suffixes in a single pass.
 
+The Concurrent Suffix Tree in this project does _not_ implement Ukkonen's algorithm, because _Ukkonen's algorithm is by definition not thread-safe_. Ukkonen's algorithm specifies that _incomplete suffixes_ must be added to the tree, to be completed as the algorithm progresses. This would allow concurrent reading threads to observe the tree in an inconsistent state.
+
+However... Concurrent Suffix Tree does include _hooks_ for implementing Ukkonen's algorithm with some tradeoffs in future (perhaps in a derivative class). There is an additional constructor in Concurrent Suffix Tree which _restricts concurrency_ using a read-write lock, such that writing threads block reading threads, but otherwise reading threads get concurrent access when writes are not taking place. A derivative class could use this to implement Ukkonen's algorithm, so trading concurrency _temporarily_ for insertion speed.
+
+== Do you have a comic about Depth-First Search? ==
+Yes certainly, glad you asked.
+
+Credit: [http://xkcd.com/ xkcd.com], [http://xkcd.com/license.html Creative Commons Attribution-NonCommercial 2.5 License]
 [http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png]
-
-Credit: from [http://xkcd.com/ xkcd.com], [http://xkcd.com/license.html Creative Commons Attribution-NonCommercial 2.5 License]
