@@ -12,7 +12,7 @@ However... Concurrent Suffix Tree does include _hooks_ for implementing Ukkonen'
 
 It should also be noted that the current implementation when using `DefaultCharSequenceNodeFactory`, does not incur the overhead of string copying in inserts, so might actually possess some benefits of the approaches used in [http://europa.zbh.uni-hamburg.de/pubs/pdf/GieKur1997.pdf Ukkonen's algorithm and its predecessors] (PDF).
 
-Ukkonen's algorithm in particular does not seem to lend itself well to concurrency, and would require coarse locking. An algorithm based on right-to-left scanning of strings, inserting the shortest suffix first, would be most amenable to constructing a suffix tree in O(n) or O(n logn) time, while involving less or potentially no read locks.
+Ukkonen's algorithm in particular does not seem to lend itself well to concurrency, and would require coarse locking. An algorithm based on right-to-left scanning of strings, inserting the shortest suffix first, would be most amenable to constructing a _generalized_ suffix tree (where the tree cannot be assumed to be empty) in O(n) or O(n logn) time for each insert, while involving less or potentially no read locks.
 
 == Do you have a comic about Depth-First Search? ==
 Yes certainly, glad you asked.
