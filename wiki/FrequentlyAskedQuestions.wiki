@@ -10,7 +10,7 @@ The Concurrent Suffix Tree in this project does _not_ implement Ukkonen's algori
 
 However... Concurrent Suffix Tree does include _hooks_ for implementing Ukkonen's algorithm with some tradeoffs in future (perhaps in a derivative class). There is an additional constructor in Concurrent Suffix Tree which _restricts concurrency_ using a read-write lock, such that writing threads block reading threads, but otherwise reading threads get concurrent access when writes are not taking place. A derivative class could use this to implement Ukkonen's algorithm (e.g. `tree.putBlocking(key, value)`), so trading concurrency _temporarily_ for insertion speed.
 
-It should also be noted that the current implementation when using `DefaultCharSequenceNodeFactory`, does not incur the overhead of string copying in inserts, so might actually possess some benefits of the approaches used in [http://europa.zbh.uni-hamburg.de/pubs/pdf/GieKur1997.pdf Ukkonen's algorithm and its predecessors].
+It should also be noted that the current implementation when using `DefaultCharSequenceNodeFactory`, does not incur the overhead of string copying in inserts, so might actually possess some benefits of the approaches used in [http://europa.zbh.uni-hamburg.de/pubs/pdf/GieKur1997.pdf Ukkonen's algorithm and its predecessors] (PDF).
 
 == Do you have a comic about Depth-First Search? ==
 Yes certainly, glad you asked.
