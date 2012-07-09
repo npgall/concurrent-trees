@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.googlecode.concurrent-trees</groupId>
   <artifactId>concurrent-trees</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
     <name>Concurrent-Trees</name>
     <description>Concurrent Radix Trees and Concurrent Suffix Trees for Java.</description>
@@ -20,9 +20,9 @@
         </license>
     </licenses>
     <scm>
-        <url>http://concurrent-trees.googlecode.com/svn/concurrent-trees/tags/1.0.0</url>
-        <connection>scm:svn:http://concurrent-trees.googlecode.com/svn/concurrent-trees/tags/1.0.0</connection>
-        <developerConnection>scm:svn:https://concurrent-trees.googlecode.com/svn/concurrent-trees/tags/1.0.0</developerConnection>
+        <url>http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</url>
+        <connection>scm:svn:http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</connection>
+        <developerConnection>scm:svn:https://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</developerConnection>
         <!--
             Note: When performing a release for the first time, run the following
             and and choose to permanently accept Google's server certificate:
