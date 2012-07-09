@@ -2,7 +2,7 @@
 
 == Example Usage for Concurrent Suffix Tree ==
 === Objective ===
-  * For informational purposes, print the suffixes of "TEST", "TOAST", "TEAM"
+  * Print the suffixes of "TEST", "TOAST", "TEAM" (for reference only)
   * Create a concurrent suffix tree
   * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
   * Graphically print the structure of the tree
