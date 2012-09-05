@@ -18,7 +18,7 @@ A patch encapsulating the change is constructed, and descendant nodes of the exi
 
 Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants.
 
-The node 'te' will be garbage collected per normal Java garbage rules, when it is no longer reachable by any thread; that is when threads which are traversing the old version of the tree, finish traversing that version and release their reference to the old node.
+The node 'te' will be garbage collected per normal Java garbage collection rules, when it is no longer reachable by any thread; that is when threads which are traversing the old version of the tree, finish traversing that version and release their reference to the old node.
 
 Most changes to be applied to the tree are not more complicated than the example above, and are implemented using same patching mechanism. Their exact algorithms are documented in the source code.
 
