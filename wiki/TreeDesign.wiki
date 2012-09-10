@@ -38,4 +38,6 @@ The restrictions above allow updates to be applied _*atomically*_ by applying a 
 Strictly speaking, some of the restrictions above are _not_ required for the atomicity aspect, but are in the design to reduce memory overhead, as discussed in NodeFactoryAndMemoryUsage.
 
 == Traversal ==
-  * Algorithms use iteration rather than recursion to traverse the trees
+  * Algorithms use iteration rather than recursion to traverse the trees, which allows large trees to be traversed without a risk of stack overflow
+  * The method to locate during traversal the sought child node among a collection of child nodes descending from a parent, is factored out to the implementation of Node objects
+    * Currently, the provided `NodeFactory` implementations use *binary search* to locate sought child nodes; however alternative Node implementations which use hash maps keyed on the first character of the outgoing edge would also be possible
