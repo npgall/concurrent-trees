@@ -6,6 +6,7 @@
   * Create a concurrent suffix tree
   * Insert keys "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
   * Graphically print the structure of the tree
+  * Find values for keys exactly matching "TEST", "TOAST"
   * Find keys ending with "ST", "M"
   * Find values for keys ending with "ST"
   * Find key-value pairs for keys ending with "ST"
