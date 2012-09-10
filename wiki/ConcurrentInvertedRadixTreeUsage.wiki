@@ -7,6 +7,7 @@ Example Usage for Concurrent Inverted Radix Tree.
   * Create a concurrent inverted radix tree
   * Insert *_keywords_* "TEST", "TOAST", "TEAM", associate with integer values 1, 2, 3
   * Graphically print the structure of the tree
+  * Find values for keywords exactly matching "TEST", "TOAST"
   * Find keywords *_contained in example document_* "MY TEAM LIKES TOAST"
   * Find keywords contained in example document "MY TEAM LIKES TOASTERS"
   * Find values for keywords contained in example document "MY TEAM LIKES TOAST"
