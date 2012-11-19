@@ -20,7 +20,7 @@ Reading threads traversing the tree while the patch above is being applied, will
 
 The node 'te' will be garbage collected per normal Java garbage collection rules, when it is no longer reachable by any thread; that is when threads which are traversing the old version of the tree, finish traversing that version and release their reference to the old node.
 
-Most changes to be applied to the tree are not more complicated than the example above, and are implemented using same patching mechanism. Their exact algorithms are documented in the source code.
+Most changes to be applied to the tree are not more complicated than the example above, and are implemented using the same patching mechanism. Their exact algorithms are documented in the source code.
 
 ===Restrictions on Mutability===
 To support atomicity of updates as above, nodes in the tree have the following restrictions in their design:
