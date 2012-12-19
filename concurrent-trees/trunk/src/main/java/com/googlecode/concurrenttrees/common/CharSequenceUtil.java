@@ -95,6 +95,13 @@ public class CharSequenceUtil {
         return input.subSequence(startIndex, input.length());
     }
 
+    public static CharSequence getPrefix(CharSequence input, int endIndex) {
+        if (endIndex > input.length()) {
+            return input;
+        }
+        return input.subSequence(0, endIndex);
+    }
+
     public static CharSequence subtractPrefix(CharSequence main, CharSequence prefix) {
         int startIndex = prefix.length();
         int mainLength = main.length();
