@@ -341,6 +341,62 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<CharSequence> getClosestKeys(CharSequence prefix) {
+        acquireReadLockIfNecessary();
+        try {
+            SearchResult searchResult = searchTree(prefix);
+            Classification classification = searchResult.classification;
+            switch (classification) {
+                case EXACT_MATCH: {
+                    return getDescendantKeys(prefix, searchResult.nodeFound);
+                }
+                case KEY_ENDS_MID_EDGE: {
+                    // Append the remaining characters of the edge to the key.
+                    // For example if we searched for CO, but first matching node was COFFEE,
+                    // the key associated with the first node should be COFFEE...
+                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    return getDescendantKeys(prefix, searchResult.nodeFound);
+                }
+                case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
+                    // Example: if we searched for CX, but deepest matching node was CO,
+                    // the results should include node CO and its descendants...
+                    CharSequence keyOfParentNode = CharSequenceUtil.getPrefix(prefix, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                    CharSequence keyOfNodeFound = CharSequenceUtil.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                    return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
+                }
+                case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
+                    if (searchResult.charsMatched == 0) {
+                        // Closest match is the root node, we don't consider this a match for anything...
+                        break;
+                    }
+                    // Example: if we searched for COFFEE, but deepest matching node was CO,
+                    // the results should include node CO and its descendants...
+                    CharSequence keyOfNodeFound = CharSequenceUtil.getPrefix(prefix, searchResult.charsMatched);
+                    return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
+                }
+            }
+            return Collections.emptySet();
+
+        }
+        finally {
+            releaseReadLockIfNecessary();
+        }
+    }
+
+    @Override
+    public Set<O> getValuesForClosestKeys(CharSequence candidate) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    @Override
+    public Set<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 
     // ------------- Helper method for put() -------------
 

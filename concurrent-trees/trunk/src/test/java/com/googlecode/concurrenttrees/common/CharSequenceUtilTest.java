@@ -83,6 +83,14 @@ public class CharSequenceUtilTest {
     }
 
     @Test
+    public void testGetPrefix() throws Exception {
+        Assert.assertEquals("", CharSequenceUtil.getPrefix("BANANA", 0));
+        Assert.assertEquals("BAN", CharSequenceUtil.getPrefix("BANANA", 3));
+        Assert.assertEquals("BANANA", CharSequenceUtil.getPrefix("BANANA", 6));
+        Assert.assertEquals("BANANA", CharSequenceUtil.getPrefix("BANANA", 7));
+    }
+
+    @Test
     public void testSubtractPrefix() throws Exception {
         Assert.assertEquals("ANA", CharSequenceUtil.subtractPrefix("BANANA", "BAN"));
         Assert.assertEquals("", CharSequenceUtil.subtractPrefix("BANANA", "BANANA"));

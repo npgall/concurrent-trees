@@ -656,6 +656,26 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
+    public void testGetClosestKeys() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+
+        //    ○
+        //    └── ○ CO
+        //        ├── ○ D (1)
+        //        │   └── ○ FISH (2)
+        //        └── ○ FFEE (3)
+
+        assertEquals("[COD, CODFISH, COFFEE]", tree.getClosestKeys("COW").toString());
+        assertEquals("[COD, CODFISH, COFFEE]", tree.getClosestKeys("CX").toString());
+        assertEquals("[COD, CODFISH]", tree.getClosestKeys("COD").toString());
+        assertEquals("[COFFEE]", tree.getClosestKeys("COF").toString());
+        assertEquals("[]", tree.getClosestKeys("DO").toString());
+    }
+
+    @Test
     public void testKeyValuePair_Accessor() {
         KeyValuePair<Integer> pair = new ConcurrentRadixTree.KeyValuePairImpl<Integer>("FOO", 5);
         assertEquals(pair.getKey(), "FOO");

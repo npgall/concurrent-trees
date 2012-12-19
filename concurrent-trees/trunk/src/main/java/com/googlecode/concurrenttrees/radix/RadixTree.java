@@ -113,4 +113,42 @@ public interface RadixTree<O> {
      * @return The set of {@link KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
      */
     Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
+
+    /**
+     * Returns the set of keys in the tree which are the closest match for the given candidate key.
+     * <p/>
+     * Example:<br/>
+     * Tree contains: {@code Ford Focus}, {@code Ford Mondeo}, {@code BMW M3}<br/>
+     * <code>getClosestKeys("Ford F150")</code> -> returns {@code Ford Focus}, {@code Ford Mondeo}<br/>
+     * <p/>
+     * This is <i>inclusive</i> - if the given candidate is an exact match for a key in the tree, that key is also
+     * returned.
+     *
+     * @param candidate A candidate key
+     * @return The set of keys in the tree which most closely match the candidate key, inclusive
+     */
+    Set<CharSequence> getClosestKeys(CharSequence candidate);
+
+    /**
+     * Returns the set of values associated with keys in the tree which are the closest match for the given
+     * candidate key.
+     * <p/>
+     * See {#getClosestKeys} for more details.
+     *
+     * @param candidate A candidate key
+     * @return The set of values associated with keys in the tree which most closely match the candidate key, inclusive
+     */
+    Set<O> getValuesForClosestKeys(CharSequence candidate);
+
+    /**
+     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree which are the closest
+     * match for the given candidate key.
+     * <p/>
+     * See {#getClosestKeys} for more details.
+     *
+     * @param candidate A candidate key
+     * @return The set of {@link KeyValuePair}s for keys and their associated values in the tree which most closely
+     * match the candidate key, inclusive
+     */
+    Set<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate);
 }
