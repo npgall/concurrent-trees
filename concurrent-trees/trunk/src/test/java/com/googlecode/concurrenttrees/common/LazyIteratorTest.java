@@ -50,15 +50,16 @@ public class LazyIteratorTest {
 
     @Test
     public void testIteration() {
-        LazyIterator<Integer> lazyIterator = newLazyIterator();
-        advance(lazyIterator, 4);
+        LazyIterator<Integer> lazyIterator = newLazyIterator(1, 2, 3, 4);
+        advance(lazyIterator, 3);
+        Assert.assertTrue("should return true indefinitely until objects consumed", lazyIterator.hasNext());
         Assert.assertTrue("should return true indefinitely until objects consumed", lazyIterator.hasNext());
 
         List<Integer> values = new ArrayList<Integer>();
         while (lazyIterator.hasNext()) {
             values.add(lazyIterator.next());
         }
-        Assert.assertEquals("[1, 2, 3, 4]", values.toString());
+        Assert.assertEquals("[4]", values.toString());
     }
 
     @Test(expected = NoSuchElementException.class)
