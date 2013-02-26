@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radixinverted;
 
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -87,7 +88,7 @@ public class ConcurrentInvertedRadixTreeTest {
                 "i think that i shall never see\n" +
                 "a poem lovely as a tree";
 
-        assertEquals("[think, never, see, poem, tree]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[think, never, see, poem, tree]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -103,7 +104,7 @@ public class ConcurrentInvertedRadixTreeTest {
                 "i think that i shall never see\n" +
                 "a poem lovely as a tree";
 
-        assertEquals("[2, 3, 1, 5, 4]", tree.getValuesForKeysContainedIn(document).toString());
+        assertEquals("[2, 3, 1, 5, 4]", Iterables.toString(tree.getValuesForKeysContainedIn(document)));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class ConcurrentInvertedRadixTreeTest {
                 "i think that i shall never see\n" +
                 "a poem lovely as a tree";
 
-        assertEquals("[(think, 2), (never, 3), (see, 1), (poem, 5), (tree, 4)]", tree.getKeyValuePairsForKeysContainedIn(document).toString());
+        assertEquals("[(think, 2), (never, 3), (see, 1), (poem, 5), (tree, 4)]", Iterables.toString(tree.getKeyValuePairsForKeysContainedIn(document)));
     }
 
     @Test
@@ -131,7 +132,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "BAZ FOOBAR BAZ";
 
-        assertEquals("[FOO, FOOBAR]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[FOO, FOOBAR]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -141,7 +142,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "BAZ BAZ BAZ";
 
-        assertEquals("[]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "BAZ BAZ BAZ";
 
-        assertEquals("[]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -165,7 +166,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "";
 
-        assertEquals("[]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -177,7 +178,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "FOOBA";
 
-        assertEquals("[FOO]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[FOO]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test
@@ -189,7 +190,7 @@ public class ConcurrentInvertedRadixTreeTest {
         String document =
                 "FOOD";
 
-        assertEquals("[FOO, FOOD]", tree.getKeysContainedIn(document).toString());
+        assertEquals("[FOO, FOOD]", Iterables.toString(tree.getKeysContainedIn(document)));
     }
 
     @Test

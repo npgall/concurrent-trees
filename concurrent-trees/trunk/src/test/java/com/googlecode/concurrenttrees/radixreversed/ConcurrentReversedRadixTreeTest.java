@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radixreversed;
 
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -81,10 +82,10 @@ public class ConcurrentReversedRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[TOAST, TEST]", tree.getKeysEndingWith("ST").toString());
-        assertEquals("[TEAM]", tree.getKeysEndingWith("M").toString());
-        assertEquals("[TEAM, TOAST, TEST]", tree.getKeysEndingWith("").toString());
-        assertEquals("[]", tree.getKeysEndingWith("Z").toString());
+        assertEquals("[TOAST, TEST]", Iterables.toString(tree.getKeysEndingWith("ST")));
+        assertEquals("[TEAM]", Iterables.toString(tree.getKeysEndingWith("M")));
+        assertEquals("[TEAM, TOAST, TEST]", Iterables.toString(tree.getKeysEndingWith("")));
+        assertEquals("[]", Iterables.toString(tree.getKeysEndingWith("Z")));
     }
 
     @Test
@@ -94,10 +95,10 @@ public class ConcurrentReversedRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[3, 1]", tree.getValuesForKeysEndingWith("ST").toString());
-        assertEquals("[2]", tree.getValuesForKeysEndingWith("M").toString());
-        assertEquals("[2, 3, 1]", tree.getValuesForKeysEndingWith("").toString());
-        assertEquals("[]", tree.getValuesForKeysEndingWith("Z").toString());
+        assertEquals("[3, 1]", Iterables.toString(tree.getValuesForKeysEndingWith("ST")));
+        assertEquals("[2]", Iterables.toString(tree.getValuesForKeysEndingWith("M")));
+        assertEquals("[2, 3, 1]", Iterables.toString(tree.getValuesForKeysEndingWith("")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysEndingWith("Z")));
     }
 
     @Test
@@ -107,10 +108,10 @@ public class ConcurrentReversedRadixTreeTest {
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
 
-        assertEquals("[(TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForKeysEndingWith("ST").toString());
-        assertEquals("[(TEAM, 2)]", tree.getKeyValuePairsForKeysEndingWith("M").toString());
-        assertEquals("[(TEAM, 2), (TOAST, 3), (TEST, 1)]", tree.getKeyValuePairsForKeysEndingWith("").toString());
-        assertEquals("[]", tree.getKeyValuePairsForKeysEndingWith("Z").toString());
+        assertEquals("[(TOAST, 3), (TEST, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("ST")));
+        assertEquals("[(TEAM, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("M")));
+        assertEquals("[(TEAM, 2), (TOAST, 3), (TEST, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("Z")));
     }
 
     @Test

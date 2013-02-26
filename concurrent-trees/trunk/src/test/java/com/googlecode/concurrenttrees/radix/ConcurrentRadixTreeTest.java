@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.Node;
@@ -645,14 +646,14 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ ST (1)
         //        └── ○ OAST (3)
 
-        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", tree.getKeysStartingWith("").toString());
-        assertEquals("[COFFEE]", tree.getKeysStartingWith("C").toString());
-        assertEquals("[COFFEE]", tree.getKeysStartingWith("COFFEE").toString());
-        assertEquals("[]", tree.getKeysStartingWith("COFFEES").toString());
-        assertEquals("[TEA, TEAM, TEST, TOAST]", tree.getKeysStartingWith("T").toString());
-        assertEquals("[TEA, TEAM, TEST]", tree.getKeysStartingWith("TE").toString());
-        assertEquals("[TEA, TEAM]", tree.getKeysStartingWith("TEA").toString());
-        assertEquals("[TOAST]", tree.getKeysStartingWith("TO").toString());
+        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysStartingWith("")));
+        assertEquals("[COFFEE]", Iterables.toString(tree.getKeysStartingWith("C")));
+        assertEquals("[COFFEE]", Iterables.toString(tree.getKeysStartingWith("COFFEE")));
+        assertEquals("[]", Iterables.toString(tree.getKeysStartingWith("COFFEES")));
+        assertEquals("[TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysStartingWith("T")));
+        assertEquals("[TEA, TEAM, TEST]", Iterables.toString(tree.getKeysStartingWith("TE")));
+        assertEquals("[TEA, TEAM]", Iterables.toString(tree.getKeysStartingWith("TEA")));
+        assertEquals("[TOAST]", Iterables.toString(tree.getKeysStartingWith("TO")));
     }
 
     @Test
@@ -668,11 +669,12 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ FISH (2)
         //        └── ○ FFEE (3)
 
-        assertEquals("[COD, CODFISH, COFFEE]", tree.getClosestKeys("COW").toString());
-        assertEquals("[COD, CODFISH, COFFEE]", tree.getClosestKeys("CX").toString());
-        assertEquals("[COD, CODFISH]", tree.getClosestKeys("COD").toString());
-        assertEquals("[COFFEE]", tree.getClosestKeys("COF").toString());
-        assertEquals("[]", tree.getClosestKeys("DO").toString());
+        assertEquals("[COD, CODFISH, COFFEE]", Iterables.toString(tree.getClosestKeys("COW")));
+        assertEquals("[COD, CODFISH, COFFEE]", Iterables.toString(tree.getClosestKeys("CX")));
+        assertEquals("[COD, CODFISH]", Iterables.toString(tree.getClosestKeys("COD")));
+        assertEquals("[COFFEE]", Iterables.toString(tree.getClosestKeys("COF")));
+        assertEquals("[]", Iterables.toString(tree.getClosestKeys("DO")));
+        assertEquals("[CODFISH]", Iterables.toString(tree.getClosestKeys("CODFISHES")));
     }
 
     @Test
@@ -717,14 +719,14 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ ST (1)
         //        └── ○ OAST (3)
 
-        assertEquals("[5, 4, 2, 1, 3]", tree.getValuesForKeysStartingWith("").toString());
-        assertEquals("[5]", tree.getValuesForKeysStartingWith("C").toString());
-        assertEquals("[5]", tree.getValuesForKeysStartingWith("COFFEE").toString());
-        assertEquals("[]", tree.getValuesForKeysStartingWith("COFFEES").toString());
-        assertEquals("[4, 2, 1, 3]", tree.getValuesForKeysStartingWith("T").toString());
-        assertEquals("[4, 2, 1]", tree.getValuesForKeysStartingWith("TE").toString());
-        assertEquals("[4, 2]", tree.getValuesForKeysStartingWith("TEA").toString());
-        assertEquals("[3]", tree.getValuesForKeysStartingWith("TO").toString());
+        assertEquals("[5, 4, 2, 1, 3]", Iterables.toString(tree.getValuesForKeysStartingWith("")));
+        assertEquals("[5]", Iterables.toString(tree.getValuesForKeysStartingWith("C")));
+        assertEquals("[5]", Iterables.toString(tree.getValuesForKeysStartingWith("COFFEE")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysStartingWith("COFFEES")));
+        assertEquals("[4, 2, 1, 3]", Iterables.toString(tree.getValuesForKeysStartingWith("T")));
+        assertEquals("[4, 2, 1]", Iterables.toString(tree.getValuesForKeysStartingWith("TE")));
+        assertEquals("[4, 2]", Iterables.toString(tree.getValuesForKeysStartingWith("TEA")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForKeysStartingWith("TO")));
     }
 
     @Test
@@ -745,14 +747,14 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ ST (1)
         //        └── ○ OAST (3)
 
-        assertEquals("[(COFFEE, 5), (TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", tree.getKeyValuePairsForKeysStartingWith("").toString());
-        assertEquals("[(COFFEE, 5)]", tree.getKeyValuePairsForKeysStartingWith("C").toString());
-        assertEquals("[(COFFEE, 5)]", tree.getKeyValuePairsForKeysStartingWith("COFFEE").toString());
-        assertEquals("[]", tree.getKeyValuePairsForKeysStartingWith("COFFEES").toString());
-        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", tree.getKeyValuePairsForKeysStartingWith("T").toString());
-        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1)]", tree.getKeyValuePairsForKeysStartingWith("TE").toString());
-        assertEquals("[(TEA, 4), (TEAM, 2)]", tree.getKeyValuePairsForKeysStartingWith("TEA").toString());
-        assertEquals("[(TOAST, 3)]", tree.getKeyValuePairsForKeysStartingWith("TO").toString());
+        assertEquals("[(COFFEE, 5), (TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("")));
+        assertEquals("[(COFFEE, 5)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("C")));
+        assertEquals("[(COFFEE, 5)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("COFFEE")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("COFFEES")));
+        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("T")));
+        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("TE")));
+        assertEquals("[(TEA, 4), (TEAM, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("TEA")));
+        assertEquals("[(TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("TO")));
     }
 
     @Test(expected = IllegalArgumentException.class)

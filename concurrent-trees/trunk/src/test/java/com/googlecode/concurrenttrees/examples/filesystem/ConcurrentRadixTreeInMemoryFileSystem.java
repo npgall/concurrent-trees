@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.examples.filesystem;
 
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.RadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
@@ -81,7 +82,7 @@ public class ConcurrentRadixTreeInMemoryFileSystem<F> implements PrettyPrintable
             throw new IllegalArgumentException("Containing directory cannot contain '$': " + containingDirectory);
         }
         String fullyQualifiedDirectory = containingDirectory + "$";
-        Set<CharSequence> filePaths = radixTree.getKeysStartingWith(fullyQualifiedDirectory);
+        Iterable<CharSequence> filePaths = radixTree.getKeysStartingWith(fullyQualifiedDirectory);
         List<String> fileNames = new LinkedList<String>();
         for (CharSequence filePath : filePaths) {
             fileNames.add(new StringBuilder(CharSequenceUtil.subtractPrefix(filePath, fullyQualifiedDirectory)).toString());
@@ -98,7 +99,7 @@ public class ConcurrentRadixTreeInMemoryFileSystem<F> implements PrettyPrintable
             throw new IllegalArgumentException("Containing directory cannot contain '$': " + containingDirectory);
         }
         String fullyQualifiedPath = containingDirectory + "$";
-        return radixTree.getValuesForKeysStartingWith(fullyQualifiedPath);
+        return Iterables.toList(radixTree.getValuesForKeysStartingWith(fullyQualifiedPath));
     }
 
     @Override
@@ -109,7 +110,7 @@ public class ConcurrentRadixTreeInMemoryFileSystem<F> implements PrettyPrintable
         if (containingDirectory.contains("$")) {
             throw new IllegalArgumentException("Containing directory cannot contain '$': " + containingDirectory);
         }
-        Set<CharSequence> filePaths = radixTree.getKeysStartingWith(containingDirectory);
+        Iterable<CharSequence> filePaths = radixTree.getKeysStartingWith(containingDirectory);
         List<String> fileNames = new LinkedList<String>();
         for (CharSequence filePath : filePaths) {
             String filePathString = new StringBuilder(filePath).toString();
@@ -127,7 +128,7 @@ public class ConcurrentRadixTreeInMemoryFileSystem<F> implements PrettyPrintable
         if (containingDirectory.contains("$")) {
             throw new IllegalArgumentException("Containing directory cannot contain '$': " + containingDirectory);
         }
-        return radixTree.getValuesForKeysStartingWith(containingDirectory);
+        return Iterables.toList(radixTree.getValuesForKeysStartingWith(containingDirectory));
     }
 
     @Override

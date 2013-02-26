@@ -17,6 +17,7 @@ package com.googlecode.concurrenttrees.suffix;
 
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
@@ -232,7 +233,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysEndingWith(CharSequence suffix) {
+    public Iterable<CharSequence> getKeysEndingWith(CharSequence suffix) {
         Set<? extends CharSequence> originalKeys = radixTree.getValueForExactKey(suffix);
         if (originalKeys == null) {
             return Collections.emptySet();
@@ -247,111 +248,194 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<O> getValuesForKeysEndingWith(CharSequence suffix) {
-        Set<String> originalKeys = radixTree.getValueForExactKey(suffix);
-        if (originalKeys == null) {
-            return Collections.emptySet();
-        }
-        Set<O> results = new LinkedHashSet<O>();
-        for (String originalKey : originalKeys) {
-            O value = valueMap.get(originalKey);
-            // Delegate to helper method to facilitate unit testing...
-            addIfNotNull(value, results);
-            // else race condition, key/value was removed while iterating, skip value for that key
-        }
-        return results;
-    }
+    public Iterable<O> getValuesForKeysEndingWith(final CharSequence suffix) {
+        return new Iterable<O>() {
+            @Override
+            public Iterator<O> iterator() {
+                return new LazyIterator<O>() {
+                    Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
-        Set<String> originalKeys = radixTree.getValueForExactKey(suffix);
-        if (originalKeys == null) {
-            return Collections.emptySet();
-        }
-        Set<KeyValuePair<O>> results = new HashSet<KeyValuePair<O>>(originalKeys.size());
-        for (String originalKey : originalKeys) {
-            O value = valueMap.get(originalKey);
-            // Delegate to helper method to facilitate unit testing...
-            addIfNotNull(originalKey, value, results);
-            // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
-        }
-        return results;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<CharSequence> getKeysContaining(CharSequence fragment) {
-        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
-        Set<CharSequence> results = new LinkedHashSet<CharSequence>();
-        for (Set<String> originalKeySet : originalKeysSets) {
-            for (String originalKey : originalKeySet) {
-                results.add(originalKey);
+                    @Override
+                    protected O computeNext() {
+                        O value = null;
+                        while (value == null) {
+                            if (!originalKeys.hasNext()) {
+                                return endOfData();
+                            }
+                            String originalKey = originalKeys.next();
+                            value = valueMap.get(originalKey);
+                        }
+                        return value;
+                    }
+                };
             }
-        }
-        return results;
+        };
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Collection<O> getValuesForKeysContaining(CharSequence fragment) {
-        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
-        Set<O> results = new LinkedHashSet<O>();
-        for (Set<String> originalKeySet : originalKeysSets) {
-            for (String originalKey : originalKeySet) {
-                O value = valueMap.get(originalKey);
-                // Delegate to helper method to facilitate unit testing...
-                addIfNotNull(value, results);
-                // else race condition, key/value was removed while iterating, skip value for that key
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(final CharSequence suffix) {
+        return new Iterable<KeyValuePair<O>>() {
+            @Override
+            public Iterator<KeyValuePair<O>> iterator() {
+                return new LazyIterator<KeyValuePair<O>>() {
+                    Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
+
+                    @Override
+                    protected KeyValuePair<O> computeNext() {
+                        String originalKey = null;
+                        O value = null;
+                        while (value == null) {
+                            if (!originalKeys.hasNext()) {
+                                return endOfData();
+                            }
+                            originalKey = originalKeys.next();
+                            value = valueMap.get(originalKey);
+                        }
+                        return new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value);
+                    }
+                };
             }
-        }
-        return results;
+        };
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence fragment) {
-        Collection<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment);
-        Set<KeyValuePair<O>> results = new LinkedHashSet<KeyValuePair<O>>();
-        for (Set<String> originalKeySet : originalKeysSets) {
-            for (String originalKey : originalKeySet) {
-                O value = valueMap.get(originalKey);
-                // Delegate to helper method to facilitate unit testing...
-                addIfNotNull(originalKey, value, results);
-                // else race condition, key/value was removed while iterating, skip KeyValuePair for that key
+    public Iterable<CharSequence> getKeysContaining(final CharSequence fragment) {
+        return new Iterable<CharSequence>() {
+            @Override
+            public Iterator<CharSequence> iterator() {
+                return new LazyIterator<CharSequence>() {
+
+                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
+
+                    // A given fragment can be contained many times within the same key, so track keys processed
+                    // so far, so that we can avoid re-processing the same key multiple times...
+                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+
+                    @Override
+                    protected CharSequence computeNext() {
+                        String nextKey = null;
+                        while (nextKey == null) {
+                            while (!keyIterator.hasNext()) {
+                                if (!originalKeysSets.hasNext()) {
+                                    return endOfData();
+                                }
+                                keyIterator = originalKeysSets.next().iterator();
+                            }
+                            nextKey = keyIterator.next();
+                            if (!keysAlreadyProcessed.add(nextKey)) {
+                                // The set already contained the key, hence we don't reprocess it...
+                                nextKey = null;
+                            }
+                        }
+                        return nextKey;
+                    }
+                };
             }
-        }
-        return results;
+        };
     }
-    
+
     /**
-     * Utility method to add a value to the set if the value is not null.
-     * Logic is factored out to this method to support unit testing where value is only null if race conditions occur.
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<O> getValuesForKeysContaining(final CharSequence fragment) {
+        return new Iterable<O>() {
+            @Override
+            public Iterator<O> iterator() {
+                return new LazyIterator<O>() {
+
+                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
+
+                    // A given fragment can be contained many times within the same key, so track keys processed
+                    // so far, so that we can avoid re-processing the same key multiple times...
+                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+
+                    @Override
+                    protected O computeNext() {
+                        O value = null;
+                        while (value == null) {
+                            while (!keyIterator.hasNext()) {
+                                if (!originalKeysSets.hasNext()) {
+                                    return endOfData();
+                                }
+                                keyIterator = originalKeysSets.next().iterator();
+                            }
+                            String originalKey = keyIterator.next();
+
+                            if (keysAlreadyProcessed.add(originalKey)) {
+                                // Key was not in the already-processed set, so proceed with looking up the value...
+                                value = valueMap.get(originalKey);
+
+                                // value could still be null due to race condition if key/value was removed while
+                                // iterating, hence if so, we loop again to find the next non-null key/value...
+                            }
+                        }
+                        return value;
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContaining(final CharSequence fragment) {
+        return new Iterable<KeyValuePair<O>>() {
+            @Override
+            public Iterator<KeyValuePair<O>> iterator() {
+                return new LazyIterator<KeyValuePair<O>>() {
+
+                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
+
+                    // A given fragment can be contained many times within the same key, so track keys processed
+                    // so far, so that we can avoid re-processing the same key multiple times...
+                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+
+                    @Override
+                    protected KeyValuePair<O> computeNext() {
+                        String originalKey = null;
+                        O value = null;
+                        while (value == null) {
+                            while (!keyIterator.hasNext()) {
+                                if (!originalKeysSets.hasNext()) {
+                                    return endOfData();
+                                }
+                                keyIterator = originalKeysSets.next().iterator();
+                            }
+                            originalKey = keyIterator.next();
+
+                            if (keysAlreadyProcessed.add(originalKey)) {
+                                // Key was not in the already-processed set, so proceed with looking up the value...
+                                value = valueMap.get(originalKey);
+
+                                // value could still be null due to race condition if key/value was removed while
+                                // iterating, hence if so, we loop again to find the next non-null key/value...
+                            }
+                        }
+                        return new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value);
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * Utility method to return an iterator for the given iterable, or an empty iterator if the iterable is null.
      */
     @SuppressWarnings({"JavaDoc"})
-    static <O> void addIfNotNull(O value, Collection<O> results) {
-        if (value != null) {
-            results.add(value);
-        }
-    }
-
-    /**
-     * Utility method to add a {@link KeyValuePair} to the set if the value is not null.
-     * Logic is factored out to this method to support unit testing where value is only null if race conditions occur.
-     */
-    @SuppressWarnings({"JavaDoc"})
-    static <O> void addIfNotNull(String key, O value, Collection<KeyValuePair<O>> results) {
-        if (value != null) {
-            results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(key, value));
-        }
+    static <T> Iterator<T> nullSafeIterator(Iterable<T> iterable) {
+        return iterable == null ? Collections.<T>emptyList().iterator() : iterable.iterator();
     }
 
     @Override

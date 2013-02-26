@@ -17,9 +17,6 @@ package com.googlecode.concurrenttrees.radix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 
-import java.util.Collection;
-import java.util.Set;
-
 /**
  * API of a radix tree, that is a tree which allows values to be looked up based on <i>prefixes</i> of the keys
  * with which they were associated, as well as based on exact matches for keys. A radix tree essentially allows
@@ -78,7 +75,7 @@ public interface RadixTree<O> {
     O getValueForExactKey(CharSequence key);
 
     /**
-     * Returns the set of keys in the tree which start with the given prefix.
+     * Returns a lazy iterable which returns the set of keys in the tree which start with the given prefix.
      * <p/>
      * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, that key is also
      * returned.
@@ -86,10 +83,11 @@ public interface RadixTree<O> {
      * @param prefix A prefix of sought keys in the tree
      * @return The set of keys in the tree which start with the given prefix, inclusive
      */
-    Set<CharSequence> getKeysStartingWith(CharSequence prefix);
+    Iterable<CharSequence> getKeysStartingWith(CharSequence prefix);
 
     /**
-     * Returns the set of values associated with keys in the tree which start with the given prefix.
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which start with the
+     * given prefix.
      * <p/>
      * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the value associated
      * with that key is also returned.
@@ -100,11 +98,11 @@ public interface RadixTree<O> {
      * @param prefix A prefix of keys in the tree for which associated values are sought
      * @return The set of values associated with keys in the tree which start with the given prefix, inclusive
      */
-    Set<O> getValuesForKeysStartingWith(CharSequence prefix);
+    Iterable<O> getValuesForKeysStartingWith(CharSequence prefix);
 
     /**
-     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree, where the keys start
-     * with the given prefix.
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys and their associated values
+     * in the tree, where the keys start with the given prefix.
      * <p/>
      * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the {@link KeyValuePair}
      * for that key is also returned.
@@ -112,10 +110,11 @@ public interface RadixTree<O> {
      * @param prefix A prefix of keys in the tree for which associated {@link KeyValuePair}s are sought
      * @return The set of {@link KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
+    Iterable<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
 
     /**
-     * Returns the set of keys in the tree which are the closest match for the given candidate key.
+     * Returns a lazy iterable which returns the set of keys in the tree which are the closest match for the given
+     * candidate key.
      * <p/>
      * Example:<br/>
      * Tree contains: {@code Ford Focus}, {@code Ford Mondeo}, {@code BMW M3}<br/>
@@ -127,22 +126,22 @@ public interface RadixTree<O> {
      * @param candidate A candidate key
      * @return The set of keys in the tree which most closely match the candidate key, inclusive
      */
-    Set<CharSequence> getClosestKeys(CharSequence candidate);
+    Iterable<CharSequence> getClosestKeys(CharSequence candidate);
 
     /**
-     * Returns the set of values associated with keys in the tree which are the closest match for the given
-     * candidate key.
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which are the closest
+     * match for the given candidate key.
      * <p/>
      * See {#getClosestKeys} for more details.
      *
      * @param candidate A candidate key
      * @return The set of values associated with keys in the tree which most closely match the candidate key, inclusive
      */
-    Set<O> getValuesForClosestKeys(CharSequence candidate);
+    Iterable<O> getValuesForClosestKeys(CharSequence candidate);
 
     /**
-     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree which are the closest
-     * match for the given candidate key.
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys and their associated values in
+     * the tree which are the closest match for the given candidate key.
      * <p/>
      * See {#getClosestKeys} for more details.
      *
@@ -150,5 +149,5 @@ public interface RadixTree<O> {
      * @return The set of {@link KeyValuePair}s for keys and their associated values in the tree which most closely
      * match the candidate key, inclusive
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate);
+    Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate);
 }

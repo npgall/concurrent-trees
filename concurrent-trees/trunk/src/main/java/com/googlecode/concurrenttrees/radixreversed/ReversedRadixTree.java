@@ -17,8 +17,6 @@ package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 
-import java.util.Set;
-
 /**
  * API of a reversed radix tree, that is a tree which allows values to be looked up based on <i>suffixes</i> of the keys
  * with which they were associated, as well as based on exact matches for keys. A reverse radix tree essentially allows
@@ -83,7 +81,7 @@ public interface ReversedRadixTree<O> {
     O getValueForExactKey(CharSequence key);
 
     /**
-     * Returns the set of keys in the tree which end with the given suffix.
+     * Returns a lazy iterable which returns the set of keys in the tree which end with the given suffix.
      * <p/>
      * This is <i>inclusive</i> - if the given suffix is an exact match for a key in the tree, that key is also
      * returned.
@@ -91,10 +89,11 @@ public interface ReversedRadixTree<O> {
      * @param suffix A suffix of sought keys in the tree
      * @return The set of keys in the tree which end with the given suffix, inclusive
      */
-    Set<CharSequence> getKeysEndingWith(CharSequence suffix);
+    Iterable<CharSequence> getKeysEndingWith(CharSequence suffix);
 
     /**
-     * Returns the set of values associated with keys in the tree which end with the given suffix.
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which end with the
+     * given suffix.
      * <p/>
      * This is <i>inclusive</i> - if the given suffix is an exact match for a key in the tree, the value associated
      * with that key is also returned.
@@ -105,11 +104,11 @@ public interface ReversedRadixTree<O> {
      * @param suffix A suffix of keys in the tree for which associated values are sought
      * @return The set of values associated with keys in the tree which end with the given suffix, inclusive
      */
-    Set<O> getValuesForKeysEndingWith(CharSequence suffix);
+    Iterable<O> getValuesForKeysEndingWith(CharSequence suffix);
 
     /**
-     * Returns the set of {@link KeyValuePair}s for keys and their associated values in the tree, where the keys end
-     * with the given suffix.
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys and their associated values
+     * in the tree, where the keys end with the given suffix.
      * <p/>
      * This is <i>inclusive</i> - if the given suffix is an exact match for a key in the tree, the {@link KeyValuePair}
      * for that key is also returned.
@@ -117,5 +116,5 @@ public interface ReversedRadixTree<O> {
      * @param suffix A suffix of keys in the tree for which associated {@link KeyValuePair}s are sought
      * @return The set of {@link KeyValuePair}s for keys in the tree which end with the given suffix, inclusive
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix);
+    Iterable<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix);
 }

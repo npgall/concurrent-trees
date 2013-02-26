@@ -106,7 +106,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysEndingWith(CharSequence suffix) {
+    public Iterable<CharSequence> getKeysEndingWith(CharSequence suffix) {
         return radixTree.getKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
@@ -114,7 +114,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public Set<O> getValuesForKeysEndingWith(CharSequence suffix) {
+    public Iterable<O> getValuesForKeysEndingWith(CharSequence suffix) {
         return radixTree.getValuesForKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
@@ -122,7 +122,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
         return radixTree.getKeyValuePairsForKeysStartingWith(CharSequenceUtil.reverse(suffix));
     }
 
