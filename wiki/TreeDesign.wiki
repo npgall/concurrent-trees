@@ -39,5 +39,6 @@ Strictly speaking, some of the restrictions above are _not_ required for the ato
 
 == Traversal ==
   * Algorithms use iteration rather than recursion to traverse the trees, which allows large trees to be traversed without a risk of stack overflow
+  * Traversals for querying the tree use lazy iteration, such that the application drives iteration by stepping through a results Iterable
   * The method to locate during traversal the sought child node among a collection of child nodes descending from a parent, is factored out to the implementation of Node objects
     * Currently, the provided `NodeFactory` implementations use *binary search* to locate sought child nodes; however alternative Node implementations which use hash maps keyed on the first character of the outgoing edge would also be possible
