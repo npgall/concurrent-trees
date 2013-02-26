@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.examples.usage;
 
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
@@ -41,9 +42,9 @@ public class InvertedRadixTreeUsage {
         System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
         System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
         System.out.println();
-        System.out.println("Keys contained in 'MY TEAM LIKES TOAST': " + tree.getKeysContainedIn("MY TEAM LIKES TOAST"));
-        System.out.println("Keys contained in 'MY TEAM LIKES TOASTERS': " + tree.getKeysContainedIn("MY TEAM LIKES TOASTERS"));
-        System.out.println("Values for keys contained in 'MY TEAM LIKES TOAST': " + tree.getValuesForKeysContainedIn("MY TEAM LIKES TOAST"));
-        System.out.println("Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': " + tree.getKeyValuePairsForKeysContainedIn("MY TEAM LIKES TOAST"));
+        System.out.println("Keys contained in 'MY TEAM LIKES TOAST': " + Iterables.toString(tree.getKeysContainedIn("MY TEAM LIKES TOAST")));
+        System.out.println("Keys contained in 'MY TEAM LIKES TOASTERS': " + Iterables.toString(tree.getKeysContainedIn("MY TEAM LIKES TOASTERS")));
+        System.out.println("Values for keys contained in 'MY TEAM LIKES TOAST': " + Iterables.toString(tree.getValuesForKeysContainedIn("MY TEAM LIKES TOAST")));
+        System.out.println("Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': " + Iterables.toString(tree.getKeyValuePairsForKeysContainedIn("MY TEAM LIKES TOAST")));
     }
 }

@@ -68,7 +68,7 @@ public class InMemoryFileSystemUsage {
         System.out.println("Retrieve Ford F150 brochure contents using exact file name: " + fordF150BrochureRetrieved);
 
         System.out.println();
-        System.out.println("Retrieve all Ford brochure contents recursively:-");
+        System.out.println("Retrieve all Ford brochure contents in directory:-");
         Collection<Brochure> fordBrochuresRetrieved = fileSystem.getFilesInDirectory("/brochures/ford/");
         for (Brochure fordBrochure : fordBrochuresRetrieved) {
             System.out.println(fordBrochure);

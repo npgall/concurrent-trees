@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.examples.usage;
 
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
@@ -41,10 +42,10 @@ public class ReversedRadixTreeUsage {
         System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
         System.out.println("Value for 'TOAST' (exact match): " + tree.getValueForExactKey("TOAST"));
         System.out.println();
-        System.out.println("Keys ending with 'ST': " + tree.getKeysEndingWith("ST"));
-        System.out.println("Keys ending with 'M': " + tree.getKeysEndingWith("M"));
+        System.out.println("Keys ending with 'ST': " + Iterables.toString(tree.getKeysEndingWith("ST")));
+        System.out.println("Keys ending with 'M': " + Iterables.toString(tree.getKeysEndingWith("M")));
         System.out.println();
-        System.out.println("Values for keys ending with 'ST': " + tree.getValuesForKeysEndingWith("ST"));
-        System.out.println("Key-Value pairs for keys ending with 'ST': " + tree.getKeyValuePairsForKeysEndingWith("ST"));
+        System.out.println("Values for keys ending with 'ST': " + Iterables.toString(tree.getValuesForKeysEndingWith("ST")));
+        System.out.println("Key-Value pairs for keys ending with 'ST': " + Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("ST")));
     }
 }
