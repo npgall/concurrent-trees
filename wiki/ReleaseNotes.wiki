@@ -1,4 +1,5 @@
 #summary Release notes for official releases of the concurrent-trees library
+#labels Featured
 
 ===Version 2.0.0 - 2013-02-26===
  * Uses lazy evaluation for lower latency, lower CPU/memory usage, and better filtering support: see [http://code.google.com/p/concurrent-trees/wiki/FrequentlyAskedQuestions#What_is_Lazy_Evaluation,_and_why_return_Iterable_instead_of_Coll Frequently Asked Questions]
