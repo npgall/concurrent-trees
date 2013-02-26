@@ -125,6 +125,7 @@
                     <header>src/etc/header.txt</header>
                     <excludes>
                         <exclude>src/test/resources/**</exclude>
+                        <exclude>src/main/java/com/googlecode/concurrenttrees/common/LazyIterator.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
