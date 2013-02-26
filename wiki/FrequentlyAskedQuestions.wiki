@@ -28,7 +28,7 @@ for (CharSequence key : keysStartingWithFoo) {
 }}}
 
 By returning an `Iterable`, the library does not pre-compute _any_ results.
-  * It is only when the application starts iterating through the iterable, that each next element in turn is computed: each step in iteration, drives the traversal algorithms to locate the _next_ result to return
+  * It is only when the application starts iterating through the Iterable, that each next element in turn is computed: each step in iteration, drives the traversal algorithms to locate the _next_ result to return
   * Results are not stored, they are returned to the application immediately, reducing latency and memory overhead
   * The application can apply additional filtering/processing of results inside its iteration loop; this will be as efficient as if the traversal algorithm itself performed the filtering
   * The application can stop iterating at any point, and no wasted computations would have been performed
