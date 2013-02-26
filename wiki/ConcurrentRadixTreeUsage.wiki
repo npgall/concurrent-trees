@@ -11,6 +11,7 @@ Example Usage for Concurrent Radix Tree.
   * Find keys starting with "T", "TE"
   * Find values for keys starting with "TE"
   * Find key-value pairs for keys starting with "TE"
+  * Find keys closest to 'TEMPLE'
 
 === Code ===
 {{{
