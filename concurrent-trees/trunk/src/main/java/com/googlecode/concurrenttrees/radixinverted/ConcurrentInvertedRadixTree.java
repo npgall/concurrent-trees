@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radixinverted;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -99,7 +99,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
                                     charsMatched += charsMatchedThisEdge;
                                     
                                     if (currentNode.getValue() != null) {
-                                        return new KeyValuePairImpl<O>(CharSequenceUtil.toString(input.subSequence(0, charsMatched)), currentNode.getValue());
+                                        return new KeyValuePairImpl<O>(CharSequences.toString(input.subSequence(0, charsMatched)), currentNode.getValue());
                                     }
                                 }
                             }
@@ -178,7 +178,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<CharSequence> iterator() {
                 return new LazyIterator<CharSequence>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override
@@ -208,7 +208,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override
@@ -238,7 +238,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<KeyValuePair<O>> iterator() {
                 return new LazyIterator<KeyValuePair<O>>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override

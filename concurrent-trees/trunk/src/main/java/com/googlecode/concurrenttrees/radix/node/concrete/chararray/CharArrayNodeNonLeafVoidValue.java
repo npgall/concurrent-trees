@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
@@ -49,12 +49,12 @@ public class CharArrayNodeNonLeafVoidValue implements Node {
         // Sort the child nodes...
         Arrays.sort(childNodeArray, new NodeCharacterComparator());
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
-        this.incomingEdgeCharArray = CharSequenceUtil.toCharArray(edgeCharSequence);
+        this.incomingEdgeCharArray = CharSequences.toCharArray(edgeCharSequence);
     }
 
     @Override
     public CharSequence getIncomingEdge() {
-        return CharSequenceUtil.fromCharArray(incomingEdgeCharArray);
+        return CharSequences.fromCharArray(incomingEdgeCharArray);
     }
 
     @Override

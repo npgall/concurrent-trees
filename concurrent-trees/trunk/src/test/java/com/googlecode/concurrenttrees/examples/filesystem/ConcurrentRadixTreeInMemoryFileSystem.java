@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.examples.filesystem;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.RadixTree;
@@ -85,7 +85,7 @@ public class ConcurrentRadixTreeInMemoryFileSystem<F> implements PrettyPrintable
         Iterable<CharSequence> filePaths = radixTree.getKeysStartingWith(fullyQualifiedDirectory);
         List<String> fileNames = new LinkedList<String>();
         for (CharSequence filePath : filePaths) {
-            fileNames.add(new StringBuilder(CharSequenceUtil.subtractPrefix(filePath, fullyQualifiedDirectory)).toString());
+            fileNames.add(new StringBuilder(CharSequences.subtractPrefix(filePath, fullyQualifiedDirectory)).toString());
         }
         return fileNames;
     }

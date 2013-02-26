@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import com.googlecode.concurrenttrees.radix.node.Node;
 
 /**
  * An internal interface implemented by trees, which allows internal details of trees to be accessed by
- * {@link com.googlecode.concurrenttrees.common.PrettyPrintUtil}.
+ * {@link com.googlecode.concurrenttrees.common.PrettyPrinter}.
  *
  * @author Niall Gallagher
  */

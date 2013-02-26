@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,11 @@
  */
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
-import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
-import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Stores only incoming edge as a {@code char[]}, and a reference to a value. Does <b>not</b> store any outgoing
@@ -44,13 +39,13 @@ public class CharArrayNodeLeafWithValue implements Node {
     private final Object value;
 
     public CharArrayNodeLeafWithValue(CharSequence edgeCharSequence, Object value) {
-        this.incomingEdgeCharArray = CharSequenceUtil.toCharArray(edgeCharSequence);
+        this.incomingEdgeCharArray = CharSequences.toCharArray(edgeCharSequence);
         this.value = value;
     }
 
     @Override
     public CharSequence getIncomingEdge() {
-        return CharSequenceUtil.fromCharArray(incomingEdgeCharArray);
+        return CharSequences.fromCharArray(incomingEdgeCharArray);
     }
 
     @Override

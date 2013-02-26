@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.googlecode.concurrenttrees.examples.shakespeare;
 
 
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.examples.shakespeare.util.IOUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -90,7 +90,7 @@ public class BuildShakespeareWordRadixTree {
             }
         }
 
-        final String radixTreePrinted = PrettyPrintUtil.prettyPrint(tree);
+        final String radixTreePrinted = PrettyPrinter.prettyPrint(tree);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

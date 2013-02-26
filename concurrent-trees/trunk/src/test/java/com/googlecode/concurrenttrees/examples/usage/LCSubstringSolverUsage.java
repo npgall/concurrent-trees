@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.examples.usage;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.solver.LCSubstringSolver;
 
@@ -42,7 +42,7 @@ public class LCSubstringSolverUsage {
         solver.add(document2);
         solver.add(document3);
 
-        String longestCommonSubstring = CharSequenceUtil.toString(solver.getLongestCommonSubstring());
+        String longestCommonSubstring = CharSequences.toString(solver.getLongestCommonSubstring());
         System.out.println(longestCommonSubstring);
     }
 }

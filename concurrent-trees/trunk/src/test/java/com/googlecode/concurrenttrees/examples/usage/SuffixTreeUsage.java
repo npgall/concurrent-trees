@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package com.googlecode.concurrenttrees.examples.usage;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.examples.usage.testutils.TestUtils;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
@@ -30,9 +30,9 @@ import com.googlecode.concurrenttrees.suffix.SuffixTree;
 public class SuffixTreeUsage {
 
 public static void main(String[] args) {
-    System.out.println("Suffixes for 'TEST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEST")));
-    System.out.println("Suffixes for 'TOAST': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TOAST")));
-    System.out.println("Suffixes for 'TEAM': " + TestUtils.iterableToString(CharSequenceUtil.generateSuffixes("TEAM")));
+    System.out.println("Suffixes for 'TEST': " + TestUtils.iterableToString(CharSequences.generateSuffixes("TEST")));
+    System.out.println("Suffixes for 'TOAST': " + TestUtils.iterableToString(CharSequences.generateSuffixes("TOAST")));
+    System.out.println("Suffixes for 'TEAM': " + TestUtils.iterableToString(CharSequences.generateSuffixes("TEAM")));
 
     SuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(new DefaultCharArrayNodeFactory());
 
@@ -43,7 +43,7 @@ public static void main(String[] args) {
     System.out.println();
     System.out.println("Tree structure:");
     // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
-    PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+    PrettyPrinter.prettyPrint((PrettyPrintable) tree, System.out);
 
     System.out.println();
     System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));

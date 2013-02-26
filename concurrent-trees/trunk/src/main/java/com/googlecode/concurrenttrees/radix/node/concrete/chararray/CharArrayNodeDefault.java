@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,13 +70,13 @@ public class CharArrayNodeDefault implements Node {
         // Sort the child nodes...
         Arrays.sort(childNodeArray, new NodeCharacterComparator());
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
-        this.incomingEdgeCharArray = CharSequenceUtil.toCharArray(edgeCharSequence);
+        this.incomingEdgeCharArray = CharSequences.toCharArray(edgeCharSequence);
         this.value = value;
     }
 
     @Override
     public CharSequence getIncomingEdge() {
-        return CharSequenceUtil.fromCharArray(incomingEdgeCharArray);
+        return CharSequences.fromCharArray(incomingEdgeCharArray);
     }
 
     @Override
