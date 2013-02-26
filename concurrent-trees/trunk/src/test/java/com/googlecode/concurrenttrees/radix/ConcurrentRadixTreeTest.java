@@ -678,6 +678,48 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
+    public void testGetValuesForClosestKeys() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+
+        //    ○
+        //    └── ○ CO
+        //        ├── ○ D (1)
+        //        │   └── ○ FISH (2)
+        //        └── ○ FFEE (3)
+
+        assertEquals("[1, 2, 3]", Iterables.toString(tree.getValuesForClosestKeys("COW")));
+        assertEquals("[1, 2, 3]", Iterables.toString(tree.getValuesForClosestKeys("CX")));
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForClosestKeys("COD")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForClosestKeys("COF")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForClosestKeys("DO")));
+        assertEquals("[2]", Iterables.toString(tree.getValuesForClosestKeys("CODFISHES")));
+    }
+
+    @Test
+    public void testGetKeyValuePairsForClosestKeys() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+
+        //    ○
+        //    └── ○ CO
+        //        ├── ○ D (1)
+        //        │   └── ○ FISH (2)
+        //        └── ○ FFEE (3)
+
+        assertEquals("[(COD, 1), (CODFISH, 2), (COFFEE, 3)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("COW")));
+        assertEquals("[(COD, 1), (CODFISH, 2), (COFFEE, 3)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("CX")));
+        assertEquals("[(COD, 1), (CODFISH, 2)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("COD")));
+        assertEquals("[(COFFEE, 3)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("COF")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("DO")));
+        assertEquals("[(CODFISH, 2)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("CODFISHES")));
+    }
+
+    @Test
     public void testKeyValuePair_Accessor() {
         KeyValuePair<Integer> pair = new ConcurrentRadixTree.KeyValuePairImpl<Integer>("FOO", 5);
         assertEquals(pair.getKey(), "FOO");
