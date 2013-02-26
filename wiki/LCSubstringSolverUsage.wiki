@@ -24,7 +24,7 @@ public static void main(String[] args) {
     solver.add(document2);
     solver.add(document3);
 
-    String longestCommonSubstring = CharSequenceUtil.toString(solver.getLongestCommonSubstring());
+    String longestCommonSubstring = CharSequences.toString(solver.getLongestCommonSubstring());
     System.out.println(longestCommonSubstring);
 }
 }}}
