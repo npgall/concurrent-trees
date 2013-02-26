@@ -34,6 +34,8 @@ public static void main(String[] args) {
     System.out.println();
     System.out.println("Values for keys starting with 'TE': " + Iterables.toString(tree.getValuesForKeysStartingWith("TE")));
     System.out.println("Key-Value pairs for keys starting with 'TE': " + Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("TE")));
+    System.out.println();
+    System.out.println("Keys closest to 'TEMPLE': " + Iterables.toString(tree.getClosestKeys("TEMPLE")));
 }
 }}}
 
@@ -55,6 +57,8 @@ Keys starting with 'TE': [TEAM, TEST]
 
 Values for keys starting with 'TE': [3, 1]
 Key-Value pairs for keys starting with 'TE': [(TEAM, 3), (TEST, 1)]
+
+Keys closest to 'TEMPLE': [TEAM, TEST]
 }}}
 
 == Adding Keys without Values ==
