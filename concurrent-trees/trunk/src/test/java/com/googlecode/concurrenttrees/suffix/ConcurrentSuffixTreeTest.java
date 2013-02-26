@@ -15,9 +15,8 @@
  */
 package com.googlecode.concurrenttrees.suffix;
 
-import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
-import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.junit.Test;
@@ -332,10 +331,10 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[BANANA, BANDANA]", tree.getKeysEndingWith("ANA").toString());
-        assertEquals("[BANDANA]", tree.getKeysEndingWith("DANA").toString());
-        assertEquals("[]", tree.getKeysEndingWith("BAN").toString());
-        assertEquals("[]", tree.getKeysEndingWith("").toString());
+        assertEquals("[BANANA, BANDANA]", Iterables.toString(tree.getKeysEndingWith("ANA")));
+        assertEquals("[BANDANA]", Iterables.toString(tree.getKeysEndingWith("DANA")));
+        assertEquals("[]", Iterables.toString(tree.getKeysEndingWith("BAN")));
+        assertEquals("[]", Iterables.toString(tree.getKeysEndingWith("")));
     }
 
     @Test
@@ -345,10 +344,10 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[1, 2]", tree.getValuesForKeysEndingWith("ANA").toString());
-        assertEquals("[2]", tree.getValuesForKeysEndingWith("DANA").toString());
-        assertEquals("[]", tree.getValuesForKeysEndingWith("BAN").toString());
-        assertEquals("[]", tree.getValuesForKeysEndingWith("").toString());
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForKeysEndingWith("ANA")));
+        assertEquals("[2]", Iterables.toString(tree.getValuesForKeysEndingWith("DANA")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysEndingWith("BAN")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysEndingWith("")));
     }
 
     @Test
@@ -358,10 +357,10 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[(BANANA, 1), (BANDANA, 2)]", tree.getKeyValuePairsForKeysEndingWith("ANA").toString());
-        assertEquals("[(BANDANA, 2)]", tree.getKeyValuePairsForKeysEndingWith("DANA").toString());
-        assertEquals("[]", tree.getKeyValuePairsForKeysEndingWith("BAN").toString());
-        assertEquals("[]", tree.getKeyValuePairsForKeysEndingWith("").toString());
+        assertEquals("[(BANANA, 1), (BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("ANA")));
+        assertEquals("[(BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("DANA")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("BAN")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysEndingWith("")));
     }
 
     @Test
@@ -371,13 +370,13 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[BANANA]", tree.getKeysContaining("ANAN").toString());
-        assertEquals("[BANDANA]", tree.getKeysContaining("DA").toString());
-        assertEquals("[BANANA, BANDANA]", tree.getKeysContaining("AN").toString());
-        assertEquals("[BANANA, BANDANA]", tree.getKeysContaining("BAN").toString());
-        assertEquals("[BANANA, BANDANA]", tree.getKeysContaining("ANA").toString());
-        assertEquals("[]", tree.getKeysContaining("APPLE").toString());
-        assertEquals("[BANANA, BANDANA]", tree.getKeysContaining("").toString());
+        assertEquals("[BANANA]", Iterables.toString(tree.getKeysContaining("ANAN")));
+        assertEquals("[BANDANA]", Iterables.toString(tree.getKeysContaining("DA")));
+        assertEquals("[BANANA, BANDANA]", Iterables.toString(tree.getKeysContaining("AN")));
+        assertEquals("[BANANA, BANDANA]", Iterables.toString(tree.getKeysContaining("BAN")));
+        assertEquals("[BANANA, BANDANA]", Iterables.toString(tree.getKeysContaining("ANA")));
+        assertEquals("[]", Iterables.toString(tree.getKeysContaining("APPLE")));
+        assertEquals("[BANANA, BANDANA]", Iterables.toString(tree.getKeysContaining("")));
     }
 
     @Test
@@ -387,13 +386,13 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[1]", tree.getValuesForKeysContaining("ANAN").toString());
-        assertEquals("[2]", tree.getValuesForKeysContaining("DA").toString());
-        assertEquals("[1, 2]", tree.getValuesForKeysContaining("AN").toString());
-        assertEquals("[1, 2]", tree.getValuesForKeysContaining("BAN").toString());
-        assertEquals("[1, 2]", tree.getValuesForKeysContaining("ANA").toString());
-        assertEquals("[]", tree.getValuesForKeysContaining("APPLE").toString());
-        assertEquals("[1, 2]", tree.getValuesForKeysContaining("").toString());
+        assertEquals("[1]", Iterables.toString(tree.getValuesForKeysContaining("ANAN")));
+        assertEquals("[2]", Iterables.toString(tree.getValuesForKeysContaining("DA")));
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForKeysContaining("AN")));
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForKeysContaining("BAN")));
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForKeysContaining("ANA")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysContaining("APPLE")));
+        assertEquals("[1, 2]", Iterables.toString(tree.getValuesForKeysContaining("")));
     }
 
     @Test
@@ -403,13 +402,13 @@ public class ConcurrentSuffixTreeTest {
         tree.put("BANANA", 1);
         tree.put("BANDANA", 2);
 
-        assertEquals("[(BANANA, 1)]", tree.getKeyValuePairsForKeysContaining("ANAN").toString());
-        assertEquals("[(BANDANA, 2)]", tree.getKeyValuePairsForKeysContaining("DA").toString());
-        assertEquals("[(BANANA, 1), (BANDANA, 2)]", tree.getKeyValuePairsForKeysContaining("AN").toString());
-        assertEquals("[(BANANA, 1), (BANDANA, 2)]", tree.getKeyValuePairsForKeysContaining("BAN").toString());
-        assertEquals("[(BANANA, 1), (BANDANA, 2)]", tree.getKeyValuePairsForKeysContaining("ANA").toString());
-        assertEquals("[]", tree.getKeyValuePairsForKeysContaining("APPLE").toString());
-        assertEquals("[(BANANA, 1), (BANDANA, 2)]", tree.getKeyValuePairsForKeysContaining("").toString());
+        assertEquals("[(BANANA, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("ANAN")));
+        assertEquals("[(BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("DA")));
+        assertEquals("[(BANANA, 1), (BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("AN")));
+        assertEquals("[(BANANA, 1), (BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("BAN")));
+        assertEquals("[(BANANA, 1), (BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("ANA")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("APPLE")));
+        assertEquals("[(BANANA, 1), (BANDANA, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysContaining("")));
     }
 
     @Test
@@ -423,26 +422,6 @@ public class ConcurrentSuffixTreeTest {
         // Test the default (production) implementation of this method, should return a set based on ConcurrentHashMap...
         ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(nodeFactory, true);
         assertTrue(tree.createSetForOriginalKeys().getClass().equals(Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>()).getClass()));
-    }
-
-    @Test
-    public void testNullValueHandlingOnRaceCondition_ValueSet() {
-        Set<Integer> results = new HashSet<Integer>();
-        //noinspection NullableProblems
-        ConcurrentSuffixTree.addIfNotNull(null, results);
-        assertTrue(results.isEmpty());
-        ConcurrentSuffixTree.addIfNotNull(1, results);
-        assertTrue(results.contains(1));
-    }
-
-    @Test
-    public void testNullValueHandlingOnRaceCondition_KeyValuePairSet() {
-        Set<KeyValuePair<Integer>> results = new HashSet<KeyValuePair<Integer>>();
-        //noinspection NullableProblems
-        ConcurrentSuffixTree.addIfNotNull("FOO", null, results);
-        assertTrue(results.isEmpty());
-        ConcurrentSuffixTree.addIfNotNull("FOO", 1, results);
-        assertTrue(results.contains(new ConcurrentRadixTree.KeyValuePairImpl("FOO", 1)));
     }
 
     /**

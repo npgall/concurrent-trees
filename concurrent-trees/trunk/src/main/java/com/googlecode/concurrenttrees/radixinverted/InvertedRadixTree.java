@@ -17,8 +17,6 @@ package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 
-import java.util.Set;
-
 /**
  * API of an inverted radix tree, that is a radix tree which is set up to scan external documents for keys previously
  * added to the tree, rather than for data contained in the tree itself.
@@ -81,26 +79,28 @@ public interface InvertedRadixTree<O> {
     O getValueForExactKey(CharSequence key);
 
     /**
-     * Returns the set of keys in the tree which are contained in the given document.
+     * Returns a lazy iterable which returns the set of keys in the tree which are contained in the given document.
      *
      * @param document A document to be scanned for keys contained in the tree
      * @return The set of keys in the tree which are contained in the given document
      */
-    Set<CharSequence> getKeysContainedIn(CharSequence document);
+    Iterable<CharSequence> getKeysContainedIn(CharSequence document);
 
     /**
-     * Returns the set of values associated with keys in the tree which are contained in the given document.
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which are contained
+     * in the given document.
      *
      * @param document A document to be scanned for keys contained in the tree
      * @return The set of values associated with keys in the tree which are contained in the given document
      */
-    Set<O> getValuesForKeysContainedIn(CharSequence document);
+    Iterable<O> getValuesForKeysContainedIn(CharSequence document);
 
     /**
-     * Returns the set of {@link KeyValuePair}s for keys in the tree which are contained in the given document.
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys in the tree which are contained
+     * in the given document.
      *
      * @param document A document to be scanned for keys contained in the tree
      * @return The set of {@link KeyValuePair}s for keys in the tree which are contained in the given document
      */
-    Set<KeyValuePair<O>> getKeyValuePairsForKeysContainedIn(CharSequence document);
+    Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContainedIn(CharSequence document);
 }

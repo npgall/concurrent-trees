@@ -56,8 +56,8 @@ public class LCSubstringSolver {
 
         // Override to make accessible to outer class...
         @Override
-        protected void traverseDescendants(CharSequence startKey, Node startNode, NodeKeyPairHandler nodeHandler) {
-            super.traverseDescendants(startKey, startNode, nodeHandler);
+        protected Iterable<NodeKeyPair> lazyTraverseDescendants(CharSequence startKey, Node startNode) {
+            return super.lazyTraverseDescendants(startKey, startNode);
         }
 
         /**
@@ -100,18 +100,14 @@ public class LCSubstringSolver {
             Node root = suffixTree.getNode();
             final CharSequence[] longestCommonSubstringSoFar = new CharSequence[] {""};
             final int[] longestCommonSubstringSoFarLength = new int[] {0};
-            suffixTree.traverseDescendants("", root, new ConcurrentSuffixTreeImpl.NodeKeyPairHandler() {
-                @Override
-                public boolean handle(ConcurrentRadixTree.NodeKeyPair nodeKeyPair) {
-                    if (nodeKeyPair.key.length() > longestCommonSubstringSoFarLength[0]
-                        && subTreeReferencesAllOriginalDocuments(nodeKeyPair.key, nodeKeyPair.node)) {
-                        longestCommonSubstringSoFarLength[0] = nodeKeyPair.key.length();
-                        longestCommonSubstringSoFar[0] = nodeKeyPair.key;
-                    }
-                    // Continue traversal...
-                    return true;
+
+            for (NodeKeyPair nodeKeyPair : lazyTraverseDescendants("", root)) {
+                if (nodeKeyPair.key.length() > longestCommonSubstringSoFarLength[0]
+                    && subTreeReferencesAllOriginalDocuments(nodeKeyPair.key, nodeKeyPair.node)) {
+                    longestCommonSubstringSoFarLength[0] = nodeKeyPair.key.length();
+                    longestCommonSubstringSoFar[0] = nodeKeyPair.key;
                 }
-            });
+            }
             return longestCommonSubstringSoFar[0];
         }
 
@@ -130,25 +126,21 @@ public class LCSubstringSolver {
         boolean subTreeReferencesAllOriginalDocuments(CharSequence startKey, Node startNode) {
             final Set<String> documentsEncounteredSoFar = new HashSet<String>(originalDocuments.size());
             final boolean[] result = new boolean[] {false};
-            traverseDescendants(startKey, startNode, new ConcurrentSuffixTreeImpl.NodeKeyPairHandler() {
-                @Override
-                public boolean handle(NodeKeyPair nodeKeyPair) {
-                    @SuppressWarnings({"unchecked"})
-                    Set<String> documentsReferencedByThisNode = (Set<String>) nodeKeyPair.node.getValue();
-                    if (documentsReferencedByThisNode != null) {
-                        documentsEncounteredSoFar.addAll(documentsReferencedByThisNode);
-                        if (documentsEncounteredSoFar.equals(originalDocuments)) {
-                            // We have now found all of the original documents
-                            // referenced from descendants of the start node...
-                            result[0] = true;
-                            // Stop traversal...
-                            return false;
-                        }
+
+            for (NodeKeyPair nodeKeyPair : lazyTraverseDescendants(startKey, startNode)) {
+                @SuppressWarnings({"unchecked"})
+                Set<String> documentsReferencedByThisNode = (Set<String>) nodeKeyPair.node.getValue();
+                if (documentsReferencedByThisNode != null) {
+                    documentsEncounteredSoFar.addAll(documentsReferencedByThisNode);
+                    if (documentsEncounteredSoFar.equals(originalDocuments)) {
+                        // We have now found all of the original documents
+                        // referenced from descendants of the start node...
+                        result[0] = true;
+                        // Stop traversal...
+                        break;
                     }
-                    // Continue traversal...
-                    return true;
                 }
-            });
+            }
             return result[0];
         }
     }

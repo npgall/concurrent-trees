@@ -17,13 +17,14 @@ package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * An implementation of {@link InvertedRadixTree} which supports lock-free concurrent reads, and allows items to be
@@ -46,49 +47,69 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         }
 
         /**
-         * Traverses the tree based on characters in the given input, and for each node traversed which encodes a key
-         * in the tree, invokes the given {@link KeyValueHandler} supplying it the key which matched that node and
-         * the value from the node.
+         * Lazily traverses the tree based on characters in the given input, and returns from the tree the next node
+         * and its value where the key associated with the node matches the characters from the input. More than
+         * one matching keyword can be found for the same input, if there are keys in the tree which are prefixes of
+         * each other.
+         * <p/>
+         * Example:<br/>
+         * Given two keywords in the tree: "Ford" and "Ford Focus"<br/>
+         * Given a document: "I am shopping for a Ford Focus car"<br/>
+         * Where the given input in this instance is the suffix of the document: "Ford Focus car"<br/>
+         * ...then this method will return both "Ford" and "Ford Focus".<br/>
+         * The caller can invoke this method repeatedly for each suffix of the document.<br/>
          *
          * @param input A sequence of characters which controls traversal of the tree
-         * @param keyValueHandler An object which will be notified of every key and value encountered in the input
+         * @return An iterable which will search for the next node in the tree matching the input
          */
-        protected void scanForKeysAtStartOfInput(CharSequence input, KeyValueHandler keyValueHandler) {
-            Node currentNode = super.root;
-            int charsMatched = 0;
+        protected Iterable<KeyValuePair<O>> scanForKeysAtStartOfInput(final CharSequence input) {
+            return new Iterable<KeyValuePair<O>>() {
+                @Override
+                public Iterator<KeyValuePair<O>> iterator() {
+                    return new LazyIterator<KeyValuePair<O>>() {
 
-            final int documentLength = input.length();
-            outer_loop: while (charsMatched < documentLength) {
-                Node nextNode = currentNode.getOutgoingEdge(input.charAt(charsMatched));
-                if (nextNode == null) {
-                    // Next node is a dead end...
-                    //noinspection UnnecessaryLabelOnBreakStatement
-                    break outer_loop;
-                }
+                        Node currentNode = root;
+                        int charsMatched = 0;
 
-                currentNode = nextNode;
-                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                int charsMatchedThisEdge = 0;
-                for (int i = 0, j = Math.min(currentNodeEdgeCharacters.length(), documentLength - charsMatched); i < j; i++) {
-                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
-                        // Found a difference in chars between character in key and a character in current node.
-                        // Current node is the deepest match (inexact match)....
-                        break outer_loop;
-                    }
-                    charsMatchedThisEdge++;
+                        final int documentLength = input.length();
+
+                        @Override
+                        protected KeyValuePair<O> computeNext() {
+                            outer_loop: while (charsMatched < documentLength) {
+                                Node nextNode = currentNode.getOutgoingEdge(input.charAt(charsMatched));
+                                if (nextNode == null) {
+                                    // Next node is a dead end...
+                                    //noinspection UnnecessaryLabelOnBreakStatement
+                                    break outer_loop;
+                                }
+
+                                currentNode = nextNode;
+                                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
+                                int charsMatchedThisEdge = 0;
+                                for (int i = 0, j = Math.min(currentNodeEdgeCharacters.length(), documentLength - charsMatched); i < j; i++) {
+                                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                                        // Found a difference in chars between character in key and a character in current node.
+                                        // Current node is the deepest match (inexact match)....
+                                        break outer_loop;
+                                    }
+                                    charsMatchedThisEdge++;
+                                }
+                                if (charsMatchedThisEdge == currentNodeEdgeCharacters.length()) {
+                                    // All characters in the current edge matched, add this number to total chars matched...
+                                    charsMatched += charsMatchedThisEdge;
+                                    
+                                    if (currentNode.getValue() != null) {
+                                        return new KeyValuePairImpl<O>(CharSequenceUtil.toString(input.subSequence(0, charsMatched)), currentNode.getValue());
+                                    }
+                                }
+                            }
+                            return endOfData();
+                        }
+                    };
                 }
-                if (charsMatchedThisEdge == currentNodeEdgeCharacters.length()) {
-                    // All characters in the current edge matched, add this number to total chars matched...
-                    charsMatched += charsMatchedThisEdge;
-                }
-                if (currentNode.getValue() != null) {
-                    keyValueHandler.handle(input.subSequence(0, charsMatched), currentNode.getValue());
-                }
-            }
+            };
         }
-        interface KeyValueHandler {
-            void handle(CharSequence key, Object value);
-        }
+
     }
     private final ConcurrentInvertedRadixTreeImpl<O> radixTree;
 
@@ -152,60 +173,90 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysContainedIn(CharSequence document) {
-        Iterable<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document);
-        final Set<CharSequence> results = new LinkedHashSet<CharSequence>();
-        for (CharSequence documentSuffix : documentSuffixes) {
-            radixTree.scanForKeysAtStartOfInput(documentSuffix, new ConcurrentInvertedRadixTreeImpl.KeyValueHandler() {
-                @Override
-                public void handle(CharSequence key, Object value) {
-                    String keyString = CharSequenceUtil.toString(key);
-                    results.add(keyString);
-                }
-            });
-        }
-        return results;
+    public Iterable<CharSequence> getKeysContainedIn(final CharSequence document) {
+        return new Iterable<CharSequence>() {
+            @Override
+            public Iterator<CharSequence> iterator() {
+                return new LazyIterator<CharSequence>() {
+                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
+
+                    @Override
+                    protected CharSequence computeNext() {
+                        while(!matchesForCurrentSuffix.hasNext()) {
+                            if (documentSuffixes.hasNext()) {
+                                CharSequence nextSuffix = documentSuffixes.next();
+                                matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(nextSuffix).iterator();
+                            }
+                            else {
+                                return endOfData();
+                            }
+                        }
+                        return matchesForCurrentSuffix.next().getKey();
+                    }
+                };
+            }
+        };
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<O> getValuesForKeysContainedIn(CharSequence document) {
-        Iterable<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document);
-        final Set<O> results = new LinkedHashSet<O>();
-        for (CharSequence documentSuffix : documentSuffixes) {
-            radixTree.scanForKeysAtStartOfInput(documentSuffix, new ConcurrentInvertedRadixTreeImpl.KeyValueHandler() {
-                @Override
-                public void handle(CharSequence key, Object value) {
-                    @SuppressWarnings({"unchecked"})
-                    O valueTyped = (O)value;
-                    results.add(valueTyped);
-                }
-            });
-        }
-        return results;
+    public Iterable<O> getValuesForKeysContainedIn(final CharSequence document) {
+        return new Iterable<O>() {
+            @Override
+            public Iterator<O> iterator() {
+                return new LazyIterator<O>() {
+                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
+
+                    @Override
+                    protected O computeNext() {
+                        while(!matchesForCurrentSuffix.hasNext()) {
+                            if (documentSuffixes.hasNext()) {
+                                CharSequence nextSuffix = documentSuffixes.next();
+                                matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(nextSuffix).iterator();
+                            }
+                            else {
+                                return endOfData();
+                            }
+                        }
+                        return matchesForCurrentSuffix.next().getValue();
+                    }
+                };
+            }
+        };
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysContainedIn(CharSequence document) {
-        Iterable<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document);
-        final Set<KeyValuePair<O>> results = new LinkedHashSet<KeyValuePair<O>>();
-        for (CharSequence documentSuffix : documentSuffixes) {
-            radixTree.scanForKeysAtStartOfInput(documentSuffix, new ConcurrentInvertedRadixTreeImpl.KeyValueHandler() {
-                @Override
-                public void handle(CharSequence key, Object value) {
-                    @SuppressWarnings({"unchecked"})
-                    O valueTyped = (O)value;
-                    String keyString = CharSequenceUtil.toString(key);
-                    results.add(new ConcurrentRadixTree.KeyValuePairImpl<O>(keyString, valueTyped));
-                }
-            });
-        }
-        return results;
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContainedIn(final CharSequence document) {
+        return new Iterable<KeyValuePair<O>>() {
+            @Override
+            public Iterator<KeyValuePair<O>> iterator() {
+                return new LazyIterator<KeyValuePair<O>>() {
+                    Iterator<CharSequence> documentSuffixes = CharSequenceUtil.generateSuffixes(document).iterator();
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
+
+                    @Override
+                    protected KeyValuePair<O> computeNext() {
+                        while(!matchesForCurrentSuffix.hasNext()) {
+                            if (documentSuffixes.hasNext()) {
+                                CharSequence nextSuffix = documentSuffixes.next();
+                                matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(nextSuffix).iterator();
+                            }
+                            else {
+                                return endOfData();
+                            }
+                        }
+                        return matchesForCurrentSuffix.next();
+                    }
+                };
+            }
+        };
     }
 
     @Override

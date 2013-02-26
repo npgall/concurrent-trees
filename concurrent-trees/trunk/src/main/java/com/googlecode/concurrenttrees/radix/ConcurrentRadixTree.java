@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.common.CharSequenceUtil;
@@ -147,7 +148,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getKeysStartingWith(CharSequence prefix) {
+    public Iterable<CharSequence> getKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(prefix);
@@ -179,7 +180,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<O> getValuesForKeysStartingWith(CharSequence prefix) {
+    public Iterable<O> getValuesForKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(prefix);
@@ -211,7 +212,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(prefix);
@@ -345,7 +346,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
      * {@inheritDoc}
      */
     @Override
-    public Set<CharSequence> getClosestKeys(CharSequence prefix) {
+    public Iterable<CharSequence> getClosestKeys(CharSequence prefix) {
         acquireReadLockIfNecessary();
         try {
             SearchResult searchResult = searchTree(prefix);
@@ -389,12 +390,12 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     }
 
     @Override
-    public Set<O> getValuesForClosestKeys(CharSequence candidate) {
+    public Iterable<O> getValuesForClosestKeys(CharSequence candidate) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public Set<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate) {
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -534,96 +535,125 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     // ------------- Helper method for finding descendants of a given node -------------
 
     /**
-     * Returns a {@link Set} of {@link CharSequence} keys for which the given key is a prefix. This set inherently will
-     * not contain duplicates (duplicate keys cannot exist in the tree).
+     * Returns a lazy iterable which will return {@link CharSequence} keys for which the given key is a prefix.
+     * The results inherently will not contain duplicates (duplicate keys cannot exist in the tree).
      * <p/>
      * Note that this method internally converts {@link CharSequence}s to {@link String}s, to avoid set equality issues,
      * because equals() and hashCode() are not specified by the CharSequence API contract.
      */
     @SuppressWarnings({"JavaDoc"})
-    Set<CharSequence> getDescendantKeys(CharSequence startKey, Node startNode) {
-        final Set<CharSequence> keys = new LinkedHashSet<CharSequence>();
-        traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
+    Iterable<CharSequence> getDescendantKeys(final CharSequence startKey, final Node startNode) {
+        return new Iterable<CharSequence> () {
             @Override
-            public boolean handle(NodeKeyPair nodeKeyPair) {
-                Object value = nodeKeyPair.node.getValue();
-                if (value != null) {
-                    // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
+            public Iterator<CharSequence> iterator() {
+                return new LazyIterator<CharSequence>() {
+                    Iterator<NodeKeyPair> descendantNodes = lazyTraverseDescendants(startKey, startNode).iterator();
 
-                    // Call the transformKeyForResult method to allow key to be transformed before returning to client.
-                    // Used by subclasses such as ReversedRadixTree implementations...
-                    CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+                    @Override
+                    protected CharSequence computeNext() {
+                        // Traverse to the next matching node in the tree and return its key and value...
+                        while (descendantNodes.hasNext()) {
+                            NodeKeyPair nodeKeyPair = descendantNodes.next();
+                            Object value = nodeKeyPair.node.getValue();
+                            if (value != null) {
+                                // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
-                    // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
-                    // because equals() and hashCode() is not specified by the CharSequence API contract...
-                    String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
-                    keys.add(keyString);
-                }
-                return true;
+                                // Call the transformKeyForResult method to allow key to be transformed before returning to client.
+                                // Used by subclasses such as ReversedRadixTree implementations...
+                                CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+
+                                // -> Convert the CharSequence to a String before returning, to avoid set equality issues,
+                                // because equals() and hashCode() is not specified by the CharSequence API contract...
+                                return CharSequenceUtil.toString(optionallyTransformedKey);
+                            }
+                        }
+                        // Finished traversing the tree, no more matching nodes to return...
+                        return endOfData();
+                    }
+                };
             }
-        });
-        return keys;
+        };
     }
 
     /**
-     * Returns a {@link Collection} of values which are associated with keys in the tree for which the given key is a
-     * prefix.
+     * Returns a lazy iterable which will return values which are associated with keys in the tree for which
+     * the given key is a prefix.
      */
     @SuppressWarnings({"JavaDoc"})
-    <O> Set<O> getDescendantValues(CharSequence startKey, Node startNode) {
-        final Set<O> values = new LinkedHashSet<O>();
-        traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
+    <O> Iterable<O> getDescendantValues(final CharSequence startKey, final Node startNode) {
+        return new Iterable<O> () {
             @Override
-            public boolean handle(NodeKeyPair nodeKeyPair) {
-                Object value = nodeKeyPair.node.getValue();
-                if (value != null) {
-                    // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
+            public Iterator<O> iterator() {
+                return new LazyIterator<O>() {
+                    Iterator<NodeKeyPair> descendantNodes = lazyTraverseDescendants(startKey, startNode).iterator();
 
-                    // We have to cast to generic type here, because Node objects are not generically typed.
-                    // Background: Node objects are not generically typed, because array's can't be generically typed,
-                    // and we use arrays in nodes. We choose to cast here (in wrapper logic around the tree) rather than
-                    // pollute the already-complex tree manipulation logic with casts.
-                    @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-                    O valueTyped = (O)value;
-                    values.add(valueTyped);
-                }
-                return true;
+                    @Override
+                    protected O computeNext() {
+                        // Traverse to the next matching node in the tree and return its key and value...
+                        while (descendantNodes.hasNext()) {
+                            NodeKeyPair nodeKeyPair = descendantNodes.next();
+                            Object value = nodeKeyPair.node.getValue();
+                            if (value != null) {
+                                // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
+
+                                // We have to cast to generic type here, because Node objects are not generically typed.
+                                // Background: Node objects are not generically typed, because arrays can't be generically typed,
+                                // and we use arrays in nodes. We choose to cast here (in wrapper logic around the tree) rather than
+                                // pollute the already-complex tree manipulation logic with casts.
+                                @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+                                O valueTyped = (O)value;
+                                return valueTyped;
+                            }
+                        }
+                        // Finished traversing the tree, no more matching nodes to return...
+                        return endOfData();
+                    }
+                };
             }
-        });
-        return values;
+        };
     }
 
     /**
-     * Returns a {@link Set} of {@link KeyValuePair} objects each containing a key and a value, for which the given key
-     * is a prefix of the key in the {@link KeyValuePair}. This set inherently will not contain duplicates (duplicate
-     * keys cannot exist in the tree).
+     * Returns a lazy iterable which will return {@link KeyValuePair} objects each containing a key and a value,
+     * for which the given key is a prefix of the key in the {@link KeyValuePair}. These results inherently will not
+     * contain duplicates (duplicate keys cannot exist in the tree).
      * <p/>
      * Note that this method internally converts {@link CharSequence}s to {@link String}s, to avoid set equality issues,
      * because equals() and hashCode() are not specified by the CharSequence API contract.
      */
     @SuppressWarnings({"JavaDoc"})
-    <O> Set<KeyValuePair<O>> getDescendantKeyValuePairs(CharSequence startKey, Node startNode) {
-        final Set<KeyValuePair<O>> keyValuePairs = new LinkedHashSet<KeyValuePair<O>>();
-        traverseDescendants(startKey, startNode, new NodeKeyPairHandler() {
+    <O> Iterable<KeyValuePair<O>> getDescendantKeyValuePairs(final CharSequence startKey, final Node startNode) {
+        return new Iterable<KeyValuePair<O>> () {
             @Override
-            public boolean handle(NodeKeyPair nodeKeyPair) {
-                Object value = nodeKeyPair.node.getValue();
-                if (value != null) {
-                    // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
+            public Iterator<KeyValuePair<O>> iterator() {
+                return new LazyIterator<KeyValuePair<O>>() {
+                    Iterator<NodeKeyPair> descendantNodes = lazyTraverseDescendants(startKey, startNode).iterator();
 
-                    // Call the transformKeyForResult method to allow key to be transformed before returning to client.
-                    // Used by subclasses such as ReversedRadixTree implementations...
-                    CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+                    @Override
+                    protected KeyValuePair<O> computeNext() {
+                        // Traverse to the next matching node in the tree and return its key and value...
+                        while (descendantNodes.hasNext()) {
+                            NodeKeyPair nodeKeyPair = descendantNodes.next();
+                            Object value = nodeKeyPair.node.getValue();
+                            if (value != null) {
+                                // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
-                    // -> Convert the CharSequence to a String before adding to the set, to avoid set equality issues,
-                    // because equals() and hashCode() is not specified by the CharSequence API contract...
-                    String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
-                    keyValuePairs.add(new KeyValuePairImpl<O>(keyString, value));
-                }
-                return true;
+                                // Call the transformKeyForResult method to allow key to be transformed before returning to client.
+                                // Used by subclasses such as ReversedRadixTree implementations...
+                                CharSequence optionallyTransformedKey = transformKeyForResult(nodeKeyPair.key);
+
+                                // -> Convert the CharSequence to a String before returning, to avoid set equality issues,
+                                // because equals() and hashCode() is not specified by the CharSequence API contract...
+                                String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
+                                return new KeyValuePairImpl<O>(keyString, value);
+                            }
+                        }
+                        // Finished traversing the tree, no more matching nodes to return...
+                        return endOfData();
+                    }
+                };
             }
-        });
-        return keyValuePairs;
+        };
     }
 
     /**
@@ -647,7 +677,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         public KeyValuePairImpl(String key, Object value) {
             this.key = key;
             // We have to cast to generic type here, because Node objects are not generically typed.
-            // Background: Node objects are not generically typed, because array's can't be generically typed,
+            // Background: Node objects are not generically typed, because arrays can't be generically typed,
             // and we use arrays in nodes. We choose to cast here (in wrapper logic around the tree) rather than
             // pollute the already-complex tree manipulation logic with casts.
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
@@ -703,41 +733,56 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
     }
 
     /**
-     * Traverses the tree using depth-first, preordered search, starting at the given node.
-     * Uses iteration instead of recursion.
+     * Traverses the tree using depth-first, preordered traversal, starting at the given node, using lazy evaluation
+     * such that the next node is only determined when next() is called on the iterator returned.
+     * The traversal algorithm uses iteration instead of recursion to allow deep trees to be traversed without
+     * requiring large JVM stack sizes.
      * <p/>
-     * For each node encountered passes it to the given {@link NodeKeyPairHandler} along with a key associated with
-     * that node. The key will be prefixed by the given start key, and will be generated by appending to the start
-     * key the edges traversed along the path to each node from the start node.
+     * Each node that is encountered is returned from the iterator along with a key associated with that node,
+     * in a NodeKeyPair object. The key will be prefixed by the given start key, and will be generated by appending
+     * to the start key the edges traversed along the path to that node from the start node.
      *
      * @param startKey The key which matches the given start node
      * @param startNode The start node
-     * @param nodeHandler An object which does something with each encountered node, and which can indicate if traversal
-     * should continue or stop
+     * @return An iterator which when iterated traverses the tree using depth-first, preordered traversal,
+     * starting at the given start node
      */
-    protected void traverseDescendants(CharSequence startKey, Node startNode, NodeKeyPairHandler nodeHandler) {
-        Deque<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
-        stack.push(new NodeKeyPair(startNode, startKey));
-        while (!stack.isEmpty()) {
-            NodeKeyPair current = stack.pop();
-            boolean continueTraversal = nodeHandler.handle(current);
-            if (!continueTraversal) {
-                return;
-            }
-            List<Node> childNodes = current.node.getOutgoingEdges();
+    protected Iterable<NodeKeyPair> lazyTraverseDescendants(final CharSequence startKey, final Node startNode) {
+        return new Iterable<NodeKeyPair>() {
+            @Override
+            public Iterator<NodeKeyPair> iterator() {
+                return new LazyIterator<NodeKeyPair>() {
 
-            // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
-            // to counteract that pushing them onto the stack alone would otherwise reverse their processing order.
-            // This ensures that we actually process nodes in ascending alphabetical order.
-            for (int i = childNodes.size(); i > 0; i--) {
-                Node child = childNodes.get(i - 1);
-                stack.push(new NodeKeyPair(child, CharSequenceUtil.concatenate(current.key, child.getIncomingEdge())));
+                    Deque<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
+                    {
+                        stack.push(new NodeKeyPair(startNode, startKey));
+                    }
+
+                    @Override
+                    protected NodeKeyPair computeNext() {
+                        if (stack.isEmpty()) {
+                            return endOfData();
+                        }
+                        NodeKeyPair current = stack.pop();
+                        List<Node> childNodes = current.node.getOutgoingEdges();
+
+                        // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
+                        // to counteract that pushing them onto the stack alone would otherwise reverse their processing order.
+                        // This ensures that we actually process nodes in ascending alphabetical order.
+                        for (int i = childNodes.size(); i > 0; i--) {
+                            Node child = childNodes.get(i - 1);
+                            stack.push(new NodeKeyPair(child, CharSequenceUtil.concatenate(current.key, child.getIncomingEdge())));
+                        }
+                        return current;
+                    }
+                };
             }
-        }
+        };
     }
 
+
     /**
-     * Encapsulates a node and its associated key. Used internally by {@link #traverseDescendants}.
+     * Encapsulates a node and its associated key. Used internally by {@link #lazyTraverseDescendants}.
      */
     protected static class NodeKeyPair {
         public final Node node;
@@ -747,18 +792,6 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
             this.node = node;
             this.key = key;
         }
-    }
-
-    /**
-     * Interface implemented by methods which call {@link #traverseDescendants}, implementing some action to perform
-     * for each node encountered.
-     */
-    protected interface NodeKeyPairHandler {
-        /**
-         * @param nodeKeyPair The node-key pair to handle
-         * @return True if traversal should continue, false if it should stop
-         */
-        boolean handle(NodeKeyPair nodeKeyPair);
     }
 
     /**
