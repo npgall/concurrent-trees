@@ -35,7 +35,7 @@ An in-memory file system implemented on top of !ConcurrentRadixTree, is included
         fileSystem.addFile("/brochures/honda/", "honda_civic_brochure.txt", hondaCivicBrochure);
 
         System.out.println("Internal file system representation (not public):-");
-        PrettyPrintUtil.prettyPrint((PrettyPrintable)fileSystem, System.out);
+        PrettyPrinter.prettyPrint((PrettyPrintable) fileSystem, System.out);
 
         System.out.println();
         System.out.println("Retrieve Ford brochure names in directory: " + fileSystem.getFileNamesInDirectory("/brochures/ford/"));
