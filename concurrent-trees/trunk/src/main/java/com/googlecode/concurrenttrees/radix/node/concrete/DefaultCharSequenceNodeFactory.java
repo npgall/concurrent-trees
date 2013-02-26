@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.charsequence.*;
@@ -51,7 +51,7 @@ public class DefaultCharSequenceNodeFactory implements NodeFactory {
             throw new IllegalStateException("The edgeCharacters argument was null");
         }
         if (!isRoot && edgeCharacters.length() == 0) {
-            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequenceUtil.toString(edgeCharacters));
+            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters));
         }
         if (childNodes == null) {
             throw new IllegalStateException("The childNodes argument was null");

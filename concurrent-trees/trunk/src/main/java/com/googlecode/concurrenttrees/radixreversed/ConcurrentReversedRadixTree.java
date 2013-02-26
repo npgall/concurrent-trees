@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
  */
 package com.googlecode.concurrenttrees.radixreversed;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
-
-import java.util.*;
 
 /**
  * An implementation of {@link ReversedRadixTree} which supports lock-free concurrent reads, and allows items to be added
@@ -49,7 +47,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
         // application, this undoes the reversing of keys when added to the tree in the first place...
         @Override
         protected CharSequence transformKeyForResult(CharSequence rawKey) {
-            return CharSequenceUtil.reverse(rawKey);
+            return CharSequences.reverse(rawKey);
         }
     }
     private final ConcurrentRadixTree<O> radixTree;
@@ -83,7 +81,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public O getValueForExactKey(CharSequence key) {
-        return radixTree.getValueForExactKey(CharSequenceUtil.reverse(key));
+        return radixTree.getValueForExactKey(CharSequences.reverse(key));
     }
 
     /**
@@ -91,7 +89,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public O put(CharSequence key, O value) {
-        return radixTree.put(CharSequenceUtil.reverse(key), value);
+        return radixTree.put(CharSequences.reverse(key), value);
     }
 
     /**
@@ -99,7 +97,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public O putIfAbsent(CharSequence key, O value) {
-        return radixTree.putIfAbsent(CharSequenceUtil.reverse(key), value);
+        return radixTree.putIfAbsent(CharSequences.reverse(key), value);
     }
 
     /**
@@ -107,7 +105,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public Iterable<CharSequence> getKeysEndingWith(CharSequence suffix) {
-        return radixTree.getKeysStartingWith(CharSequenceUtil.reverse(suffix));
+        return radixTree.getKeysStartingWith(CharSequences.reverse(suffix));
     }
 
     /**
@@ -115,7 +113,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public Iterable<O> getValuesForKeysEndingWith(CharSequence suffix) {
-        return radixTree.getValuesForKeysStartingWith(CharSequenceUtil.reverse(suffix));
+        return radixTree.getValuesForKeysStartingWith(CharSequences.reverse(suffix));
     }
 
     /**
@@ -123,7 +121,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysEndingWith(CharSequence suffix) {
-        return radixTree.getKeyValuePairsForKeysStartingWith(CharSequenceUtil.reverse(suffix));
+        return radixTree.getKeyValuePairsForKeysStartingWith(CharSequences.reverse(suffix));
     }
 
     /**
@@ -131,7 +129,7 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     @Override
     public boolean remove(CharSequence key) {
-        return radixTree.remove(CharSequenceUtil.reverse(key));
+        return radixTree.remove(CharSequences.reverse(key));
     }
 
     @Override

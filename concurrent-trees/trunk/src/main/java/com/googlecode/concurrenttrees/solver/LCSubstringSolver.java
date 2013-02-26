@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.solver;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
@@ -192,7 +192,7 @@ public class LCSubstringSolver {
         suffixTree.acquireWriteLock();
         try {
             // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
-            String documentString = CharSequenceUtil.toString(document);
+            String documentString = CharSequences.toString(document);
 
             // Put/replace value in set before we add suffixes to the tree...
             boolean addedNew = originalDocuments.add(documentString);
@@ -210,7 +210,7 @@ public class LCSubstringSolver {
     }
 
     void addSuffixesToRadixTree(String keyAsString) {
-        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
+        Iterable<CharSequence> suffixes = CharSequences.generateSuffixes(keyAsString);
         for (CharSequence suffix : suffixes) {
             Set<String> originalKeyRefs = suffixTree.getValueForExactKey(suffix);
             if (originalKeyRefs == null) {

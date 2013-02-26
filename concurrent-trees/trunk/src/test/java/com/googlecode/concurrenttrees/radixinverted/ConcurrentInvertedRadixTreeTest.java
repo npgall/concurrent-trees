@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.Iterables;
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ConcurrentInvertedRadixTreeTest {
                 "○\n" +
                 "└── ○ FOO (1)\n" +
                 "    └── ○ BAR (2)\n";
-        String actual = PrettyPrintUtil.prettyPrint(tree);
+        String actual = PrettyPrinter.prettyPrint(tree);
         assertEquals(expected, actual);
     }
 

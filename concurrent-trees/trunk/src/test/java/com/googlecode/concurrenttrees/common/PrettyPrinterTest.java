@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.Collections;
 /**
  * @author Niall Gallagher
  */
-public class PrettyPrintUtilTest {
+public class PrettyPrinterTest {
 
     @Test
     public void testPrettyPrint_ToString() throws Exception {
@@ -43,7 +43,7 @@ public class PrettyPrintUtilTest {
                 "            │   └── ○ A (6)\n" +
                 "            └── ○ DANA (4)\n";
 
-        String actual1 = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root));
+        String actual1 = PrettyPrinter.prettyPrint(wrapNodeForPrinting(root));
         Assert.assertEquals(expected1, actual1);
 
         String expected2 =
@@ -54,7 +54,7 @@ public class PrettyPrintUtilTest {
                 "        │   └── ○ A (6)\n" +
                 "        └── ○ DANA (4)\n";
 
-        String actual2 = PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root.getOutgoingEdge('B')));
+        String actual2 = PrettyPrinter.prettyPrint(wrapNodeForPrinting(root.getOutgoingEdge('B')));
         Assert.assertEquals(expected2, actual2);
     }
 
@@ -71,7 +71,7 @@ public class PrettyPrintUtilTest {
                 "            └── ○ DANA (4)\n";
 
         StringBuilder appendable = new StringBuilder();
-        PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root), appendable);
+        PrettyPrinter.prettyPrint(wrapNodeForPrinting(root), appendable);
         Assert.assertEquals(expected1, appendable.toString());
     }
 
@@ -94,7 +94,7 @@ public class PrettyPrintUtilTest {
                 throw new IOException("Intentional exception");
             }
         };
-        PrettyPrintUtil.prettyPrint(wrapNodeForPrinting(root), appendable);
+        PrettyPrinter.prettyPrint(wrapNodeForPrinting(root), appendable);
     }
 
     static Node getHandBuiltTestTree() {
@@ -131,6 +131,6 @@ public class PrettyPrintUtilTest {
 
     @Test
     public void testConstructor() {
-        Assert.assertNotNull(new PrettyPrintUtil());
+        Assert.assertNotNull(new PrettyPrinter());
     }
 }

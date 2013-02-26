@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import java.util.Iterator;
 /**
  * @author Niall Gallagher
  */
-public class CharSequenceUtil {
+public class CharSequences {
 
     /**
      * Private constructor, not used.
      */
-    CharSequenceUtil() {
+    CharSequences() {
     }
 
     public static Iterable<CharSequence> generateSuffixes(final CharSequence input) {

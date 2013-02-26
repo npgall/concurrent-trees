@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.util.*;
@@ -161,8 +161,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
                     return getDescendantKeys(prefix, searchResult.nodeFound);
                 }
                 default: {
@@ -193,8 +193,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
                     return getDescendantValues(prefix, searchResult.nodeFound);
                 }
                 default: {
@@ -225,8 +225,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequenceUtil.concatenate(prefix, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
                     return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
                 }
                 default: {
@@ -277,7 +277,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                         // Create a new node which is the concatenation of the edges from this node and its child,
                         // and which has the outgoing edges of the child and the value from the child.
                         Node child = childEdges.get(0);
-                        CharSequence concatenatedEdges = CharSequenceUtil.concatenate(searchResult.nodeFound.getIncomingEdge(), child.getIncomingEdge());
+                        CharSequence concatenatedEdges = CharSequences.concatenate(searchResult.nodeFound.getIncomingEdge(), child.getIncomingEdge());
                         Node mergedNode = nodeFactory.createNode(concatenatedEdges, child.getValue(), child.getOutgoingEdges(), false);
                         // Re-add the merged node to the parent...
                         searchResult.parentNode.updateOutgoingEdge(mergedNode);
@@ -310,7 +310,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                             // Parent is a non-root split node with only one remaining child, which can now be merged.
                             Node parentsRemainingChild = newEdgesOfParent.get(0);
                             // Merge the parent with its only remaining child...
-                            CharSequence concatenatedEdges = CharSequenceUtil.concatenate(searchResult.parentNode.getIncomingEdge(), parentsRemainingChild.getIncomingEdge());
+                            CharSequence concatenatedEdges = CharSequences.concatenate(searchResult.parentNode.getIncomingEdge(), parentsRemainingChild.getIncomingEdge());
                             newParent = nodeFactory.createNode(concatenatedEdges, parentsRemainingChild.getValue(), parentsRemainingChild.getOutgoingEdges(), parentIsRoot);
                         }
                         else {
@@ -359,15 +359,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequenceUtil.concatenate(candidate, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
                     return getDescendantKeys(candidate, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
                     // Example: if we searched for CX, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequenceUtil.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
                     return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
@@ -377,7 +377,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     }
                     // Example: if we searched for COFFEE, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched);
+                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
                     return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
                 }
             }
@@ -405,15 +405,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequenceUtil.concatenate(candidate, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
                     return getDescendantValues(candidate, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
                     // Example: if we searched for CX, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequenceUtil.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
                     return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
@@ -423,7 +423,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     }
                     // Example: if we searched for COFFEE, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched);
+                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
                     return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
                 }
             }
@@ -451,15 +451,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // Append the remaining characters of the edge to the key.
                     // For example if we searched for CO, but first matching node was COFFEE,
                     // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequenceUtil.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequenceUtil.concatenate(candidate, edgeSuffix);
+                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
                     return getDescendantKeyValuePairs(candidate, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
                     // Example: if we searched for CX, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequenceUtil.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
                     return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
                 }
                 case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
@@ -469,7 +469,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     }
                     // Example: if we searched for COFFEE, but deepest matching node was CO,
                     // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequenceUtil.getPrefix(candidate, searchResult.charsMatched);
+                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
                     return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
                 }
             }
@@ -531,8 +531,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // -> Split the node in two: Create a new parent node storing the new value,
                     // and a new child node holding the original value and edges from the existing node...
                     CharSequence keyCharsFromStartOfNodeFound = key.subSequence(searchResult.charsMatched - searchResult.charsMatchedInNodeFound, key.length());
-                    CharSequence commonPrefix = CharSequenceUtil.getCommonPrefix(keyCharsFromStartOfNodeFound, searchResult.nodeFound.getIncomingEdge());
-                    CharSequence suffixFromExistingEdge = CharSequenceUtil.subtractPrefix(searchResult.nodeFound.getIncomingEdge(), commonPrefix);
+                    CharSequence commonPrefix = CharSequences.getCommonPrefix(keyCharsFromStartOfNodeFound, searchResult.nodeFound.getIncomingEdge());
+                    CharSequence suffixFromExistingEdge = CharSequences.subtractPrefix(searchResult.nodeFound.getIncomingEdge(), commonPrefix);
 
                     // Create new nodes...
                     Node newChild = nodeFactory.createNode(suffixFromExistingEdge, searchResult.nodeFound.getValue(), searchResult.nodeFound.getOutgoingEdges(), false);
@@ -587,8 +587,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                     // (4) Re-add N3 to the parent node of NF, effectively replacing NF in the tree
 
                     CharSequence keyCharsFromStartOfNodeFound = key.subSequence(searchResult.charsMatched - searchResult.charsMatchedInNodeFound, key.length());
-                    CharSequence commonPrefix = CharSequenceUtil.getCommonPrefix(keyCharsFromStartOfNodeFound, searchResult.nodeFound.getIncomingEdge());
-                    CharSequence suffixFromExistingEdge = CharSequenceUtil.subtractPrefix(searchResult.nodeFound.getIncomingEdge(), commonPrefix);
+                    CharSequence commonPrefix = CharSequences.getCommonPrefix(keyCharsFromStartOfNodeFound, searchResult.nodeFound.getIncomingEdge());
+                    CharSequence suffixFromExistingEdge = CharSequences.subtractPrefix(searchResult.nodeFound.getIncomingEdge(), commonPrefix);
                     CharSequence suffixFromKey = key.subSequence(searchResult.charsMatched, key.length());
 
                     // Create new nodes...
@@ -645,7 +645,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
                                 // -> Convert the CharSequence to a String before returning, to avoid set equality issues,
                                 // because equals() and hashCode() is not specified by the CharSequence API contract...
-                                return CharSequenceUtil.toString(optionallyTransformedKey);
+                                return CharSequences.toString(optionallyTransformedKey);
                             }
                         }
                         // Finished traversing the tree, no more matching nodes to return...
@@ -725,7 +725,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
 
                                 // -> Convert the CharSequence to a String before returning, to avoid set equality issues,
                                 // because equals() and hashCode() is not specified by the CharSequence API contract...
-                                String keyString = CharSequenceUtil.toString(optionallyTransformedKey);
+                                String keyString = CharSequences.toString(optionallyTransformedKey);
                                 return new KeyValuePairImpl<O>(keyString, value);
                             }
                         }
@@ -852,7 +852,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
                         // This ensures that we actually process nodes in ascending alphabetical order.
                         for (int i = childNodes.size(); i > 0; i--) {
                             Node child = childNodes.get(i - 1);
-                            stack.push(new NodeKeyPair(child, CharSequenceUtil.concatenate(current.key, child.getIncomingEdge())));
+                            stack.push(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
                         }
                         return current;
                     }

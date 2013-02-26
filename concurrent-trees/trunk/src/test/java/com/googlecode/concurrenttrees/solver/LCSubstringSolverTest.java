@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.solver;
 
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,7 +67,7 @@ public class LCSubstringSolverTest {
                 "├── ○ FOO ([FOO])\n" +
                 "└── ○ O ([FOO])\n" +
                 "    └── ○ O ([FOO])\n";
-        Assert.assertEquals(expected, PrettyPrintUtil.prettyPrint(solver.suffixTree));
+        Assert.assertEquals(expected, PrettyPrinter.prettyPrint(solver.suffixTree));
     }
 
     @Test

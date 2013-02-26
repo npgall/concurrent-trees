@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.examples.filesystem;
 
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.util.Collection;
@@ -56,7 +56,7 @@ public class InMemoryFileSystemUsage {
         fileSystem.addFile("/brochures/honda/", "honda_civic_brochure.txt", hondaCivicBrochure);
 
         System.out.println("Internal file system representation (not public):-");
-        PrettyPrintUtil.prettyPrint((PrettyPrintable)fileSystem, System.out);
+        PrettyPrinter.prettyPrint((PrettyPrintable) fileSystem, System.out);
 
         System.out.println();
         System.out.println("Retrieve Ford brochure names in directory: " + fileSystem.getFileNamesInDirectory("/brochures/ford/"));

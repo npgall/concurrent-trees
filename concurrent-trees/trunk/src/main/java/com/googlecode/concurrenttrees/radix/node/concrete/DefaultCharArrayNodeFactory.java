@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.*;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class DefaultCharArrayNodeFactory implements NodeFactory {
             throw new IllegalStateException("The edgeCharacters argument was null");
         }
         if (!isRoot && edgeCharacters.length() == 0) {
-            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequenceUtil.toString(edgeCharacters));
+            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters));
         }
         if (childNodes == null) {
             throw new IllegalStateException("The childNodes argument was null");

@@ -1,5 +1,6 @@
 /**
- * Copyright 2007 The Guava Authors, 2013 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
+ * Copyright 2007 The Guava Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import java.util.List;
 /**
  * @author Niall Gallagher
  */
-public class CharSequenceUtilTest {
+public class CharSequencesTest {
 
     @Test
     public void testGeneratePrefixes() throws Exception {
         final CharSequence input = "BANANAS";
         List<CharSequence> expected = Arrays.<CharSequence>asList("B", "BA", "BAN", "BANA", "BANAN", "BANANA", "BANANAS");
         int index = 0;
-        for (CharSequence prefix : CharSequenceUtil.generatePrefixes(input)) {
+        for (CharSequence prefix : CharSequences.generatePrefixes(input)) {
             Assert.assertEquals(expected.get(index++), prefix);
         }
     }
@@ -40,7 +40,7 @@ public class CharSequenceUtilTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGeneratePrefixes_IteratorRemove() throws Exception {
         final CharSequence input = "BANANAS";
-        Iterator<CharSequence> iterator = CharSequenceUtil.generatePrefixes(input).iterator();
+        Iterator<CharSequence> iterator = CharSequences.generatePrefixes(input).iterator();
         iterator.next();
         iterator.remove();
     }
@@ -50,7 +50,7 @@ public class CharSequenceUtilTest {
         final CharSequence input = "BANANAS";
         List<CharSequence> expected = Arrays.<CharSequence>asList("BANANAS", "ANANAS", "NANAS", "ANAS", "NAS", "AS", "S");
         int index = 0;
-        for (CharSequence suffix : CharSequenceUtil.generateSuffixes(input)) {
+        for (CharSequence suffix : CharSequences.generateSuffixes(input)) {
             Assert.assertEquals(expected.get(index++), suffix);
         }
     }
@@ -58,63 +58,63 @@ public class CharSequenceUtilTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testGenerateSuffixes_IteratorRemove() throws Exception {
         final CharSequence input = "BANANAS";
-        Iterator<CharSequence> iterator = CharSequenceUtil.generateSuffixes(input).iterator();
+        Iterator<CharSequence> iterator = CharSequences.generateSuffixes(input).iterator();
         iterator.next();
         iterator.remove();
     }
 
     @Test
     public void testGetCommonPrefix() throws Exception {
-        Assert.assertEquals("BAN", CharSequenceUtil.getCommonPrefix("BANANA", "BANDANA"));
-        Assert.assertEquals("BAN", CharSequenceUtil.getCommonPrefix("BAN", "BANDANA"));
-        Assert.assertEquals("BAN", CharSequenceUtil.getCommonPrefix("BANANA", "BAN"));
-        Assert.assertEquals("", CharSequenceUtil.getCommonPrefix("BANANA", "ABANANA"));
-        Assert.assertEquals("", CharSequenceUtil.getCommonPrefix("", "BANANA"));
-        Assert.assertEquals("", CharSequenceUtil.getCommonPrefix("BANANA", ""));
-        Assert.assertEquals("T", CharSequenceUtil.getCommonPrefix("TOAST", "TEAM"));
+        Assert.assertEquals("BAN", CharSequences.getCommonPrefix("BANANA", "BANDANA"));
+        Assert.assertEquals("BAN", CharSequences.getCommonPrefix("BAN", "BANDANA"));
+        Assert.assertEquals("BAN", CharSequences.getCommonPrefix("BANANA", "BAN"));
+        Assert.assertEquals("", CharSequences.getCommonPrefix("BANANA", "ABANANA"));
+        Assert.assertEquals("", CharSequences.getCommonPrefix("", "BANANA"));
+        Assert.assertEquals("", CharSequences.getCommonPrefix("BANANA", ""));
+        Assert.assertEquals("T", CharSequences.getCommonPrefix("TOAST", "TEAM"));
     }
 
     @Test
     public void testGetSuffix() throws Exception {
-        Assert.assertEquals("BANANA", CharSequenceUtil.getSuffix("BANANA", 0));
-        Assert.assertEquals("ANA", CharSequenceUtil.getSuffix("BANANA", 3));
-        Assert.assertEquals("", CharSequenceUtil.getSuffix("BANANA", 6));
-        Assert.assertEquals("", CharSequenceUtil.getSuffix("BANANA", 7));
+        Assert.assertEquals("BANANA", CharSequences.getSuffix("BANANA", 0));
+        Assert.assertEquals("ANA", CharSequences.getSuffix("BANANA", 3));
+        Assert.assertEquals("", CharSequences.getSuffix("BANANA", 6));
+        Assert.assertEquals("", CharSequences.getSuffix("BANANA", 7));
     }
 
     @Test
     public void testGetPrefix() throws Exception {
-        Assert.assertEquals("", CharSequenceUtil.getPrefix("BANANA", 0));
-        Assert.assertEquals("BAN", CharSequenceUtil.getPrefix("BANANA", 3));
-        Assert.assertEquals("BANANA", CharSequenceUtil.getPrefix("BANANA", 6));
-        Assert.assertEquals("BANANA", CharSequenceUtil.getPrefix("BANANA", 7));
+        Assert.assertEquals("", CharSequences.getPrefix("BANANA", 0));
+        Assert.assertEquals("BAN", CharSequences.getPrefix("BANANA", 3));
+        Assert.assertEquals("BANANA", CharSequences.getPrefix("BANANA", 6));
+        Assert.assertEquals("BANANA", CharSequences.getPrefix("BANANA", 7));
     }
 
     @Test
     public void testSubtractPrefix() throws Exception {
-        Assert.assertEquals("ANA", CharSequenceUtil.subtractPrefix("BANANA", "BAN"));
-        Assert.assertEquals("", CharSequenceUtil.subtractPrefix("BANANA", "BANANA"));
-        Assert.assertEquals("", CharSequenceUtil.subtractPrefix("BANANA", "BANANAS"));
-        Assert.assertEquals("BANANA", CharSequenceUtil.subtractPrefix("BANANA", ""));
-        Assert.assertEquals("", CharSequenceUtil.subtractPrefix("", "BANANAS"));
+        Assert.assertEquals("ANA", CharSequences.subtractPrefix("BANANA", "BAN"));
+        Assert.assertEquals("", CharSequences.subtractPrefix("BANANA", "BANANA"));
+        Assert.assertEquals("", CharSequences.subtractPrefix("BANANA", "BANANAS"));
+        Assert.assertEquals("BANANA", CharSequences.subtractPrefix("BANANA", ""));
+        Assert.assertEquals("", CharSequences.subtractPrefix("", "BANANAS"));
     }
 
     @Test
     public void testConcatenate() throws Exception {
         CharSequence first = "APPLE";
         CharSequence second = "ORANGE";
-        CharSequence concatenated = CharSequenceUtil.concatenate(first, second);
+        CharSequence concatenated = CharSequences.concatenate(first, second);
         Assert.assertEquals("APPLEORANGE", new StringBuilder().append(concatenated).toString());
     }
 
     @Test
     public void testToString_NullArgument() {
         //noinspection NullableProblems
-        Assert.assertNull(CharSequenceUtil.toString(null));
+        Assert.assertNull(CharSequences.toString(null));
     }
 
     @Test
     public void testConstructor() {
-        Assert.assertNotNull(new CharSequenceUtil());
+        Assert.assertNotNull(new CharSequences());
     }
 }

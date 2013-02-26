@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.googlecode.concurrenttrees.suffix;
 
-import com.googlecode.concurrenttrees.common.CharSequenceUtil;
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -106,7 +106,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         radixTree.acquireWriteLock();
         try {
             // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
-            String keyString = CharSequenceUtil.toString(key);
+            String keyString = CharSequences.toString(key);
 
             // Put/replace value in map before we add suffixes to the tree
             // (prevents reading threads finding suffixes with no value)...
@@ -131,7 +131,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         radixTree.acquireWriteLock();
         try {
             // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
-            String keyString = CharSequenceUtil.toString(key);
+            String keyString = CharSequences.toString(key);
 
             // Put/replace value in map only if key is absent, before we add suffixes to the tree
             // (prevents reading threads finding suffixes with no value)...
@@ -159,7 +159,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
         radixTree.acquireWriteLock();
         try {
             // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
-            String keyString = CharSequenceUtil.toString(key);
+            String keyString = CharSequences.toString(key);
             O value = valueMap.get(keyString);
 
             if (value == null) {
@@ -177,7 +177,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     }
 
     void addSuffixesToRadixTree(String keyAsString) {
-        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
+        Iterable<CharSequence> suffixes = CharSequences.generateSuffixes(keyAsString);
         for (CharSequence suffix : suffixes) {
             Set<String> originalKeyRefs = radixTree.getValueForExactKey(suffix);
             if (originalKeyRefs == null) {
@@ -189,7 +189,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     }
 
     void removeSuffixesFromRadixTree(String keyAsString) {
-        Iterable<CharSequence> suffixes = CharSequenceUtil.generateSuffixes(keyAsString);
+        Iterable<CharSequence> suffixes = CharSequences.generateSuffixes(keyAsString);
         for (CharSequence suffix : suffixes) {
             Set<String> originalKeyRefs = radixTree.getValueForExactKey(suffix);
             originalKeyRefs.remove(keyAsString);
@@ -225,7 +225,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     @Override
     public O getValueForExactKey(CharSequence key) {
         // We convert to string (for now) due to lack of equals() and hashCode() support in CharSequence...
-        String keyString = CharSequenceUtil.toString(key);
+        String keyString = CharSequences.toString(key);
         return valueMap.get(keyString);
     }
 

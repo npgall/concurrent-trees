@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Niall Gallagher
+ * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package com.googlecode.concurrenttrees.examples.usage;
 
 import com.googlecode.concurrenttrees.common.Iterables;
-import com.googlecode.concurrenttrees.common.PrettyPrintUtil;
+import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
@@ -36,7 +36,7 @@ public class InvertedRadixTreeUsage {
 
         System.out.println("Tree structure:");
         // PrettyPrintable is a non-public API for testing, prints semi-graphical representations of trees...
-        PrettyPrintUtil.prettyPrint((PrettyPrintable)tree, System.out);
+        PrettyPrinter.prettyPrint((PrettyPrintable) tree, System.out);
 
         System.out.println();
         System.out.println("Value for 'TEST' (exact match): " + tree.getValueForExactKey("TEST"));
