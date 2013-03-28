@@ -51,7 +51,6 @@ public abstract class LazyIterator<T> implements Iterator<T> {
                 return false;
             case READY:
                 return true;
-            default:
         }
         return tryToComputeNext();
     }
