@@ -79,6 +79,32 @@ public interface InvertedRadixTree<O> {
     O getValueForExactKey(CharSequence key);
 
     /**
+     * Returns a lazy iterable which returns the set of keys in the tree which prefix the given document.
+     *
+     * @param document A document to be scanned for keys contained in the tree which prefix the given document
+     * @return The set of keys in the tree which prefix the given document
+     */
+    Iterable<CharSequence> getKeysPrefixing(CharSequence document);
+
+    /**
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which prefix
+     * the given document.
+     *
+     * @param document A document to be scanned for keys contained in the tree which prefix the given document
+     * @return The set of values associated with keys in the tree which prefix the given document
+     */
+    Iterable<O> getValuesForKeysPrefixing(CharSequence document);
+
+    /**
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys in the tree which prefix
+     * the given document.
+     *
+     * @param document A document to be scanned for keys contained in the tree which prefix the given document
+     * @return The set of {@link KeyValuePair}s for keys in the tree which prefix the given document
+     */
+    Iterable<KeyValuePair<O>> getKeyValuePairsForKeysPrefixing(CharSequence document);
+
+    /**
      * Returns a lazy iterable which returns the set of keys in the tree which are contained in the given document.
      *
      * @param document A document to be scanned for keys contained in the tree

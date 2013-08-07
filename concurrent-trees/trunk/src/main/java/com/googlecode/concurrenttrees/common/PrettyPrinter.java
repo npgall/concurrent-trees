@@ -72,7 +72,7 @@ public class PrettyPrinter {
      * </pre>
      *
      * @param tree The tree for which the semi-graphical representation should be generated
-     * @param appendable The object ot which the tree should be written
+     * @param appendable The object to which the tree should be written
      */
     public static void prettyPrint(PrettyPrintable tree, Appendable appendable) {
         prettyPrint(tree.getNode(), appendable, "", true, true);
