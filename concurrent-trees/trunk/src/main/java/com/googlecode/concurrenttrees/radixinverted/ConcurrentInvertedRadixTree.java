@@ -173,6 +173,81 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
+    public Iterable<CharSequence> getKeysPrefixing(final CharSequence document) {
+        return new Iterable<CharSequence>() {
+            @Override
+            public Iterator<CharSequence> iterator() {
+                return new LazyIterator<CharSequence>() {
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+
+                    @Override
+                    protected CharSequence computeNext() {
+                        if (matchesForCurrentSuffix.hasNext()) {
+                            return matchesForCurrentSuffix.next().getKey();
+                        }
+                        else {
+                            return endOfData();
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<O> getValuesForKeysPrefixing(final CharSequence document) {
+        return new Iterable<O>() {
+            @Override
+            public Iterator<O> iterator() {
+                return new LazyIterator<O>() {
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+
+                    @Override
+                    protected O computeNext() {
+                        if (matchesForCurrentSuffix.hasNext()) {
+                            return matchesForCurrentSuffix.next().getValue();
+                        }
+                        else {
+                            return endOfData();
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysPrefixing(final CharSequence document) {
+        return new Iterable<KeyValuePair<O>>() {
+            @Override
+            public Iterator<KeyValuePair<O>> iterator() {
+                return new LazyIterator<KeyValuePair<O>>() {
+                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+
+                    @Override
+                    protected KeyValuePair<O> computeNext() {
+                        if (matchesForCurrentSuffix.hasNext()) {
+                            return matchesForCurrentSuffix.next();
+                        }
+                        else {
+                            return endOfData();
+                        }
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterable<CharSequence> getKeysContainedIn(final CharSequence document) {
         return new Iterable<CharSequence>() {
             @Override

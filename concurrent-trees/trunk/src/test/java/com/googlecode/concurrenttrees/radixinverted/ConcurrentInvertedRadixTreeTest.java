@@ -76,6 +76,81 @@ public class ConcurrentInvertedRadixTreeTest {
     }
 
     @Test
+    public void testGetKeysPrefixing() throws Exception {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+
+        tree.put("1234567", 1);
+        tree.put("1234568", 2);
+        tree.put("123", 3);
+
+        //    ○
+        //    └── ○ 123 (3)
+        //        └── ○ 456
+        //            ├── ○ 7 (1)
+        //            └── ○ 8 (2)
+
+        assertEquals("[123, 1234567]", Iterables.toString(tree.getKeysPrefixing("1234567")));
+        assertEquals("[123, 1234567]", Iterables.toString(tree.getKeysPrefixing("12345670")));
+        assertEquals("[123, 1234568]", Iterables.toString(tree.getKeysPrefixing("1234568")));
+        assertEquals("[123, 1234568]", Iterables.toString(tree.getKeysPrefixing("12345680")));
+        assertEquals("[123]", Iterables.toString(tree.getKeysPrefixing("1234569")));
+        assertEquals("[123]", Iterables.toString(tree.getKeysPrefixing("123456")));
+        assertEquals("[123]", Iterables.toString(tree.getKeysPrefixing("123")));
+        assertEquals("[]", Iterables.toString(tree.getKeysPrefixing("12")));
+        assertEquals("[]", Iterables.toString(tree.getKeysPrefixing("")));
+    }
+
+    @Test
+    public void testGetValuesForKeysPrefixing() throws Exception {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+
+        tree.put("1234567", 1);
+        tree.put("1234568", 2);
+        tree.put("123", 3);
+
+        //    ○
+        //    └── ○ 123 (3)
+        //        └── ○ 456
+        //            ├── ○ 7 (1)
+        //            └── ○ 8 (2)
+
+        assertEquals("[3, 1]", Iterables.toString(tree.getValuesForKeysPrefixing("1234567")));
+        assertEquals("[3, 1]", Iterables.toString(tree.getValuesForKeysPrefixing("12345670")));
+        assertEquals("[3, 2]", Iterables.toString(tree.getValuesForKeysPrefixing("1234568")));
+        assertEquals("[3, 2]", Iterables.toString(tree.getValuesForKeysPrefixing("12345680")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForKeysPrefixing("1234569")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForKeysPrefixing("123456")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForKeysPrefixing("123")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysPrefixing("12")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForKeysPrefixing("")));
+    }
+
+    @Test
+    public void testGetKeyValuePairsForKeysPrefixing() throws Exception {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+
+        tree.put("1234567", 1);
+        tree.put("1234568", 2);
+        tree.put("123", 3);
+
+        //    ○
+        //    └── ○ 123 (3)
+        //        └── ○ 456
+        //            ├── ○ 7 (1)
+        //            └── ○ 8 (2)
+
+        assertEquals("[(123, 3), (1234567, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("1234567")));
+        assertEquals("[(123, 3), (1234567, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("12345670")));
+        assertEquals("[(123, 3), (1234568, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("1234568")));
+        assertEquals("[(123, 3), (1234568, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("12345680")));
+        assertEquals("[(123, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("1234569")));
+        assertEquals("[(123, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("123456")));
+        assertEquals("[(123, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("123")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("12")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("")));
+    }
+
+    @Test
     public void testGetKeysContainedIn() throws Exception {
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
         tree.put("see", 1);
