@@ -1,6 +1,14 @@
 #summary Release notes for official releases of the concurrent-trees library
 #labels Featured
 
+===Version 2.1.0 - 2013-08-07===
+ * Added feature to `InvertedRadixTree` to scan input documents for keywords stored in the tree which prefix those documents. See `InvertedRadixTree.getKeysPrefixing()` and related methods
+ * This is conceptually similar to the existing `InvertedRadixTree.getKeysContainedIn()` methods, but is restricted to scanning the input for keys prefixing the document instead of keys contained anywhere in the document
+ * This can be used to process phone numbers
+ * Discussed in issue 5
+ * Full test coverage
+ * Deployed to Maven central
+
 ===Version 2.0.0 - 2013-02-26===
  * Uses lazy evaluation for lower latency, lower CPU/memory usage, and better filtering support: see [http://code.google.com/p/concurrent-trees/wiki/FrequentlyAskedQuestions#What_is_Lazy_Evaluation,_and_why_return_Iterable_instead_of_Coll Frequently Asked Questions]
  * Minor API changes, example usage has been updated accordingly
