@@ -1,6 +1,11 @@
 #summary Release notes for official releases of the concurrent-trees library
 #labels Featured
 
+===Version 2.1.1 - 2013-10-07===
+ * Fixed InvertedRadixTree returning false positives when input document is shorter than keywords in the tree, with thanks to Beth Tirado for patch (issue 6)
+ * Additional test cases
+ * Deployed to Maven central
+
 ===Version 2.1.0 - 2013-08-07===
  * Added feature to `InvertedRadixTree` to scan input documents for keywords stored in the tree which prefix those documents. See `InvertedRadixTree.getKeysPrefixing()` and related methods
  * This is conceptually similar to the existing `InvertedRadixTree.getKeysContainedIn()` methods, but is restricted to scanning the input for keys prefixing the document instead of keys contained anywhere in the document
