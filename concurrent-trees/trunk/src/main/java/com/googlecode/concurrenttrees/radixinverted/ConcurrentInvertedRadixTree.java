@@ -175,6 +175,54 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
+    public Iterable<CharSequence> getKeysStartingWith(CharSequence prefix) {
+        return radixTree.getKeysStartingWith(prefix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<O> getValuesForKeysStartingWith(CharSequence prefix) {
+        return radixTree.getValuesForKeysStartingWith(prefix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
+        return radixTree.getKeyValuePairsForKeysStartingWith(prefix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<CharSequence> getClosestKeys(CharSequence candidate) {
+        return radixTree.getClosestKeys(candidate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<O> getValuesForClosestKeys(CharSequence candidate) {
+        return radixTree.getValuesForClosestKeys(candidate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate) {
+        return radixTree.getKeyValuePairsForClosestKeys(candidate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterable<CharSequence> getKeysPrefixing(final CharSequence document) {
         return new Iterable<CharSequence>() {
             @Override

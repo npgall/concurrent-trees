@@ -322,4 +322,20 @@ public class ConcurrentInvertedRadixTreeTest {
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory, true);
         assertNotNull(tree);
     }
+
+    @Test
+    public void testInheritedMethods() {
+        // Basic tests for methods inherited from ConcurrentRadixTree, complete coverage in ConcurrentRadixTreeTest...
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        tree.put("FOOD", 1);
+        tree.put("FOO", 2);
+
+        assertEquals("[FOO, FOOD]", Iterables.toString(tree.getKeysStartingWith("F")));
+        assertEquals("[2, 1]", Iterables.toString(tree.getValuesForKeysStartingWith("F")));
+        assertEquals("[(FOO, 2), (FOOD, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysStartingWith("F")));
+
+        assertEquals("[FOO, FOOD]", Iterables.toString(tree.getClosestKeys("FOB")));
+        assertEquals("[2, 1]", Iterables.toString(tree.getValuesForClosestKeys("FOB")));
+        assertEquals("[(FOO, 2), (FOOD, 1)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("FOB")));
+    }
 }
