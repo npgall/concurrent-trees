@@ -2,7 +2,7 @@
 #labels Featured
 
 ===Version 2.1.1 - 2013-10-07===
- * Fixed InvertedRadixTree returning false positives when input document is shorter than keywords in the tree, with thanks to Beth Tirado for patch (issue 6)
+ * Fixed `InvertedRadixTree` returning false positives when input document is shorter than keywords in the tree, with thanks to Beth Tirado for patch (issue 6)
  * Additional test cases
  * Deployed to Maven central
 
