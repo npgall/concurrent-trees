@@ -1,9 +1,16 @@
 #summary Release notes for official releases of the concurrent-trees library
 #labels Featured
 
+===Version 2.2.0 - 2013-10-07===
+ * `InvertedRadixTree` now extends the pubic interface of `RadixTree`
+ * This allows the same tree to be searched for keywords starting with a prefix, and to be used to scan documents for keywords contained in the tree
+ * Minor change in the API of `InvertedRadixTree` to provide additional methods, _should_ be a drop in replacement for 2.1.x
+ * Deployed to Maven central
+
 ===Version 2.1.1 - 2013-10-07===
  * Fixed potential for `InvertedRadixTree` to return false positives when input document is shorter than keywords in the tree, with thanks to Beth Tirado for patch (issue 6)
  * Additional test cases
+ * This is a drop in replacement for 2.1.0
  * Deployed to Maven central
 
 ===Version 2.1.0 - 2013-08-07===
