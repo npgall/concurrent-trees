@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.radix.RadixTree;
 
 /**
  * API of an inverted radix tree, that is a radix tree which is set up to scan external documents for keys previously
@@ -26,13 +27,14 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
  * <p/>
  * Time complexity is O(d) rather than O(dn), where d=length of document and n=number of keys/keywords.
  * <p/>
- * See documentation on each method for details.
+ * This is an extension of {@link RadixTree} which provides additional traversal algorithms to implement this
+ * functionality on top of the same tree structure. See documentation on each method for details.
  *
  * @param <O> The type of the values associated with keys in the tree
  *
  * @author Niall Gallagher
  */
-public interface InvertedRadixTree<O> {
+public interface InvertedRadixTree<O> extends RadixTree<O> {
 
     /**
      * Associates the given value with the given key; replacing any previous value associated with the key.
