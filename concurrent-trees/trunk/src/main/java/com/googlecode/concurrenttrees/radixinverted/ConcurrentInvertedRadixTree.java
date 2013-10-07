@@ -75,33 +75,35 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
 
                         @Override
                         protected KeyValuePair<O> computeNext() {
-                            outer_loop: while (charsMatched < documentLength) {
+                            while (charsMatched < documentLength) {
                                 Node nextNode = currentNode.getOutgoingEdge(input.charAt(charsMatched));
                                 if (nextNode == null) {
                                     // Next node is a dead end...
-                                    //noinspection UnnecessaryLabelOnBreakStatement
-                                    break outer_loop;
+                                    return endOfData();
                                 }
 
                                 currentNode = nextNode;
                                 CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                                int charsMatchedThisEdge = 0;
-                                for (int i = 0, j = Math.min(currentNodeEdgeCharacters.length(), documentLength - charsMatched); i < j; i++) {
+                                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                                if (numCharsInEdge + charsMatched > documentLength) {
+                                    // This node can't be a match because it is too long...
+                                    return endOfData();
+                                }
+                                for (int i = 0; i < numCharsInEdge; i++) {
                                     if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
-                                        // Found a difference in chars between character in key and a character in current node.
-                                        // Current node is the deepest match (inexact match)....
-                                        break outer_loop;
-                                    }
-                                    charsMatchedThisEdge++;
-                                }
-                                if (charsMatchedThisEdge == currentNodeEdgeCharacters.length()) {
-                                    // All characters in the current edge matched, add this number to total chars matched...
-                                    charsMatched += charsMatchedThisEdge;
-                                    
-                                    if (currentNode.getValue() != null) {
-                                        return new KeyValuePairImpl<O>(CharSequences.toString(input.subSequence(0, charsMatched)), currentNode.getValue());
+                                        // Found a difference between a character in the input
+                                        // and a character in the edge represented by current node,
+                                        // current node is a dead end...
+                                        return endOfData();
                                     }
                                 }
+                                // All characters in the current edge matched, add this number to total chars matched...
+                                charsMatched += numCharsInEdge;
+
+                                if (currentNode.getValue() != null) {
+                                    // This is an explicit node and all of its chars match input, return a match...
+                                    return new KeyValuePairImpl<O>(CharSequences.toString(input.subSequence(0, charsMatched)), currentNode.getValue());
+                                } // else the node matches, but is not an explicit node so we should continue scanning...
                             }
                             return endOfData();
                         }

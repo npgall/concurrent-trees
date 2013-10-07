@@ -151,6 +151,55 @@ public class ConcurrentInvertedRadixTreeTest {
     }
 
     @Test
+    public void testGetKeyValuePairsForKeysPrefixing_EdgeCases1() throws Exception {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+
+        tree.put("/a/b/", 1);
+        tree.put("/a/blob/", 2);
+        tree.put("/a/blog/", 3);
+
+        //    ○
+        //    └── ○ /a/b
+        //        ├── ○ / (1)
+        //        └── ○ lo
+        //            ├── ○ b/ (2)
+        //            └── ○ g/ (3)
+
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/")));
+        assertEquals("[(/a/b/, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/b/")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/bl/")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blo/")));
+        assertEquals("[(/a/blob/, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blob/")));
+        assertEquals("[(/a/blog/, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blog/")));
+        assertEquals("[(/a/blog/, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blog/s")));
+    }
+
+    @Test
+    public void testGetKeyValuePairsForKeysPrefixing_EdgeCases2() throws Exception {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+
+        tree.put("/a/b", 1);
+        tree.put("/a/blob", 2);
+        tree.put("/a/blog", 3);
+
+        //    ○
+        //    └── ○ /a/b (1)
+        //        └── ○ lo
+        //            ├── ○ b (2)
+        //            └── ○ g (3)
+
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a")));
+        assertEquals("[(/a/b, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/b")));
+        assertEquals("[(/a/b, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/bl")));
+        assertEquals("[(/a/b, 1)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blo")));
+        assertEquals("[(/a/b, 1), (/a/blob, 2)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blob")));
+        assertEquals("[(/a/b, 1), (/a/blog, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blog")));
+        assertEquals("[(/a/b, 1), (/a/blog, 3)]", Iterables.toString(tree.getKeyValuePairsForKeysPrefixing("/a/blogs")));
+    }
+
+    @Test
     public void testGetKeysContainedIn() throws Exception {
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
         tree.put("see", 1);
