@@ -151,40 +151,6 @@ public class CharSequences {
         return charArray;
     }
 
-    /**
-     * Encodes the given {@link CharSequence} into a new {@code byte[]} on a one-to-one character-to-byte basis,
-     * using the given byte-compatible character set.
-     * <p/>
-     * If the resulting number of bytes after encoding in the charset does not equal the number of characters, throws
-     * an exception. Note this allows charsets such as UTF-8 to be specified which are not strictly single-byte
-     * encodings; these charsets are compatible as long as no characters in the input require a multi-byte encoding in
-     * those charsets.
-     *
-     * @param charSequence The {@link CharSequence} to encode
-     * @param charset A byte-compatible character set
-     * @return A new {@code byte[]} encoding characters from the given {@link CharSequence} using the given charset
-     * @throws IllegalStateException If the characters cannot be encoded as described
-     */
-    public static byte[] toByteArray(CharSequence charSequence, String charset) {
-        byte[] bytes;
-        try {
-            CharBuffer charBuffer = CharBuffer.wrap(charSequence);
-            CharsetEncoder charsetEncoder = Charset.forName(charset)
-                    .newEncoder()
-                    .onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT);
-            ByteBuffer byteBuffer = charsetEncoder.encode(charBuffer);
-            bytes = byteBuffer.array();
-        }
-        catch (Exception e) {
-            throw new IllegalStateException("Could not encode CharSequence into charset: " + charset, e);
-        }
-        if (bytes.length != charSequence.length()) {
-            throw new IllegalStateException("Could not encode CharSequence into charset '" + charset + "' on a one-to-one basis, input length: " + charSequence.length() + ", bytes produced: " + bytes.length);
-        }
-        return bytes;
-    }
-
     public static String toString(CharSequence charSequence) {
         if (charSequence == null) {
             return null;

@@ -1,8 +1,26 @@
+/**
+ * Copyright 2012-2013 Niall Gallagher
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Niall Gallagher
@@ -106,4 +124,27 @@ public class ByteArrayCharSequenceTest {
         subSequence.subSequence(2, 1);
     }
 
+    @Test
+    public void testToString() throws Exception {
+        byte[] bytes = "FOOBAR".getBytes("UTF-8");
+        ByteArrayCharSequence bacs = new ByteArrayCharSequence(bytes, 0, bytes.length);
+        assertEquals("FOOBAR", bacs.toString());
+    }
+
+    @Test
+    public void testConstructor() throws Exception {
+        byte[] bytes = "FOOBAR".getBytes("UTF-8");
+        assertNotNull(new ByteArrayCharSequence(bytes, 0, bytes.length));
+    }
+
+    @Test
+    public void testEncodeUtf8() throws Exception {
+        byte[] bytes = "FOOBAR".getBytes("UTF-8");
+        assertEquals(Arrays.toString(bytes), Arrays.toString(ByteArrayCharSequence.toSingleByteUtf8Encoding("FOOBAR")));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEncodeUtf8_UnsupportedChar() throws Exception {
+        ByteArrayCharSequence.toSingleByteUtf8Encoding("FOOBAR○");
+    }
 }

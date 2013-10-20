@@ -35,6 +35,10 @@ public class ConcurrentSuffixTreeTest {
 
     private final NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
 
+    protected NodeFactory getNodeFactory() {
+        return nodeFactory;
+    }
+
     @Test
     public void testPut_SingleKey() throws Exception {
         ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
@@ -412,14 +416,14 @@ public class ConcurrentSuffixTreeTest {
 
     @Test
     public void testRestrictConcurrency() {
-        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(nodeFactory, true);
+        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory(), true);
         assertNotNull(tree);
     }
 
     @Test
     public void testCreateSetForOriginalKeys() {
         // Test the default (production) implementation of this method, should return a set based on ConcurrentHashMap...
-        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(nodeFactory, true);
+        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory(), true);
         assertTrue(tree.createSetForOriginalKeys().getClass().equals(Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>()).getClass()));
     }
 
@@ -430,7 +434,7 @@ public class ConcurrentSuffixTreeTest {
      */
     @SuppressWarnings({"JavaDoc"})
     <O> ConcurrentSuffixTree<O> newConcurrentSuffixTreeForUnitTests() {
-        return new ConcurrentSuffixTree<O>(nodeFactory) {
+        return new ConcurrentSuffixTree<O>(getNodeFactory()) {
             // Override this method to return a set which has consistent iteration order, for unit testing...
             @Override
             protected Set<String> createSetForOriginalKeys() {

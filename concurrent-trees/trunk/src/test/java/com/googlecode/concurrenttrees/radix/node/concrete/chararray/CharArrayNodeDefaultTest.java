@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.concurrenttrees.radix.node.concrete;
+package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeDefault;
