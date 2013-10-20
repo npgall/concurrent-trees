@@ -20,11 +20,17 @@ Building suffix trees from large text documents, can require many nodes. For exa
 
 Nodes are only required to expose the _edges_ within the tree as a `CharSequence` _view_ onto the character sequence, and as such they can either store character data inside the node - for example as a copied `char[]`, or outside the tree as start and end offsets into the original input string.
 
-Two basic implementations of `NodeFactory` are currently provided:
+The following implementations of `NodeFactory` are provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharArrayNodeFactory.html DefaultCharArrayNodeFactory]
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
     * This can use more memory for suffix trees when storing the many suffixes of large documents
     * An advantage of this factory is garbage collection: there is no risk that a large string might be retained in memory by a single node referencing only a small subsequence of the string
+  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultByteArrayNodeFactory.html DefaultByteArrayNodeFactory]
+    * Similar to `DefaultCharArrayNodeFactory`, but stores character data inside the tree as UTF-8 single byte per character, instead of Java's default UTF-16 two-bytes per character
+    * This may reduce memory overhead compared with `DefaultCharArrayNodeFactory` by 50%, but is only compatible with strings containing characters which can be represented as UTF-8 single byte/ASCII
+  * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/SmartArrayBasedNodeFactory SmartArrayBasedNodeFactory]
+    * Internally uses `DefaultByteArrayNodeFactory` to create nodes by default, but falls back to `DefaultCharArrayNodeFactory` automatically if characters are detected which cannot be represented as a single byte
+    * *If you are unsure, this is the recommended node factory for most cases*
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharSequenceNodeFactory.html DefaultCharSequenceNodeFactory]
     * Does not store character data inside the tree, but instead stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
     * An advantage of this factory is it uses much less memory for suffix trees
