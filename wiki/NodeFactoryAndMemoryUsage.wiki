@@ -36,15 +36,16 @@ The following implementations of `NodeFactory` are provided:
     * An advantage of this factory is it uses much less memory for suffix trees
     * A disadvantage of this factory is garbage collection: if a large document/key is added to the tree, and then a small document is added to the tree, the nodes added for the small document will re-use edges which were previously added for the large document. If the large document is subsequently removed from the tree, edges which are still in use by the small document will not be removed, and so the large document will not be garbage collected
 
-Both of the node factories above return different implementations of nodes depending on the data that the tree algorithms supply to the factory to create a new node. For example when a node does not contain a value, these factories will return specific node implementations which omit the value field. Leaf nodes do not need a data structure to reference child nodes, and so additionally some node implementations omit that data structure. Finally, the node factories support inserting keys into the tree which *do not have values at all*. This is discussed below.
+The node factories above return different implementations of nodes depending on the data that the tree algorithms supply to the factory to create a new node. For example when a node does not contain a value, these factories will return specific node implementations which omit the value field. Leaf nodes do not need a data structure to reference child nodes, and so additionally some node implementations omit that data structure. Finally, the node factories support inserting keys into the tree which *do not have values at all*. This is discussed below.
 
-Memory could be reduced further by more sophisticated node factories as follows:
-  * Store character data inside nodes as UTF-8 (i.e. single-byte), convert it to 2-byte Java `char` on demand; or taking the idea to the extreme - character data could be compressed
+The user could reduce memory overhead further by writing more sophisticated node factories, with various tradeoffs:
+  * If the number of unique characters will be small, encode character data in even smaller character sets than UTF-8 (5-bit, 6-bit, 7-bit) and access bitwise
+  * Compress character data for reduced memory overhead, but greater read overhead
   * Where an edge contains only two characters (for example), instead of storing a two-character `char[]`, a dedicated implementation of a node could be returned which stores the edge in two primitive `char` fields (`char[]` consumes more memory than primitive fields)
 
 === `VoidValue` - Inserting Keys Without Values ===
 
-Both of the node factories above support inserting keys into the tree which do not have values, using [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html VoidValue] objects.
+The node factories above support inserting keys into the tree which do not have values, using [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html VoidValue] objects.
 
 If an entry is added to a tree as follows, a custom node implementation will be used which does not actually store a value in the tree at all. This can reduce memory usage by eliminating a field and object reference.
 
