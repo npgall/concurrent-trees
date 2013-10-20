@@ -76,10 +76,16 @@ public class ByteArrayCharSequence implements CharSequence {
         for (int i = 0; i < length; i++) {
             char inputChar = charSequence.charAt(i);
             if (inputChar > 255) {
-                throw new IllegalStateException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
+                throw new IncompatibleCharacterException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
             }
             bytes[i] = (byte)inputChar;
         }
         return bytes;
+    }
+
+    public static class IncompatibleCharacterException extends IllegalStateException {
+        public IncompatibleCharacterException(String s) {
+            super(s);
+        }
     }
 }
