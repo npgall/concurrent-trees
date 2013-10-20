@@ -1,6 +1,12 @@
 #summary Release notes for official releases of the concurrent-trees library
 #labels Featured
 
+===Version 2.3.0 - 2013-10-20===
+  * Enhancements which may significantly reduce memory overhead (by up to 50%), for UTF-8 single byte/ASCII-compatible strings
+ * Added `DefaultByteArrayNodeFactory` - represents characters in the tree using UTF-8 single byte per character (throwing an exception if incompatible characters are detected)
+ * Added `SmartArrayBasedNodeFactory` - automatically selects between UTF-8 and UTF-16 character encoding on a node-by-node basis (DefaultByteArrayNodeFactory and DefaultCharArrayNodeFactory respectively)
+ * Deployed to Maven central
+
 ===Version 2.2.0 - 2013-10-07===
  * `InvertedRadixTree` now extends the pubic interface of `RadixTree`
  * This allows the same tree to be searched for keywords starting with a prefix, and to be used to scan documents for keywords contained in the tree
