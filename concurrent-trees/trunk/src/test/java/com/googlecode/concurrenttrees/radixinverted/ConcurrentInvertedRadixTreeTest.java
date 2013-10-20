@@ -31,9 +31,13 @@ public class ConcurrentInvertedRadixTreeTest {
 
     private final NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
 
+    protected NodeFactory getNodeFactory() {
+        return nodeFactory;
+    }
+
     @Test
     public void testPut() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -47,7 +51,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testPutIfAbsent() {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         Integer existing = tree.putIfAbsent("FOO", 1);
         assertNull(existing);
@@ -61,7 +65,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testRemove() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -77,7 +81,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysPrefixing() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         tree.put("1234567", 1);
         tree.put("1234568", 2);
@@ -102,7 +106,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetValuesForKeysPrefixing() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         tree.put("1234567", 1);
         tree.put("1234568", 2);
@@ -127,7 +131,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForKeysPrefixing() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         tree.put("1234567", 1);
         tree.put("1234568", 2);
@@ -152,7 +156,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForKeysPrefixing_EdgeCases1() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         tree.put("/a/b/", 1);
         tree.put("/a/blob/", 2);
@@ -177,7 +181,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForKeysPrefixing_EdgeCases2() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         tree.put("/a/b", 1);
         tree.put("/a/blob", 2);
@@ -201,7 +205,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("see", 1);
         tree.put("think", 2);
         tree.put("never", 3);
@@ -217,7 +221,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetValuesForKeysContainedIn() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("see", 1);
         tree.put("think", 2);
         tree.put("never", 3);
@@ -233,7 +237,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForKeysContainedIn() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("see", 1);
         tree.put("think", 2);
         tree.put("never", 3);
@@ -249,7 +253,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_ConsecutiveKeys() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -261,7 +265,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_NoKeys() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
 
         String document =
                 "BAZ BAZ BAZ";
@@ -271,7 +275,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_NoMatches() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -283,7 +287,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_EmptyDocument() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -295,7 +299,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_PartialEdgeMatch() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -307,7 +311,7 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testGetKeysContainedIn_OverlappingMatches() throws Exception {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOOD", 1);
         tree.put("FOO", 2);
 
@@ -319,14 +323,14 @@ public class ConcurrentInvertedRadixTreeTest {
 
     @Test
     public void testRestrictConcurrency() {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory, true);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory(), true);
         assertNotNull(tree);
     }
 
     @Test
     public void testInheritedMethods() {
         // Basic tests for methods inherited from ConcurrentRadixTree, complete coverage in ConcurrentRadixTreeTest...
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(nodeFactory);
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("FOOD", 1);
         tree.put("FOO", 2);
 

@@ -37,6 +37,10 @@ public class ConcurrentRadixTreeTest {
 
     private final NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
 
+    protected NodeFactory getNodeFactory() {
+        return nodeFactory;
+    }
+
     @Test
     public void testBuildTreeByHand() {
         // Build the tree by hand, as if the following strings were added: B, BA, BAN, BANDANA, BANAN, BANANA
@@ -50,14 +54,14 @@ public class ConcurrentRadixTreeTest {
         //                └── ○ DANA (4)
 
         final Node root, n1, n2, n3, n4, n5, n6;
-        n6 = nodeFactory.createNode("A", 6, Collections.<Node>emptyList(), false);
-        n5 = nodeFactory.createNode("AN", 5, Arrays.asList(n6), false);
-        n4 = nodeFactory.createNode("DANA", 4, Collections.<Node>emptyList(), false);
-        n3 = nodeFactory.createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort alphabetically such that n5 is first
-        n2 = nodeFactory.createNode("A", 2, Arrays.asList(n3), false);
-        n1 = nodeFactory.createNode("B", 1, Arrays.asList(n2), false);
+        n6 = getNodeFactory().createNode("A", 6, Collections.<Node>emptyList(), false);
+        n5 = getNodeFactory().createNode("AN", 5, Arrays.asList(n6), false);
+        n4 = getNodeFactory().createNode("DANA", 4, Collections.<Node>emptyList(), false);
+        n3 = getNodeFactory().createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort alphabetically such that n5 is first
+        n2 = getNodeFactory().createNode("A", 2, Arrays.asList(n3), false);
+        n1 = getNodeFactory().createNode("B", 1, Arrays.asList(n2), false);
         //noinspection NullableProblems
-        root = nodeFactory.createNode("", null, Arrays.asList(n1), true);
+        root = getNodeFactory().createNode("", null, Arrays.asList(n1), true);
 
         String expected =
                 "○\n" +
@@ -74,7 +78,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_AddToRoot() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("A", 1);
         String expected =
                 "○\n" +
@@ -85,7 +89,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_ChildNodeSorting() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("B", 1);
         tree.put("A", 2);
         String expected =
@@ -98,7 +102,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_AppendChild() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -112,7 +116,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_SplitEdge() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOOBAR", 1);
         tree.put("FOO", 2);
 
@@ -126,7 +130,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_SplitWithImplicitNode() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOOBAR", 1);
         tree.put("FOOD", 2);
 
@@ -141,7 +145,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_SplitAndMove() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -159,7 +163,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_OverwriteValue() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
 
         Integer existing;
         existing = tree.put("FOO", 1);
@@ -173,7 +177,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPutIfAbsent_DoNotOverwriteValue() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
 
         Integer existing = tree.putIfAbsent("FOO", 1);
         assertNull(existing);
@@ -187,7 +191,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPutIfAbsent_SplitNode() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
 
         //    ○
         //    └── ○ FOO             // implicit node added automatically
@@ -214,7 +218,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testPut_VoidValue_CharArrayNodeFactory() {
-        ConcurrentRadixTree<VoidValue> tree = new ConcurrentRadixTree<VoidValue>(nodeFactory);
+        ConcurrentRadixTree<VoidValue> tree = new ConcurrentRadixTree<VoidValue>(getNodeFactory());
         tree.put("FOO", VoidValue.SINGLETON);
         tree.put("FOOBAR", VoidValue.SINGLETON);
         String expected =
@@ -240,21 +244,21 @@ public class ConcurrentRadixTreeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutInternal_ArgumentValidation1() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         //noinspection NullableProblems
         tree.put(null, 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutInternal_ArgumentValidation2() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         //noinspection NullableProblems
         tree.put("FOO", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testPutInternal_ArgumentValidation3() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         //noinspection NullableProblems
         tree.put("", 1);
     }
@@ -272,7 +276,7 @@ public class ConcurrentRadixTreeTest {
             }
         }
         // Override searchTree() to return the InvalidSearchResult...
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory) {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory()) {
             @Override
             SearchResult searchTree(CharSequence key) {
                 return new InvalidSearchResult("FOO", root, 4, 4, null, null);
@@ -286,7 +290,7 @@ public class ConcurrentRadixTreeTest {
     
     @Test
     public void testGet() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -309,7 +313,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_MoreThanOneChildEdge() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
         tree.put("FOOD", 3);
@@ -347,7 +351,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_ExactlyOneChildEdge() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
         tree.put("FOOBARBAZ", 3);
@@ -384,7 +388,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_ZeroChildEdges_DirectChildOfRoot() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("BAR", 2);
 
@@ -415,7 +419,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_LastRemainingKey() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
 
         //    ○
@@ -441,7 +445,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_ZeroChildEdges_OneStepFromRoot() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
 
@@ -473,7 +477,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_ZeroChildEdges_SeveralStepsFromRoot() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("FOOBAR", 2);
         tree.put("FOOBARBAZ", 3);
@@ -510,7 +514,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_DoNotRemoveSplitNode() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOOBAR", 1);
         tree.put("FOOD", 2);
 
@@ -543,7 +547,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_MergeSplitNode() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -573,7 +577,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_DoNotMergeSplitNodeWithValue() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -605,7 +609,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testRemove_NoSuchKey() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("FOO", 1);
         tree.put("BAR", 2);
 
@@ -630,7 +634,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetKeysForPrefix() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -658,7 +662,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetClosestKeys() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("COD", 1);
         tree.put("CODFISH", 2);
         tree.put("COFFEE", 3);
@@ -679,7 +683,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetValuesForClosestKeys() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("COD", 1);
         tree.put("CODFISH", 2);
         tree.put("COFFEE", 3);
@@ -700,7 +704,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForClosestKeys() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("COD", 1);
         tree.put("CODFISH", 2);
         tree.put("COFFEE", 3);
@@ -745,7 +749,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetValuesForPrefix() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -773,7 +777,7 @@ public class ConcurrentRadixTreeTest {
 
     @Test
     public void testGetKeyValuePairsForPrefix() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
         tree.put("TOAST", 3);
@@ -801,14 +805,14 @@ public class ConcurrentRadixTreeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRemove_ArgumentValidation() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         //noinspection NullableProblems
         tree.remove(null);
     }
 
     @Test
     public void testSearchTree() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         // Build the tree by hand, as if the following strings were added: B, BA, BAN, BANDANA, BANAN, BANANA
         
         //    ○
@@ -820,14 +824,14 @@ public class ConcurrentRadixTreeTest {
         //                └── ○ DANA (4)
 
         final Node root, n1, n2, n3, n4, n5, n6;
-        n6 = nodeFactory.createNode("A", 6, Collections.<Node>emptyList(), false);
-        n5 = nodeFactory.createNode("AN", 5, Arrays.asList(n6), false);
-        n4 = nodeFactory.createNode("DANA", 4, Collections.<Node>emptyList(), false);
-        n3 = nodeFactory.createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort these such that n5 is first
-        n2 = nodeFactory.createNode("A", 2, Arrays.asList(n3), false);
-        n1 = nodeFactory.createNode("B", 1, Arrays.asList(n2), false);
+        n6 = getNodeFactory().createNode("A", 6, Collections.<Node>emptyList(), false);
+        n5 = getNodeFactory().createNode("AN", 5, Arrays.asList(n6), false);
+        n4 = getNodeFactory().createNode("DANA", 4, Collections.<Node>emptyList(), false);
+        n3 = getNodeFactory().createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort these such that n5 is first
+        n2 = getNodeFactory().createNode("A", 2, Arrays.asList(n3), false);
+        n1 = getNodeFactory().createNode("B", 1, Arrays.asList(n2), false);
         //noinspection NullableProblems
-        root = nodeFactory.createNode("", null, Arrays.asList(n1), true);
+        root = getNodeFactory().createNode("", null, Arrays.asList(n1), true);
 
         // Overwrite the tree's default root with the one built by hand...
         tree.root = root;
@@ -921,7 +925,7 @@ public class ConcurrentRadixTreeTest {
     @Test(expected = IllegalStateException.class)
     public void testSearchResult_FailureToClassify2() {
         // Testing the various (unlikely) ways to fall through classification to have the exception thrown...
-        Node dummyNodeFound = nodeFactory.createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
+        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
         new ConcurrentRadixTree.SearchResult("DUMMY", dummyNodeFound, 5, 70, null, null);
 
     }
@@ -929,13 +933,13 @@ public class ConcurrentRadixTreeTest {
     @Test(expected = IllegalStateException.class)
     public void testSearchResult_FailureToClassify3() {
         // Testing the various (unlikely) ways to fall through classification to have the exception thrown...
-        Node dummyNodeFound = nodeFactory.createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
+        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
             new ConcurrentRadixTree.SearchResult("DUMMY", dummyNodeFound, 4, 70, null, null);
     }
 
     @Test
     public void testRestrictConcurrency() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(nodeFactory, true);
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory(), true);
         tree.acquireReadLockIfNecessary();
         tree.releaseReadLockIfNecessary();
     }
