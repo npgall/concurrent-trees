@@ -10,7 +10,7 @@ The trees in this project are not coupled with the implementation of Node object
 
 The tree algorithms do not create nodes directly, they request new nodes from a [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/NodeFactory.html NodeFactory] supplied to the constructor of the tree. Some basic factories are included (discussed below).
 
-== Memory Reduction Techniques ==
+== Memory reduction techniques ==
 
 The following techniques to reduce memory overhead are mostly applicable to suffix trees built for large keys/documents (such as adding entire documents to the tree as individual keys). This is less applicable to radix trees, which inherently require much less memory even for long documents.
 
@@ -20,7 +20,8 @@ Building suffix trees from large text documents, can require many nodes. For exa
 
 Nodes are only required to expose the _edges_ within the tree as a `CharSequence` _view_ onto the character sequence, and as such they can either store character data inside the node - for example as a copied `char[]`, or outside the tree as start and end offsets into the original input string.
 
-== Node Factories Provided ==
+== Node factories provided ==
+
 The following implementations of `NodeFactory` are provided:
   * [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharArrayNodeFactory.html DefaultCharArrayNodeFactory]
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
@@ -39,14 +40,14 @@ The following implementations of `NodeFactory` are provided:
 
 The node factories above return different implementations of nodes depending on the data that the tree algorithms supply to the factory to create a new node. For example when a node does not contain a value, these factories will return specific node implementations which omit the value field. Leaf nodes do not need a data structure to reference child nodes, and so additionally some node implementations omit that data structure. Finally, the node factories support inserting keys into the tree which *do not have values at all*. This is discussed below.
 
-== Writing Custom Node Factories ==
+== Writing custom node factories ==
 
 The user could reduce memory overhead further by writing more sophisticated node factories, with various tradeoffs:
   * If the number of unique characters will be small, encode character data in even smaller character sets than UTF-8 (5-bit, 6-bit, 7-bit) and access bitwise
   * Compress character data for reduced memory overhead, but greater read overhead
   * Where an edge contains only two characters (for example), instead of storing a two-character `char[]`, a dedicated implementation of a node could be returned which stores the edge in two primitive `char` fields (`char[]` consumes more memory than primitive fields)
 
-== Note about `VoidValue` - Inserting Keys Without Values ==
+== Note about `VoidValue` - inserting keys without values ==
 
 The node factories above support inserting keys into the tree which do not have values, using [http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html VoidValue] objects.
 
