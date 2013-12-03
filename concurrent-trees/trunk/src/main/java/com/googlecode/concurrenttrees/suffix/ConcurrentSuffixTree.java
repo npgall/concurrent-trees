@@ -431,6 +431,14 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return valueMap.size();
+    }
+
+    /**
      * Utility method to return an iterator for the given iterable, or an empty iterator if the iterable is null.
      */
     @SuppressWarnings({"JavaDoc"})

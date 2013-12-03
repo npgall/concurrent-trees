@@ -384,6 +384,14 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return radixTree.size();
+    }
+
     @Override
     public Node getNode() {
         return radixTree.getNode();

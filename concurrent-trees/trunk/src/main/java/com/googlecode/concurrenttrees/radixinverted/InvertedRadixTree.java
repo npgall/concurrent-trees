@@ -131,4 +131,13 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
      * @return The set of {@link KeyValuePair}s for keys in the tree which are contained in the given document
      */
     Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContainedIn(CharSequence document);
+
+    /**
+     * Counts the number of keys/values stored in the tree.
+     * <p/>
+     * In the current implementation, <b>this is an expensive operation</b>, having O(n) time complexity.
+     *
+     * @return The number of keys/values stored in the tree
+     */
+    int size();
 }

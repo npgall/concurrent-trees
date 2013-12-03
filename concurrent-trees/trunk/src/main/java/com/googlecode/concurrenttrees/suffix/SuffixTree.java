@@ -147,4 +147,14 @@ public interface SuffixTree<O> {
      * @return The set of {@link KeyValuePair}s for keys in the tree which contain the given fragment, inclusive
      */
     Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContaining(CharSequence fragment);
+
+    /**
+     * Counts the number of keys/values stored in the tree.
+     * <p/>
+     * In the current implementation, this has a time complexity similar to
+     * {@link java.util.concurrent.ConcurrentHashMap#size()}.
+     *
+     * @return The number of keys/values stored in the tree
+     */
+    int size();
 }

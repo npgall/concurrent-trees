@@ -322,6 +322,27 @@ public class ConcurrentInvertedRadixTreeTest {
     }
 
     @Test
+    public void testSize() {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        assertEquals(0, tree.size());
+        tree.put("1234567", 1);
+        assertEquals(1, tree.size());
+        tree.put("1234568", 2);
+        assertEquals(2, tree.size());
+        tree.put("123", 3);
+        assertEquals(3, tree.size());
+
+        tree.remove("FOO");
+        assertEquals(3, tree.size()); // no change
+        tree.remove("123");
+        assertEquals(2, tree.size());
+        tree.remove("1234568");
+        assertEquals(1, tree.size());
+        tree.remove("1234567");
+        assertEquals(0, tree.size());
+    }
+
+    @Test
     public void testRestrictConcurrency() {
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory(), true);
         assertNotNull(tree);
