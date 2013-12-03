@@ -1,6 +1,11 @@
 #summary Release notes for official releases of the concurrent-trees library
 #labels Featured
 
+===Version 2.4.0 - 2013-12-03===
+ * Added tree.size() methods
+ * Note tree.size() is relatively expensive for the radix trees having O(n) time complexity, but this might be useful for debugging purposes
+ * Deployed to Maven central
+
 ===Version 2.3.0 - 2013-10-20===
  * Up to 50% reduction in memory overhead for UTF-8 single byte/ASCII-compatible strings
  * Added `DefaultByteArrayNodeFactory` - represents characters in the tree using UTF-8 single byte per character (throwing an exception if incompatible characters are detected)
