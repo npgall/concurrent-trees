@@ -1,0 +1,17 @@
+# Output from: src/test/java/com/googlecode/concurrenttrees/examples/shakespeare/FindLongestCommonSubstring.java
+
+Building suffix tree...
+Added manuscript: antony_and_cleopatra
+Added manuscript: coriolanus
+Added manuscript: hamlet
+Added manuscript: julius_caesar
+Added manuscript: king_lear
+Added manuscript: macbeth
+Added manuscript: othello
+Added manuscript: romeo_and_juliet
+Added manuscript: timon_of_athens
+Added manuscript: titus_andronicus
+Built suffix tree in 24 seconds.
+Searching for longest common substring...
+Found longest common substring in 148 seconds.
+Longest common substring: [ dramatis personae ]
