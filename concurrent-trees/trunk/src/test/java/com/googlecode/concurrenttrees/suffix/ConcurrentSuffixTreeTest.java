@@ -328,6 +328,27 @@ public class ConcurrentSuffixTreeTest {
     }
 
     @Test
+    public void testSize() {
+        ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
+        assertEquals(0, tree.size());
+        tree.put("TEST", 1);
+        assertEquals(1, tree.size());
+        tree.put("TEAM", 2);
+        assertEquals(2, tree.size());
+        tree.put("TOAST", 3);
+        assertEquals(3, tree.size());
+
+        tree.remove("FOO");
+        assertEquals(3, tree.size()); // no change
+        tree.remove("TOAST");
+        assertEquals(2, tree.size());
+        tree.remove("TEAM");
+        assertEquals(1, tree.size());
+        tree.remove("TEST");
+        assertEquals(0, tree.size());
+    }
+
+    @Test
     public void testGetKeysEndingWith() throws Exception {
         ConcurrentSuffixTree<Integer> tree = newConcurrentSuffixTreeForUnitTests();
 

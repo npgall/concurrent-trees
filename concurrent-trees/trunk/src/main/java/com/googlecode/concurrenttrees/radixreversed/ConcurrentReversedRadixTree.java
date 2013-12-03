@@ -132,6 +132,14 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
         return radixTree.remove(CharSequences.reverse(key));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return radixTree.size();
+    }
+
     @Override
     public Node getNode() {
         return radixTree.getNode();

@@ -480,6 +480,26 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        Deque<Node> stack = new LinkedList<Node>();
+        stack.push(this.root);
+        int count = 0;
+        while (true) {
+            if (stack.isEmpty()) {
+                return count;
+            }
+            Node current = stack.pop();
+            stack.addAll(current.getOutgoingEdges());
+            if (current.getValue() != null) {
+                count++;
+            }
+        }
+    }
+
     // ------------- Helper method for put() -------------
 
     /**

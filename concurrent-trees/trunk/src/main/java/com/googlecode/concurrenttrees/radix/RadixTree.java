@@ -150,4 +150,13 @@ public interface RadixTree<O> {
      * match the candidate key, inclusive
      */
     Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate);
+
+    /**
+     * Counts the number of keys/values stored in the tree.
+     * <p/>
+     * In the current implementation, <b>this is an expensive operation</b>, having O(n) time complexity.
+     *
+     * @return The number of keys/values stored in the tree
+     */
+    int size();
 }
