@@ -13,7 +13,8 @@ Concurrent-Trees is in Maven Central, and can be added to a Maven project as fol
 }}}
 
 == Download for Non-Maven Projects ==
-For non-Maven projects, an archive of older versions of the library can be downloaded directly from [https://code.google.com/p/concurrent-trees/downloads/list here]. Newer versions can be downloaded directly from [http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.googlecode.concurrent-trees%22%20AND%20a%3A%22concurrent-trees%22 maven central].
+For non-Maven projects, an archive of _older versions_ of the library can be downloaded directly from [https://code.google.com/p/concurrent-trees/downloads/list here].
+Newer versions can be downloaded directly from [http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.googlecode.concurrent-trees%22%20AND%20a%3A%22concurrent-trees%22 maven central].
 
 ==Download statistics, to December 2014==
 
