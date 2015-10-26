@@ -40,6 +40,7 @@ Inserting an entry into Concurrent Radix Tree which requires an existing node wi
 
 ## Tree Implementations ##
 Feature matrix for tree implementations provided in this project, and lookup operations supported.
+
 | **Tree Interface** | **Implementation** | **Key Equals (exact match)** | **Key Starts With** | **Key Ends With** | **Key Contains** | **Find Keywords In External Documents** <sup>[1]</sup> |
 |:-------------------|:-------------------|:-----------------------------|:--------------------|:------------------|:-----------------|:-------------------------------------------------------|
 |[RadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/RadixTree.html)|[ConcurrentRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/ConcurrentRadixTree.html)|✓                             |✓                    |                   |                  |                                                        |
@@ -52,14 +53,16 @@ Feature matrix for tree implementations provided in this project, and lookup ope
 `ConcurrentInvertedRadixTree` allows unseen documents to be scanned efficiently for keywords contained in the tree, and performance does not degrade as additional keywords are added.
 
 Let _d_ = number of characters in document, _n_ = number of keywords, _k_ = average keyword length
+
 | **Keyword scanning approach** | **Time Complexity (Number of character comparisons)** | **Example: 10000 10-character keywords, 10000 character document**|
-|:------------------------------|:------------------------------------------------------|:|
+|:------------------------------|:------------------------------------------------------|:------------------------------------------------------------------|
 | Naive `document.contains(keyword)` for every keyword | O(_d_ _n_ _k_)                                        | 1,000,000,000 character comparisons |
 | ConcurrentInvertedRadixTree   | O(_d_ log(_k_))                                       | 10,000 character comparisons (≤100,000 times faster) |
 
 ## Solver Utilities ##
 
 Utilities included which solve problems using the included trees.
+
 | **Solver** | **Solves** |
 |:-----------|:-----------|
 |[LCSubstringSolver](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html)|[Longest common substring problem](http://en.wikipedia.org/wiki/Longest_common_substring_problem)|
