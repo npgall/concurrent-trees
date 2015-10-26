@@ -107,5 +107,5 @@ As of writing (October 2015), version 2.4.0 of concurrent-trees is the latest re
 
 See [Release Notes](documentation/ReleaseNotes.md) and [Frequently Asked Questions](documentation/FrequentlyAskedQuestions.md) for details.
 
-Report any bugs/feature requests in the [Issues](issues) tab.
+Report any bugs/feature requests in the [Issues](http://github.com/npgall/concurrent-trees/issues) tab.
 For support please use the [Discussion Group](http://groups.google.com/forum/?fromgroups#!forum/concurrent-trees-discuss), not direct email to the developers.
