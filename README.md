@@ -56,7 +56,7 @@ Feature matrix for tree implementations provided in this project, and lookup ope
 
 Let _d_ = number of characters in document, _n_ = number of keywords, _k_ = average keyword length
 
-| **Keyword scanning approach** | **Time Complexity (Number of character comparisons)** | **Example: 10000 10-character keywords, 10000 character document**|
+| <sub>**Keyword scanning approach**</sub> | <sub>**Time Complexity (Number of character comparisons)**</sub> | <sub>**Example: 10000 10-character keywords, 10000 character document**</sub> |
 |:------------------------------|:------------------------------------------------------|:------------------------------------------------------------------|
 | Naive `document.contains(keyword)` for every keyword | O(_d_ _n_ _k_)                                        | 1,000,000,000 character comparisons |
 | ConcurrentInvertedRadixTree   | O(_d_ log(_k_))                                       | 10,000 character comparisons (≤100,000 times faster) |
