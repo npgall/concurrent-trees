@@ -55,7 +55,7 @@ Key-value pairs for keys contained in 'MY TEAM LIKES TOAST': [(TEAM, 3), (TOAST,
 ```
 
 ## Adding Keys without Values ##
-```
+```java
 tree.put("FOO", VoidValue.SINGLETON);
 ```
 Supplying [VoidValue](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html) as above, stores the key in the tree without associating it with any value.
