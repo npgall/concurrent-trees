@@ -20,14 +20,9 @@
         </license>
     </licenses>
     <scm>
-        <url>http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</url>
-        <connection>scm:svn:http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</connection>
-        <developerConnection>scm:svn:https://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/</developerConnection>
-        <!--
-            Note: When performing a release for the first time, run the following
-            and and choose to permanently accept Google's server certificate:
-                svn log -v https://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/
-        -->
+        <url>https://github.com/npgall/${artifactId}.git</url>
+        <connection>scm:git:https://github.com/npgall/${artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:npgall/${artifactId}.git</developerConnection>
     </scm>
     <developers>
         <developer>
