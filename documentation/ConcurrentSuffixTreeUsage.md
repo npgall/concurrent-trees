@@ -1,4 +1,4 @@
-# Example Usage for Concurrent Suffix Tree #
+# Example Usage for ConcurrentSuffixTree #
 
 ## Objective ##
   * Print the suffixes of "TEST", "TOAST", "TEAM" (for reference only)
@@ -14,7 +14,7 @@
   * Find key-value pairs for keys containing "A"
 
 ## Code ##
-```
+```java
 public static void main(String[] args) {
     System.out.println("Suffixes for 'TEST': " + Iterables.toString(CharSequences.generateSuffixes("TEST")));
     System.out.println("Suffixes for 'TOAST': " + Iterables.toString(CharSequences.generateSuffixes("TOAST")));

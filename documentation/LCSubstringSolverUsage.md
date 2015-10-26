@@ -1,10 +1,10 @@
-# Find the Longest Common Substring in a Collection of Documents #
+# Example Usage to Find the Longest Common Substring in a Collection of Documents #
 
 ## Objective ##
   * Solve the [longest common substring problem](http://en.wikipedia.org/wiki/Longest_common_substring_problem) using the included `LCSubstringSolver`
 
 ## Code ##
-```
+```java
 static final String document1 =
         "albert einstein, was a german theoretical physicist who developed the theory of general relativity";
 

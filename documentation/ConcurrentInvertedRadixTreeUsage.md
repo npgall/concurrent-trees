@@ -1,4 +1,4 @@
-# Example Usage for Concurrent Inverted Radix Tree #
+# Example Usage for ConcurrentInvertedRadixTree #
 
 
 ## General Usage ##
@@ -12,7 +12,7 @@
   * Find keyword-value pairs for keywords contained in example document "MY TEAM LIKES TOAST"
 
 ### Code ###
-```
+```java
 public static void main(String[] args) {
     InvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 

@@ -1,4 +1,4 @@
-# Example Usage for Concurrent Reversed Radix Tree #
+# Example Usage for ConcurrentReversedRadixTree #
 
 
 ## General Usage ##
@@ -11,7 +11,7 @@
   * Find key-value pairs for keys ending with "ST"
 
 ### Code ###
-```
+```java
 public static void main(String[] args) {
     ReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 

@@ -1,4 +1,4 @@
-# Example Usage for Concurrent Radix Tree #
+# Example Usage for ConcurrentRadixTree #
 
 
 ## General Usage ##
@@ -12,7 +12,7 @@
   * Find keys closest to non-existent key 'TEMPLE'
 
 ### Code ###
-```
+```java
 public static void main(String[] args) {
     RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 

@@ -1,4 +1,4 @@
-# In-Memory File System #
+# Example Usage for In-Memory File System #
 
 An in-memory file system implemented on top of ConcurrentRadixTree, is included in the source [here](../code/src/test/java/com/googlecode/concurrenttrees/examples/filesystem/). This code is currently just proof of concept, so is located in the `test/` directory rather than `main/`.
 
@@ -9,7 +9,7 @@ An in-memory file system implemented on top of ConcurrentRadixTree, is included 
   * Retrieve files by searching directories recursively etc.
 
 ### Code ###
-```
+```java
     static class Brochure {
         final String content;
 
