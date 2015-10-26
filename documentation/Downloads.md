@@ -7,13 +7,14 @@ Concurrent-Trees is in Maven Central, and can be added to a Maven project as fol
 <dependency>
     <groupId>com.googlecode.concurrent-trees</groupId>
     <artifactId>concurrent-trees</artifactId>
-    <version>2.4.0</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 
+See [ReleaseNotes](ReleaseNotes.md) for the latest version number.
+
 ## Download for Non-Maven Projects ##
-For non-Maven projects, an archive of _older versions_ of the library can be downloaded directly from [here](https://code.google.com/p/concurrent-trees/downloads/list).
-Newer versions can be downloaded directly from [maven central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.googlecode.concurrent-trees%22%20AND%20a%3A%22concurrent-trees%22).
+The jar file can be downloaded directly from [maven central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.googlecode.concurrent-trees%22%20AND%20a%3A%22concurrent-trees%22).
 
 ## Download statistics, as at December 2014 ##
 
