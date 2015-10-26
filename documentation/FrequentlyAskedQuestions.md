@@ -67,4 +67,4 @@ Ukkonen's algorithm in particular does not seem to lend itself well to concurren
 Yes certainly, glad you asked!
 
 Credit: [xkcd.com](http://xkcd.com/), [Creative Commons Attribution-NonCommercial 2.5 License](http://xkcd.com/license.html)
-![http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png](http://concurrent-trees.googlecode.com/svn/wiki/images/dfs-comic.png)
+![dfs-comic.png](documentation/images/dfs-comic.png)

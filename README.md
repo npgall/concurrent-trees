@@ -34,7 +34,7 @@ As such reading threads should never encounter latency due to ongoing writes or 
 The trees in this project support lock-free reads while allowing concurrent writes, by treating the tree as a mostly-immutable structure, and assembling the changes to be made to the tree into a **patch**, which is then applied to the tree in a **single atomic operation**.
 
 Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split:
-![http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png](http://concurrent-trees.googlecode.com/svn/wiki/images/tree-apply-patch.png)
+![tree-apply-patch.png](documentation/images/tree-apply-patch.png)
 
   * Reading threads traversing the tree while the patch above is being applied, will either see the _old version_ or the _new version_ of the (sub-)tree, but both versions are consistent views of the tree, which preserve the invariants. For more details see [TreeDesign](documentation/TreeDesign.md).
 
@@ -85,12 +85,12 @@ See the [Wiki](http://code.google.com/p/concurrent-trees/w/list) tab for additio
   * ConcurrentReversedRadixTreeUsage - Example Usage for Concurrent Reversed Radix Tree
   * ConcurrentInvertedRadixTreeUsage - Example Usage for Concurrent Inverted Radix Tree
   * ConcurrentSuffixTreeUsage - Example Usage for Concurrent Suffix Tree
-  * [LCSubstringSolverUsage](LCSubstringSolverUsage.md) - Example Usage to find the Longest Common Substring in a collection of documents
-  * [InMemoryFileSystemUsage](InMemoryFileSystemUsage.md) - Example Usage for an In-Memory File System proof of concept based on Concurrent Radix Tree
+  * [LCSubstringSolverUsage](documentation/LCSubstringSolverUsage.md) - Example Usage to find the Longest Common Substring in a collection of documents
+  * [InMemoryFileSystemUsage](documentation/InMemoryFileSystemUsage.md) - Example Usage for an In-Memory File System proof of concept based on Concurrent Radix Tree
 
 ## Usage in Maven and Non-Maven Projects ##
 
-Concurrent-Trees is in Maven Central. See [Downloads](Downloads.md).
+Concurrent-Trees is in Maven Central. See [Downloads](documentation/Downloads.md).
 
 ## Related Projects ##
 
@@ -105,7 +105,7 @@ As of writing (January 2015), version 2.4.0 of concurrent-trees is the latest re
   * New support for UTF-8/single byte per character encoding, up to 50% reduction in memory usage
   * Over 1,000 downloads per month and 14,000+ downloads to-date, as of December 2014
 
-See [Release Notes](ReleaseNotes.md) and [Frequently Asked Questions](FrequentlyAskedQuestions.md) for details.
+See [Release Notes](documentation/ReleaseNotes.md) and [Frequently Asked Questions](documentation/FrequentlyAskedQuestions.md) for details.
 
 Report any bugs/feature requests in the [Issues](https://code.google.com/p/concurrent-trees/issues/list) tab.
 For support please use the [Discussion Group](http://groups.google.com/forum/?fromgroups#!forum/concurrent-trees-discuss), not direct email to the developers.
