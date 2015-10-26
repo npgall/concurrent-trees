@@ -1,4 +1,4 @@
-# Example Usage to Find the Longest Common Substring in a Collection of Documents #
+# Example Usage to find the Longest Common Substring in a collection of documents #
 
 ## Objective ##
   * Solve the [longest common substring problem](http://en.wikipedia.org/wiki/Longest_common_substring_problem) using the included `LCSubstringSolver`
