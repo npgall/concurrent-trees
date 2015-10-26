@@ -78,7 +78,7 @@ Utilities included which solve problems using the included trees.
   * [NodeFactoryAndMemoryUsage](documentation/NodeFactoryAndMemoryUsage.md) - How to use custom node implementations and manage memory
   * [TreeDesign](documentation/TreeDesign.md) - Overview of the approach to concurrency
 
-See the [Documentation](documentation) for additional documentation.
+For more documentation see the [documentation](documentation) directory.
 
 **Example Usage**
 
