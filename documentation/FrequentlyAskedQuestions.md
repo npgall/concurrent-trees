@@ -1,4 +1,6 @@
-Frequently Asked Questions. For various values of "frequently".
+# Frequently Asked Questions #
+ 
+_For various values of "frequently"._
 
 
 ## What is Lazy Evaluation, and why return Iterable instead of Collection or Set? ##

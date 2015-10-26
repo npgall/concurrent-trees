@@ -1,6 +1,9 @@
+# In-Memory File System #
+
 An in-memory file system implemented on top of ConcurrentRadixTree, is included in the source [here](../code/src/test/java/com/googlecode/concurrenttrees/examples/filesystem/). This code is currently just proof of concept, so is located in the `test/` directory rather than `main/`.
 
 ## Example Usage for In-Memory File System (proof of concept) ##
+
 ### Objective ###
   * Create a bunch of Brochure objects, and store those in various "directories" and with various "file names" in the in-memory file system
   * Retrieve files by searching directories recursively etc.

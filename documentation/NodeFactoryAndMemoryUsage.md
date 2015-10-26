@@ -1,4 +1,4 @@
-# Introduction #
+# NodeFactory and Memory Management #
 
 The trees in this project are not coupled with the implementation of Node objects.
 

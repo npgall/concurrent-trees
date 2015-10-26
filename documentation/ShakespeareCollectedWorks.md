@@ -1,3 +1,5 @@
+# Text Analysis of The Collected Works of William Shakespeare #
+
 The Collected Works of William Shakespeare was used as a dataset to test trees during development. This is not actually a large dataset by today's standards, at <10 MB of text files, but nonetheless useful for testing. It's unclear how the Bard would feel about his work being used for this purpose, no offense intended!
 
 Standalone programs to build trees from and analyze The Collected Works of William Shakespeare can be found [here](../code/src/test/java/com/googlecode/concurrenttrees/examples/shakespeare/).

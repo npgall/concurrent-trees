@@ -1,4 +1,4 @@
-Example Usage for Concurrent Inverted Radix Tree.
+# Example Usage for Concurrent Inverted Radix Tree #
 
 
 ## General Usage ##
