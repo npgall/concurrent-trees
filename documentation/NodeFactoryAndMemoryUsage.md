@@ -1,8 +1,8 @@
-# NodeFactory and Memory Management #
+# NodeFactory and Memory Usage #
 
 The trees in this project are not coupled with the implementation of Node objects.
 
-[Node](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html) is an interface that algorithms in the trees interact with, and so for any node it is possible to abstract its implementation to reduce memory overhead.
+[Node](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html) is an interface that algorithms in the trees interact with, and so it is possible to customise the implementation of nodes to reduce memory overhead, while retaining compatibility with all of the trees.
 
 The tree algorithms do not create nodes directly, they request new nodes from a [NodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/NodeFactory.html) supplied to the constructor of the tree. Some basic factories are included (discussed below).
 
