@@ -95,18 +95,17 @@ Concurrent-Trees is in Maven Central. See [Downloads](documentation/Downloads.md
 
 ## Related Projects ##
 
-  * [CQEngine](http://code.google.com/p/cqengine/), a NoSQL indexing and query engine with ultra-low latency
-  * Other projects by the same author: [here](http://code.google.com/u/101193024487469590176/)
+  * [CQEngine](http://github.com/npgall/cqengine/), a NoSQL indexing and query engine with ultra-low latency
 
 
 ## Project Status ##
 
-As of writing (January 2015), version 2.4.0 of concurrent-trees is the latest release.
+As of writing (October 2015), version 2.4.0 of concurrent-trees is the latest release.
   * Full test coverage
   * New support for UTF-8/single byte per character encoding, up to 50% reduction in memory usage
-  * Over 1,000 downloads per month and 14,000+ downloads to-date, as of December 2014
+  * Over 1,000 downloads per month and 14,000+ downloads to-date, as at December 2014
 
 See [Release Notes](documentation/ReleaseNotes.md) and [Frequently Asked Questions](documentation/FrequentlyAskedQuestions.md) for details.
 
-Report any bugs/feature requests in the [Issues](https://code.google.com/p/concurrent-trees/issues/list) tab.
+Report any bugs/feature requests in the [Issues](issues) tab.
 For support please use the [Discussion Group](http://groups.google.com/forum/?fromgroups#!forum/concurrent-trees-discuss), not direct email to the developers.
