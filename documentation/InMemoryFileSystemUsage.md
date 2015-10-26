@@ -1,4 +1,4 @@
-An in-memory file system implemented on top of ConcurrentRadixTree, is included in the source [here](http://concurrent-trees.googlecode.com/svn/concurrent-trees/trunk/src/test/java/com/googlecode/concurrenttrees/examples/filesystem/). This code is currently just proof of concept, so is located in the `test/` directory rather than `main/`.
+An in-memory file system implemented on top of ConcurrentRadixTree, is included in the source [here](../code/src/test/java/com/googlecode/concurrenttrees/examples/filesystem/). This code is currently just proof of concept, so is located in the `test/` directory rather than `main/`.
 
 ## Example Usage for In-Memory File System (proof of concept) ##
 ### Objective ###

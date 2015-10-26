@@ -18,6 +18,7 @@ A **Radix Tree** (also known as patricia trie, radix _trie_ or compact prefix tr
 A **Suffix Tree** (also known as PAT tree or position tree) is an extension of a radix tree which allows the _suffixes_ of keys to be inserted into the tree. This allows subsequent lookup using _any suffix or fragment_ of the key rather than the whole key, and in turn this can support fast string operations or analysis of documents. Some applications of Suffix Trees:
   * Build indexes supporting fast "ends with" or "contains" lookup
   * Perform more complex analyses of collections of documents, such as finding common substrings
+  
 The implementation in this project is actually a [Generalized Suffix Tree](http://en.wikipedia.org/wiki/Generalized_suffix_tree).
 
 ### Concurrency Support ###
@@ -43,10 +44,10 @@ Feature matrix for tree implementations provided in this project, and lookup ope
 
 | **Tree Interface** | **Implementation** | **Key Equals (exact match)** | **Key Starts With** | **Key Ends With** | **Key Contains** | **Find Keywords In External Documents** <sup>[1]</sup> |
 |:-------------------|:-------------------|:-----------------------------|:--------------------|:------------------|:-----------------|:-------------------------------------------------------|
-|[RadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/RadixTree.html)|[ConcurrentRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/ConcurrentRadixTree.html)|✓                             |✓                    |                   |                  |                                                        |
-|[ReversedRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ReversedRadixTree.html)|[ConcurrentReversedRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ConcurrentReversedRadixTree.html)|✓                             |                     |✓                  |                  |                                                        |
-|[InvertedRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/InvertedRadixTree.html)|[ConcurrentInvertedRadixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/ConcurrentInvertedRadixTree.html)|✓                             |✓                    |                   |                  |✓                                                       |
-|[SuffixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/SuffixTree.html)|[ConcurrentSuffixTree](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/ConcurrentSuffixTree.html)|✓                             |                     |✓                  |✓                 |                                                        |
+|[RadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/RadixTree.html)|[ConcurrentRadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/ConcurrentRadixTree.html)|✓                             |✓                    |                   |                  |                                                        |
+|[ReversedRadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ReversedRadixTree.html)|[ConcurrentReversedRadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radixreversed/ConcurrentReversedRadixTree.html)|✓                             |                     |✓                  |                  |                                                        |
+|[InvertedRadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/InvertedRadixTree.html)|[ConcurrentInvertedRadixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radixinverted/ConcurrentInvertedRadixTree.html)|✓                             |✓                    |                   |                  |✓                                                       |
+|[SuffixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/SuffixTree.html)|[ConcurrentSuffixTree](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/suffix/ConcurrentSuffixTree.html)|✓                             |                     |✓                  |✓                 |                                                        |
 
 <sup>[1]</sup> **Scanning for Keywords in External Documents**
 
@@ -65,13 +66,13 @@ Utilities included which solve problems using the included trees.
 
 | **Solver** | **Solves** |
 |:-----------|:-----------|
-|[LCSubstringSolver](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html)|[Longest common substring problem](http://en.wikipedia.org/wiki/Longest_common_substring_problem)|
+|[LCSubstringSolver](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/solver/LCSubstringSolver.html)|[Longest common substring problem](http://en.wikipedia.org/wiki/Longest_common_substring_problem)|
 
 ## Documentation and Example Usage ##
 
 **General Documentation**
 
-  * [JavaDocs](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/index.html) - APIs
+  * [JavaDocs](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/index.html) - APIs
   * [Discussion Group](http://groups.google.com/group/concurrent-trees-discuss) - Post questions here
   * [FrequentlyAskedQuestions](documentation/FrequentlyAskedQuestions.md) - Frequently Asked Questions, _for various values of frequently_
   * [NodeFactoryAndMemoryUsage](documentation/NodeFactoryAndMemoryUsage.md) - How to use custom node implementations and manage memory

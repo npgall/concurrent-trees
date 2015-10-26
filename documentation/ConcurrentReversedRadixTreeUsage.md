@@ -58,7 +58,7 @@ Key-Value pairs for keys ending with 'ST': [(TOAST, 2), (TEST, 1)]
 ```
 tree.put("FOO", VoidValue.SINGLETON);
 ```
-Supplying [VoidValue](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html) as above, stores the key in the tree without associating it with any value.
+Supplying [VoidValue](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html) as above, stores the key in the tree without associating it with any value.
 
 Internally, a special type of node will be used which omits a field for storing a value entirely, which can reduce memory usage when values are not needed and there will be a lot of such nodes.
 

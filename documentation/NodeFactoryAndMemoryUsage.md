@@ -2,9 +2,9 @@
 
 The trees in this project are not coupled with the implementation of Node objects.
 
-[Node](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html) is an interface that algorithms in the trees interact with, and so for any node it is possible to abstract its implementation to reduce memory overhead.
+[Node](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/Node.html) is an interface that algorithms in the trees interact with, and so for any node it is possible to abstract its implementation to reduce memory overhead.
 
-The tree algorithms do not create nodes directly, they request new nodes from a [NodeFactory](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/NodeFactory.html) supplied to the constructor of the tree. Some basic factories are included (discussed below).
+The tree algorithms do not create nodes directly, they request new nodes from a [NodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/NodeFactory.html) supplied to the constructor of the tree. Some basic factories are included (discussed below).
 
 
 
@@ -21,18 +21,18 @@ Nodes are only required to expose the _edges_ within the tree as a `CharSequence
 # Node factories provided #
 
 The following implementations of `NodeFactory` are provided:
-  * [DefaultCharArrayNodeFactory](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharArrayNodeFactory.html)
+  * [DefaultCharArrayNodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharArrayNodeFactory.html)
     * Stores character data inside the tree by copying character sequences into a `char[]` stored within each node
     * This can use more memory for suffix trees when storing the many suffixes of large documents
     * An advantage of this factory is garbage collection: there is no risk that a large string might be retained in memory by a single node referencing only a small subsequence of the string
-  * [DefaultByteArrayNodeFactory](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultByteArrayNodeFactory.html)
+  * [DefaultByteArrayNodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultByteArrayNodeFactory.html)
     * Similar to `DefaultCharArrayNodeFactory`, but stores character data inside the tree as UTF-8 single byte per character, instead of Java's default UTF-16 two-bytes per character
     * This may reduce memory overhead compared with `DefaultCharArrayNodeFactory` by 50%, but is only compatible with strings containing characters which can be represented as UTF-8 single byte/ASCII
-  * [SmartArrayBasedNodeFactory](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/SmartArrayBasedNodeFactory.html)
+  * [SmartArrayBasedNodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/SmartArrayBasedNodeFactory.html)
     * Internally uses `DefaultByteArrayNodeFactory` to create nodes by default, but falls back to `DefaultCharArrayNodeFactory` automatically if characters are detected which cannot be represented as a single byte
     * A combination of encodings may be used to represent any single path in the tree, as the representation is chosen on a node-by-node basis
     * **If you are unsure, this is the recommended node factory for most cases**
-  * [DefaultCharSequenceNodeFactory](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharSequenceNodeFactory.html)
+  * [DefaultCharSequenceNodeFactory](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/DefaultCharSequenceNodeFactory.html)
     * Does not store character data inside the tree, but instead stores pointers to character sequences in the input string, as start and end offsets and a reference to the original string in the node
     * An advantage of this factory is it uses much less memory for suffix trees
     * A disadvantage of this factory is garbage collection: if a large document/key is added to the tree, and then a small document is added to the tree, the nodes added for the small document will re-use edges which were previously added for the large document. If the large document is subsequently removed from the tree, edges which are still in use by the small document will not be removed, and so the large document will not be garbage collected
@@ -48,7 +48,7 @@ The user could reduce memory overhead further by writing more sophisticated node
 
 # Note about `VoidValue` - inserting keys without values #
 
-The node factories above support inserting keys into the tree which do not have values, using [VoidValue](http://concurrent-trees.googlecode.com/svn/concurrent-trees/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html) objects.
+The node factories above support inserting keys into the tree which do not have values, using [VoidValue](http://htmlpreview.github.io/?http://raw.githubusercontent.com/npgall/concurrent-trees/master/documentation/javadoc/apidocs/com/googlecode/concurrenttrees/radix/node/concrete/voidvalue/VoidValue.html) objects.
 
 If an entry is added to a tree as follows, a custom node implementation will be used which does not actually store a value in the tree at all. This can reduce memory usage by eliminating a field and object reference.
 
