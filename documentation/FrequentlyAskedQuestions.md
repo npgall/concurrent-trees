@@ -8,7 +8,7 @@ _For various values of "frequently"._
 Lazy evaluation means deferring computation until it is actually needed, and avoiding computation when it is not needed.
 
 In **Concurrent-Trees 1.0**, the APIs returned `java.util.Collection` or `java.util.Set`, which meant that given a query _"give me all keys which start with FOO"_, the library would literally build an entire `Set` of keys which started with FOO, and then return that fully-populated set to the application:
-```
+```java
 Set<CharSequence> keysStartingWithFoo = tree.getKeysStartingWith("foo");
 ```
 
@@ -19,7 +19,7 @@ There are a few problems with that approach:
   1. Inability to **filter** keys efficiently. The traversal algorithms implemented in the library perform some filtering of results prior to returning them to the application. If the application needed to perform some additional filtering, it would have had to do so in a _second pass_ by iterating through the results again
 
 In **Concurrent-Trees 2.0**, the APIs return `java.lang.Iterable` instead of `java.util.Collection` or `java.util.Set`. Applications which would have simply iterated through the Collection/Set in the past, can access results in exactly the same way as before:
-```
+```java
 Iterable<CharSequence> keysStartingWithFoo = tree.getKeysStartingWith("foo");
 for (CharSequence key : keysStartingWithFoo) {
     // Do something with each key...
@@ -37,7 +37,7 @@ By returning an `Iterable`, the library does not pre-compute _any_ results.
 
 `java.lang.Iterable` objects can easily be converted to `java.util.List`, `java.util.Set` etc., using the `Iterables` convenience class provided:
 
-```
+```java
 public static void main(String[] args) {
     RadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(new DefaultCharArrayNodeFactory());
 
@@ -69,4 +69,4 @@ Ukkonen's algorithm in particular does not seem to lend itself well to concurren
 Yes certainly, glad you asked!
 
 Credit: [xkcd.com](http://xkcd.com/), [Creative Commons Attribution-NonCommercial 2.5 License](http://xkcd.com/license.html)
-![dfs-comic.png](documentation/images/dfs-comic.png)
+![dfs-comic.png](images/dfs-comic.png)

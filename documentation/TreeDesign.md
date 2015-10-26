@@ -9,7 +9,7 @@ The Concurrent Radix Tree supports lock-free reads while allowing concurrent wri
 
 ### Atomic updates by patching the tree ###
 Inserting an entry into Concurrent Radix Tree which requires an existing node within the tree to be split.
-![tree-apply-patch.png](documentation/images/tree-apply-patch.png)
+![tree-apply-patch.png](images/tree-apply-patch.png)
 
 This mechanism takes advantage of spatial [locality of reference](http://en.wikipedia.org/wiki/Locality_of_reference), which is inherent in radix trees; which means that most changes to the tree need only affect a small section (a few nodes) of the tree.
 
