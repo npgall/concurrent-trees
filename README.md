@@ -101,10 +101,10 @@ Concurrent-Trees is in Maven Central. See [Downloads](documentation/Downloads.md
 
 ## Project Status ##
 
-As of writing (October 2015), version 2.4.0 of concurrent-trees is the latest release.
+As of writing (November 2015), version 2.4.0 of concurrent-trees is the latest release.
   * Full test coverage
   * New support for UTF-8/single byte per character encoding, up to 50% reduction in memory usage
-  * Over 1,000 downloads per month and 14,000+ downloads to-date, as at December 2014
+  * Over 4,000 downloads per month and 40,000+ downloads to-date, as at November 2015
 
 See [Release Notes](documentation/ReleaseNotes.md) and [Frequently Asked Questions](documentation/FrequentlyAskedQuestions.md) for details.
 
