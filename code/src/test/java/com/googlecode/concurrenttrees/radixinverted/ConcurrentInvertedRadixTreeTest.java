@@ -19,6 +19,7 @@ import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.testutil.TestUtility;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -362,5 +363,16 @@ public class ConcurrentInvertedRadixTreeTest {
         assertEquals("[FOO, FOOD]", Iterables.toString(tree.getClosestKeys("FOB")));
         assertEquals("[2, 1]", Iterables.toString(tree.getValuesForClosestKeys("FOB")));
         assertEquals("[(FOO, 2), (FOOD, 1)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("FOB")));
+    }
+
+    @Test
+    public void testSerialization() {
+        ConcurrentInvertedRadixTree<Integer> tree1 = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        tree1.put("TEST", 1);
+        tree1.put("TEAM", 2);
+        tree1.put("TOAST", 3);
+
+        ConcurrentInvertedRadixTree<Integer> tree2 = TestUtility.deserialize(ConcurrentInvertedRadixTree.class, TestUtility.serialize(tree1));
+        assertEquals(PrettyPrinter.prettyPrint(tree1), PrettyPrinter.prettyPrint(tree2));
     }
 }

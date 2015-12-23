@@ -22,6 +22,7 @@ import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -37,7 +38,7 @@ import static com.googlecode.concurrenttrees.radix.ConcurrentRadixTree.SearchRes
  *
  * @author Niall Gallagher
  */
-public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable {
+public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Serializable {
     
     private final NodeFactory nodeFactory;
 

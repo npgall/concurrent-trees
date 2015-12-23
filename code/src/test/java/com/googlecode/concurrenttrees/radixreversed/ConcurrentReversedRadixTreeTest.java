@@ -19,6 +19,7 @@ import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.testutil.TestUtility;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -170,5 +171,16 @@ public class ConcurrentReversedRadixTreeTest {
     public void testRestrictConcurrency() {
         ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(getNodeFactory(), true);
         assertNotNull(tree);
+    }
+
+    @Test
+    public void testSerialization() {
+        ConcurrentReversedRadixTree<Integer> tree1 = new ConcurrentReversedRadixTree<Integer>(getNodeFactory());
+        tree1.put("TEST", 1);
+        tree1.put("TEAM", 2);
+        tree1.put("TOAST", 3);
+
+        ConcurrentReversedRadixTree<Integer> tree2 = TestUtility.deserialize(ConcurrentReversedRadixTree.class, TestUtility.serialize(tree1));
+        assertEquals(PrettyPrinter.prettyPrint(tree1), PrettyPrinter.prettyPrint(tree2));
     }
 }

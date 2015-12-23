@@ -19,11 +19,10 @@ import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
+import com.googlecode.concurrenttrees.testutil.TestUtility;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
@@ -462,5 +461,29 @@ public class ConcurrentSuffixTreeTest {
                 return new LinkedHashSet<String>();
             }
         };
+    }
+
+    @Test
+    public void testSerialization() {
+        ConcurrentSuffixTree<Integer> tree1 = new ConcurrentSuffixTreeTestImpl<Integer>(getNodeFactory());
+        tree1.put("TEST", 1);
+        tree1.put("TEAM", 2);
+        tree1.put("TOAST", 3);
+
+        ConcurrentSuffixTree<Integer> tree2 = TestUtility.deserialize(ConcurrentSuffixTree.class, TestUtility.serialize(tree1));
+        assertEquals(PrettyPrinter.prettyPrint(tree1), PrettyPrinter.prettyPrint(tree2));
+    }
+
+    /**
+     * Extends ConcurrentSuffixTree for testing purposes, to override{@link ConcurrentSuffixTree#createSetForOriginalKeys()}
+     * in order to ensure deterministic ordering of original keys in the PrettyPrintable representation used in tests.
+     * Note that ordering of original keys is an internal implementation detail and is externally not defined.
+     */
+    static class ConcurrentSuffixTreeTestImpl<T> extends ConcurrentSuffixTree<T> {
+        public ConcurrentSuffixTreeTestImpl(NodeFactory nodeFactory) { super(nodeFactory); }
+        @Override
+        protected Set<String> createSetForOriginalKeys() {
+            return new TreeSet<String>();
+        }
     }
 }

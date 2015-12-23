@@ -23,6 +23,7 @@ import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author Niall Gallagher
  */
-public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable {
+public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, Serializable {
 
     class ConcurrentSuffixTreeImpl<V> extends ConcurrentRadixTree<V> {
 

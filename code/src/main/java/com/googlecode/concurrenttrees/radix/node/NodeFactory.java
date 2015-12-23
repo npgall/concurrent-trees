@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix.node;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Niall Gallagher
  */
-public interface NodeFactory {
+public interface NodeFactory extends Serializable {
 
     /**
      * Returns a new {@link Node} object which encapsulates the arguments supplied, optionally returning implementations

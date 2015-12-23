@@ -22,6 +22,8 @@ import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
+import java.io.Serializable;
+
 /**
  * An implementation of {@link ReversedRadixTree} which supports lock-free concurrent reads, and allows items to be added
  * to and to be removed from the tree <i>atomically</i> by background thread(s), without blocking reads.
@@ -31,7 +33,7 @@ import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
  *
  * @author Niall Gallagher
  */
-public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, PrettyPrintable {
+public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, PrettyPrintable, Serializable {
 
     class ConcurrentReverseRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
 

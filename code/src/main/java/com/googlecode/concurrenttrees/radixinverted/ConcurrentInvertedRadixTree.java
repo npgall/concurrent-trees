@@ -23,6 +23,7 @@ import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -34,7 +35,7 @@ import java.util.Iterator;
  *
  * @author Niall Gallagher
  */
-public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, PrettyPrintable {
+public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, PrettyPrintable, Serializable {
 
     static class ConcurrentInvertedRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
 

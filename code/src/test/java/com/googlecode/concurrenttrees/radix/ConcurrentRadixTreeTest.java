@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
@@ -24,10 +25,14 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFa
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
+import com.googlecode.concurrenttrees.testutil.TestUtility;
+import junit.framework.Assert;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 /**
@@ -963,6 +968,17 @@ public class ConcurrentRadixTreeTest {
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory(), true);
         tree.acquireReadLockIfNecessary();
         tree.releaseReadLockIfNecessary();
+    }
+
+    @Test
+    public void testSerialization() {
+        ConcurrentRadixTree<Integer> tree1 = new ConcurrentRadixTree<Integer>(getNodeFactory());
+        tree1.put("TEST", 1);
+        tree1.put("TEAM", 2);
+        tree1.put("TOAST", 3);
+
+        ConcurrentRadixTree<Integer> tree2 = TestUtility.deserialize(ConcurrentRadixTree.class, TestUtility.serialize(tree1));
+        assertEquals(PrettyPrinter.prettyPrint(tree1), PrettyPrinter.prettyPrint(tree2));
     }
 
     private static PrettyPrintable wrapNodeForPrinting(final Node node) {

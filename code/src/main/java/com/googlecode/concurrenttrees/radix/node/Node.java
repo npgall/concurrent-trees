@@ -17,6 +17,7 @@ package com.googlecode.concurrenttrees.radix.node;
 
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterProvider;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -86,7 +87,7 @@ import java.util.List;
  *
  * @author Niall Gallagher
  */
-public interface Node extends NodeCharacterProvider {
+public interface Node extends NodeCharacterProvider, Serializable {
 
     /**
      * Returns the first character of the "edge" encoded in this node, belonging to the connection from a parent node to
