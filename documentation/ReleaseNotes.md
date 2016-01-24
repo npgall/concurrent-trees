@@ -1,5 +1,9 @@
 # Concurrent-Trees Release Notes #
 
+### Version 2.5.0 - 2016-01-24 ###
+  * The trees are now serializable
+  * Deployed to Maven central
+
 ### Version 2.4.0 - 2013-12-03 ###
   * Added tree.size() methods
   * Note tree.size() is relatively expensive for the radix trees having O(n) time complexity, but this might be useful for debugging purposes
