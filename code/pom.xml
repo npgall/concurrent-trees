@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.googlecode.concurrent-trees</groupId>
-  <artifactId>concurrent-trees</artifactId>
-  <version>2.5.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.googlecode.concurrent-trees</groupId>
+    <artifactId>concurrent-trees</artifactId>
+    <version>2.5.1-SNAPSHOT</version>
+    <packaging>bundle</packaging>
     <name>Concurrent-Trees</name>
     <description>Concurrent Radix Trees and Concurrent Suffix Trees for Java.</description>
     <url>http://code.google.com/p/concurrent-trees/</url>
@@ -23,8 +23,8 @@
         <url>https://github.com/npgall/${project.artifactId}.git</url>
         <connection>scm:git:https://github.com/npgall/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:npgall/${project.artifactId}.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <developers>
         <developer>
             <id>npgall</id>
@@ -53,6 +53,13 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <!-- Add OSGi Manifest headers to META-INF/MANIFEST.MF -->
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.0.1</version>
+                <extensions>true</extensions>
             </plugin>
             <plugin>
                 <!-- Deploy a "-sources.jar" along with build -->
