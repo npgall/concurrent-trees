@@ -501,6 +501,39 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public O findLongestMatch(CharSequence pattern) {
+        acquireReadLockIfNecessary();
+        try {
+            Node lastMatch = null;
+            Node nextNode = this.root;
+
+            int patternLen = pattern.length();
+
+            for (int i = 0; nextNode != null && i < patternLen; i++) {
+                lastMatch = nextNode;
+                char c = pattern.charAt(i);
+                nextNode = lastMatch.getOutgoingEdge(c);
+            }
+
+            if (nextNode != null) {
+                lastMatch = nextNode;
+            }
+
+            if (lastMatch != null)
+                return (O) lastMatch.getValue();
+
+            return null;
+        }
+        finally {
+            releaseReadLockIfNecessary();
+        }
+
+    }
+
     // ------------- Helper method for put() -------------
 
     /**

@@ -114,6 +114,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         }
 
     }
+
     private final ConcurrentInvertedRadixTreeImpl<O> radixTree;
 
     /**
@@ -393,8 +394,18 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         return radixTree.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public O findLongestMatch(CharSequence pattern) {
+        return radixTree.findLongestMatch(pattern);
+    }
+
     @Override
     public Node getNode() {
         return radixTree.getNode();
     }
+
+
 }

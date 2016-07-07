@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.radix.node.Node;
 
 /**
  * API of a radix tree, that is a tree which allows values to be looked up based on <i>prefixes</i> of the keys
@@ -159,4 +160,11 @@ public interface RadixTree<O> {
      * @return The number of keys/values stored in the tree
      */
     int size();
+
+    /**
+     * Gets node in the tree that has the longest match the tree
+     * @param pattern
+     * @return
+     */
+    public O findLongestMatch(CharSequence pattern);
 }
