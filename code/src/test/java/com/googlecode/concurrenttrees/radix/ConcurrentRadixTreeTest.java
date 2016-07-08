@@ -750,6 +750,34 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
+    public void testFindLongestMatch() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+        tree.put("CODFISHES", 4);
+
+
+        //    ○
+        //    └── ○ CO
+        //    ├── ○ D (1)
+        //    │   └── ○ FISH (2)
+        //    │       └── ○ ES (4)
+        //    └── ○ FFEE (3)
+
+
+        String tlog = PrettyPrinter.prettyPrint(tree);
+        assertEquals(new Integer(1), tree.findLongestMatch("COD"));
+        assertEquals(new Integer(2), tree.findLongestMatch("CODFISH"));
+        assertEquals(new Integer(4), tree.findLongestMatch("CODFISHES"));
+        assertEquals(new Integer(1), tree.findLongestMatch("CODFUNKY"));
+        assertEquals(new Integer(2), tree.findLongestMatch("CODFISHING"));
+        assertNull(tree.findLongestMatch("DOESNOTEXISTS"));
+        assertNull(tree.findLongestMatch("C"));
+        assertNull(tree.findLongestMatch("CO"));
+    }
+
+    @Test
     public void testKeyValuePair_Accessor() {
         KeyValuePair<Integer> pair = new ConcurrentRadixTree.KeyValuePairImpl<Integer>("FOO", 5);
         assertEquals(pair.getKey(), "FOO");

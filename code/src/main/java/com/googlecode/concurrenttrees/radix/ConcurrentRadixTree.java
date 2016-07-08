@@ -508,25 +508,41 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
     public O findLongestMatch(CharSequence pattern) {
         acquireReadLockIfNecessary();
         try {
-            Node lastMatch = null;
+            O lastMatchValue = null;
             Node nextNode = this.root;
 
-            int patternLen = pattern.length();
+            CharSequence remaining = pattern;
+            while (remaining.length() > 0 && nextNode != null)
+            {
+                Node tNextCandiate = nextNode.getOutgoingEdge(remaining.charAt(0));
+                nextNode = null;
 
-            for (int i = 0; nextNode != null && i < patternLen; i++) {
-                lastMatch = nextNode;
-                char c = pattern.charAt(i);
-                nextNode = lastMatch.getOutgoingEdge(c);
+                if (tNextCandiate != null ) {
+
+                    CharSequence nodeEdge = tNextCandiate.getIncomingEdge();
+                    int edgeLength = nodeEdge.length();
+                    int shortTest =  Math.min(edgeLength, remaining.length());
+                    int idxMatch;
+
+                    for (idxMatch = 0; idxMatch<shortTest; idxMatch++ ) {
+                        if (nodeEdge.charAt(idxMatch) != remaining.charAt(idxMatch)){
+                            break;
+                        }
+                    }
+
+                    if (idxMatch  == edgeLength ) {
+                        Object tVal = tNextCandiate.getValue();
+                        if (tVal != null) {
+                            lastMatchValue = (O) tVal;
+                        }
+
+                        nextNode = tNextCandiate;
+                        remaining = remaining.subSequence(idxMatch, remaining.length());
+                    }
+                }
             }
 
-            if (nextNode != null) {
-                lastMatch = nextNode;
-            }
-
-            if (lastMatch != null)
-                return (O) lastMatch.getValue();
-
-            return null;
+            return lastMatchValue;
         }
         finally {
             releaseReadLockIfNecessary();
