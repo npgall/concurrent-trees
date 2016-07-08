@@ -3,10 +3,10 @@
     <groupId>com.googlecode.concurrent-trees</groupId>
     <artifactId>concurrent-trees</artifactId>
     <version>2.5.1-SNAPSHOT</version>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>Concurrent-Trees</name>
     <description>Concurrent Radix Trees and Concurrent Suffix Trees for Java.</description>
-    <url>http://code.google.com/p/concurrent-trees/</url>
+    <url>https://github.com/npgall/concurrent-trees</url>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -55,11 +55,29 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- Add OSGi Manifest headers to META-INF/MANIFEST.MF -->
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.0.1</version>
-                <extensions>true</extensions>
+                <!-- Add OSGi entries to jar manifest -->
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <bnd><![CDATA[-exportcontents:com.googlecode.concurrenttrees.*]]></bnd>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals><goal>bnd-process</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <!-- This is required by bnd-maven-plugin -->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <!-- Deploy a "-sources.jar" along with build -->
