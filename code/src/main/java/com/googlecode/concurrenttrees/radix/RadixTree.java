@@ -93,7 +93,7 @@ public interface RadixTree<O> {
      * with that key is also returned.
      * <p/>
      * Note that although the same value might originally have been associated with multiple keys, the set returned
-     * does not contain duplicates (as determined by the value objects' implementation of {@link #equals(Object)}).
+     * does not contain duplicates (as determined by the value objects' implementation of {@link Object#equals(Object)}).
      *
      * @param prefix A prefix of keys in the tree for which associated values are sought
      * @return The set of values associated with keys in the tree which start with the given prefix, inclusive
