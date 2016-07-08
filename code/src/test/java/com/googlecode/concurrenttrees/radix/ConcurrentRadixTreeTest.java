@@ -765,8 +765,6 @@ public class ConcurrentRadixTreeTest {
         //    │       └── ○ ES (4)
         //    └── ○ FFEE (3)
 
-
-        String tlog = PrettyPrinter.prettyPrint(tree);
         assertEquals(new Integer(1), tree.findLongestMatch("COD"));
         assertEquals(new Integer(2), tree.findLongestMatch("CODFISH"));
         assertEquals(new Integer(4), tree.findLongestMatch("CODFISHES"));
