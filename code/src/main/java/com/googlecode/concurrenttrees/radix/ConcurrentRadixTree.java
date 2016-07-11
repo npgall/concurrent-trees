@@ -501,6 +501,84 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public O getValueForLongestKeyPrefixing(CharSequence pattern) {
+        KeyValuePair<O> match = getKeyValuePairForLongestKeyPrefixing(pattern);
+
+        if (match != null)
+            return match.getValue();
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern) {
+        KeyValuePair<O> match = getKeyValuePairForLongestKeyPrefixing(pattern);
+
+        if (match != null)
+            return match.getKey();
+
+        return null;
+    }
+
+
+    @Override
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(final CharSequence pattern) {
+        acquireReadLockIfNecessary();
+        try {
+            O lastMatchedValue = null;
+            StringBuilder cummulativeMatchedKey = new StringBuilder();
+            Node nextNode = this.root;
+
+            CharSequence remaining = pattern;
+            while (remaining.length() > 0 && nextNode != null)
+            {
+                Node currentNode = nextNode.getOutgoingEdge(remaining.charAt(0));
+                nextNode = null;
+
+                if (currentNode != null ) {
+
+                    CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
+                    int currentNodeEdgeLength = currentNodeEdgeCharacters.length();
+                    int shortTest =  Math.min(currentNodeEdgeLength, remaining.length());
+                    int charsMatched;
+
+                    for (charsMatched = 0; charsMatched<shortTest; charsMatched++ ) {
+                        if (currentNodeEdgeCharacters.charAt(charsMatched) != remaining.charAt(charsMatched)){
+                            break;
+                        }
+                    }
+
+                    if (charsMatched  == currentNodeEdgeLength ) {
+                        cummulativeMatchedKey.append(currentNodeEdgeCharacters);
+                        Object currentNodeValue = currentNode.getValue();
+                        if (currentNodeValue != null) {
+                            lastMatchedValue = (O) currentNodeValue;
+                        }
+
+                        nextNode = currentNode;
+                        remaining = remaining.subSequence(charsMatched, remaining.length());
+                    }
+                }
+            }
+            if (lastMatchedValue != null)
+                return  new KeyValuePairImpl<O>(cummulativeMatchedKey.toString(), lastMatchedValue);
+
+            return null;
+        }
+        finally {
+            releaseReadLockIfNecessary();
+        }
+
+    }
+
+
     // ------------- Helper method for put() -------------
 
     /**

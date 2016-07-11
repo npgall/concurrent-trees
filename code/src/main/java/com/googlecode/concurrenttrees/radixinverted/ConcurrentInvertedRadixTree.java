@@ -114,6 +114,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         }
 
     }
+
     private final ConcurrentInvertedRadixTreeImpl<O> radixTree;
 
     /**
@@ -393,8 +394,34 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
         return radixTree.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public O getValueForLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getValueForLongestKeyPrefixing(pattern);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getLongestKeyPrefixing(pattern);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getKeyValuePairForLongestKeyPrefixing(pattern);
+    }
+
     @Override
     public Node getNode() {
         return radixTree.getNode();
     }
+
+
 }
