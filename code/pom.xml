@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.googlecode.concurrent-trees</groupId>
     <artifactId>concurrent-trees</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
+    <version>2.6.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Concurrent-Trees</name>
     <description>Concurrent Radix Trees and Concurrent Suffix Trees for Java.</description>
@@ -107,73 +107,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <!--
-                    Plugin to PGP-sign all artifacts automatically when running mvn deploy,
-                    as required for deployment to the Sonatype/Maven Central repo.
-
-                    This requires GnuPG (aka GPG) to be installed and configured on the machine on which this is run,
-                    and for the public key to be uploaded to key servers (e.g. pool.sks-keyservers.net).
-
-                    See: https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven
-                 -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <!--suppress MavenModelInspection -->
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!--
-                    Plugin to check that all source files have the appropriate open source license header.
-
-                    This will fail the build if any source files don't have the open source license header.
-
-                    To actually apply the header to new source files, run: mvn license:format
-                -->
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
-                <configuration>
-                    <header>src/etc/header.txt</header>
-                    <excludes>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/java/com/googlecode/concurrenttrees/common/LazyIterator.java</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <goals>
-                            <goal>perform</goal>
-                        </goals>
-                        <configuration>
-                            <pomFileName>code/pom.xml</pomFileName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -185,6 +118,91 @@
         </dependency>
     </dependencies>
     <profiles>
+        <profile>
+        <!-- This profile should be enabled when deploying a release to Maven central, to:
+             - validate that open-source license headers are present on all files, and
+             - GPG-signs the jars
+        -->
+        <id>release-sign-artifacts</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+                <name>performRelease</name>
+            </property>
+        </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!--
+                            Plugin to PGP-sign all artifacts automatically when running mvn deploy,
+                            as required for deployment to the Sonatype/Maven Central repo.
+
+                            This requires GnuPG (aka GPG) to be installed and configured on the machine on which this is run,
+                            and for the public key to be uploaded to key servers (e.g. pool.sks-keyservers.net).
+
+                            See: https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven
+                         -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <!--suppress MavenModelInspection -->
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!--
+                            Plugin to check that all source files have the appropriate open source license header.
+
+                            This will fail the build if any source files don't have the open source license header.
+
+                            To actually apply the header to new source files, run: mvn license:format
+                        -->
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.10.b1</version>
+                        <configuration>
+                            <header>src/etc/header.txt</header>
+                            <excludes>
+                                <exclude>src/test/resources/**</exclude>
+                                <exclude>src/main/java/com/googlecode/concurrenttrees/common/LazyIterator.java</exclude>
+                            </excludes>
+                            <strictCheck>true</strictCheck>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <goals>
+                                    <goal>perform</goal>
+                                </goals>
+                                <configuration>
+                                    <pomFileName>code/pom.xml</pomFileName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <!-- Prevent JavaDoc warnings from failing the build under Java 8... -->
             <id>doclint-java8-disable</id>
