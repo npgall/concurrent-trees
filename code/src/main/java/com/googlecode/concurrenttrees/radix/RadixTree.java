@@ -162,9 +162,24 @@ public interface RadixTree<O> {
     int size();
 
     /**
-     * Gets node in the tree that has the longest match the tree
+     * Gets value in the tree that is the longest subsequence of the pattern (longest prefix match)
      * @param pattern
      * @return
      */
-    public O findLongestMatch(CharSequence pattern);
+    public O getValueForLongestKeyPrefixing(CharSequence pattern);
+
+
+    /**
+     * Gets key in the tree that is the longest subsequence of the pattern (longest prefix match)
+     * @param pattern
+     * @return
+     */
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern);
+
+    /**
+     * Gets key and value in the tree that is the longest subsequence of the pattern (longest prefix match)
+     * @param pattern
+     * @return
+     */
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern);
 }

@@ -398,8 +398,24 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public O findLongestMatch(CharSequence pattern) {
-        return radixTree.findLongestMatch(pattern);
+    public O getValueForLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getValueForLongestKeyPrefixing(pattern);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getLongestKeyPrefixing(pattern);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern) {
+        return radixTree.getKeyValuePairForLongestKeyPrefixing(pattern);
     }
 
     @Override

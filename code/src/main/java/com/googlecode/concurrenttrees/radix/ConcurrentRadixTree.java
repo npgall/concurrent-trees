@@ -505,50 +505,79 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      * {@inheritDoc}
      */
     @Override
-    public O findLongestMatch(CharSequence pattern) {
+    public O getValueForLongestKeyPrefixing(CharSequence pattern) {
+        KeyValuePair<O> match = getKeyValuePairForLongestKeyPrefixing(pattern);
+
+        if (match != null)
+            return match.getValue();
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern) {
+        KeyValuePair<O> match = getKeyValuePairForLongestKeyPrefixing(pattern);
+
+        if (match != null)
+            return match.getKey();
+
+        return null;
+    }
+
+
+    @Override
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(final CharSequence pattern) {
         acquireReadLockIfNecessary();
         try {
-            O lastMatchValue = null;
+            O lastMatchedValue = null;
+            StringBuilder cummulativeMatchedKey = new StringBuilder();
             Node nextNode = this.root;
 
             CharSequence remaining = pattern;
             while (remaining.length() > 0 && nextNode != null)
             {
-                Node tNextCandiate = nextNode.getOutgoingEdge(remaining.charAt(0));
+                Node currentNode = nextNode.getOutgoingEdge(remaining.charAt(0));
                 nextNode = null;
 
-                if (tNextCandiate != null ) {
+                if (currentNode != null ) {
 
-                    CharSequence nodeEdge = tNextCandiate.getIncomingEdge();
-                    int edgeLength = nodeEdge.length();
-                    int shortTest =  Math.min(edgeLength, remaining.length());
-                    int idxMatch;
+                    CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
+                    int currentNodeEdgeLength = currentNodeEdgeCharacters.length();
+                    int shortTest =  Math.min(currentNodeEdgeLength, remaining.length());
+                    int charsMatched;
 
-                    for (idxMatch = 0; idxMatch<shortTest; idxMatch++ ) {
-                        if (nodeEdge.charAt(idxMatch) != remaining.charAt(idxMatch)){
+                    for (charsMatched = 0; charsMatched<shortTest; charsMatched++ ) {
+                        if (currentNodeEdgeCharacters.charAt(charsMatched) != remaining.charAt(charsMatched)){
                             break;
                         }
                     }
 
-                    if (idxMatch  == edgeLength ) {
-                        Object tVal = tNextCandiate.getValue();
-                        if (tVal != null) {
-                            lastMatchValue = (O) tVal;
+                    if (charsMatched  == currentNodeEdgeLength ) {
+                        cummulativeMatchedKey.append(currentNodeEdgeCharacters);
+                        Object currentNodeValue = currentNode.getValue();
+                        if (currentNodeValue != null) {
+                            lastMatchedValue = (O) currentNodeValue;
                         }
 
-                        nextNode = tNextCandiate;
-                        remaining = remaining.subSequence(idxMatch, remaining.length());
+                        nextNode = currentNode;
+                        remaining = remaining.subSequence(charsMatched, remaining.length());
                     }
                 }
             }
+            if (lastMatchedValue != null)
+                return  new KeyValuePairImpl<O>(cummulativeMatchedKey.toString(), lastMatchedValue);
 
-            return lastMatchValue;
+            return null;
         }
         finally {
             releaseReadLockIfNecessary();
         }
 
     }
+
 
     // ------------- Helper method for put() -------------
 
