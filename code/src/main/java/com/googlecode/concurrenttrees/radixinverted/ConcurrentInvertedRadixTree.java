@@ -113,52 +113,60 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             };
         }
 
+        /**
+         * Traverses the tree based on characters in the given input, and returns the longest key in the tree
+         * which is a prefix of the input, and its associated value.
+         * <p/>
+         * This uses a similar algorithm as {@link #scanForKeysAtStartOfInput(CharSequence)} except it returns
+         * the last result that would be returned, however this algorithm locates the last node more efficiently
+         * by creating garbage objects during traversal due to not having to return the intermediate results.
+         *
+         * @param input A sequence of characters which controls traversal of the tree
+         * @return The longest key in the tree which is a prefix of the input, and its associated value;
+         * or null if no such key is contained in the tree
+         */
         protected KeyValuePair<O> scanForLongestKeyAtStartOfInput(final CharSequence input) {
-            acquireReadLockIfNecessary();
-            try {
-                O lastMatchedValue = null;
-                StringBuilder cummulativeMatchedKey = new StringBuilder();
-                Node nextNode = this.root;
+            Node currentNode = root;
+            int charsMatched = 0;
 
-                CharSequence remaining = input;
-                while (remaining.length() > 0 && nextNode != null) {
-                    Node currentNode = nextNode.getOutgoingEdge(remaining.charAt(0));
-                    nextNode = null;
+            final int documentLength = input.length();
 
-                    if (currentNode != null) {
+            Node candidateNode = null;
+            int candidateCharsMatched = 0;
 
-                        CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                        int currentNodeEdgeLength = currentNodeEdgeCharacters.length();
-                        int shortTest = Math.min(currentNodeEdgeLength, remaining.length());
-                        int charsMatched;
+            outer_loop: while (charsMatched < documentLength) {
+                Node nextNode = currentNode.getOutgoingEdge(input.charAt(charsMatched));
+                if (nextNode == null) {
+                    // Next node is a dead end...
+                    break;
+                }
 
-                        for (charsMatched = 0; charsMatched < shortTest; charsMatched++) {
-                            if (currentNodeEdgeCharacters.charAt(charsMatched) != remaining.charAt(charsMatched)) {
-                                break;
-                            }
-                        }
-
-                        if (charsMatched == currentNodeEdgeLength) {
-                            cummulativeMatchedKey.append(currentNodeEdgeCharacters);
-                            Object currentNodeValue = currentNode.getValue();
-                            if (currentNodeValue != null) {
-                                lastMatchedValue = (O) currentNodeValue;
-                            }
-
-                            nextNode = currentNode;
-                            remaining = remaining.subSequence(charsMatched, remaining.length());
-                        }
+                currentNode = nextNode;
+                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
+                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                if (numCharsInEdge + charsMatched > documentLength) {
+                    // This node can't be a match because it is too long...
+                    break;
+                }
+                for (int i = 0; i < numCharsInEdge; i++) {
+                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                        // Found a difference between a character in the input
+                        // and a character in the edge represented by current node,
+                        // current node is a dead end...
+                        break outer_loop;
                     }
                 }
-                if (lastMatchedValue != null)
-                    return new ConcurrentRadixTree.KeyValuePairImpl<O>(cummulativeMatchedKey.toString(), lastMatchedValue);
+                // All characters in the current edge matched, add this number to total chars matched...
+                charsMatched += numCharsInEdge;
 
-                return null;
-            } finally {
-                releaseReadLockIfNecessary();
+                if (currentNode.getValue() != null) {
+                    // This is an explicit node and all of its chars match input, return a match...
+                    candidateNode = currentNode;
+                    candidateCharsMatched = charsMatched;
+                } // else the node matches, but is not an explicit node so we should continue scanning...
             }
+            return candidateNode == null ? null : new KeyValuePairImpl<O>(CharSequences.toString(input.subSequence(0, candidateCharsMatched)), candidateNode.getValue());
         }
-
     }
 
     private final ConcurrentInvertedRadixTreeImpl<O> radixTree;
@@ -346,26 +354,18 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
-    public O getValueForLongestKeyPrefixing(CharSequence document) {
+    public CharSequence getLongestKeyPrefixing(CharSequence document) {
         KeyValuePair<O> match = radixTree.scanForLongestKeyAtStartOfInput(document);
-
-        if (match != null)
-            return match.getValue();
-
-        return null;
+        return match == null ? null : match.getKey();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CharSequence getLongestKeyPrefixing(CharSequence document) {
+    public O getValueForLongestKeyPrefixing(CharSequence document) {
         KeyValuePair<O> match = radixTree.scanForLongestKeyAtStartOfInput(document);
-
-        if (match != null)
-            return match.getKey();
-
-        return null;
+        return match == null ? null : match.getValue();
     }
 
 

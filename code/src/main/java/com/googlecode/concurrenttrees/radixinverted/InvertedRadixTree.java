@@ -107,26 +107,31 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
     Iterable<KeyValuePair<O>> getKeyValuePairsForKeysPrefixing(CharSequence document);
 
     /**
-     * Gets value in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
+     * Returns the longest key in the tree which is a prefix of the given document.
+     *
+     * @param document A document to be scanned for a key contained in the tree which prefixes the given document
+     * @return The longest key in the tree which is a prefix of the given document, or null if no such key is
+     * contained in the tree
      */
-    public O getValueForLongestKeyPrefixing(CharSequence pattern);
-
-
-    /**
-     * Gets key in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
-     */
-    public CharSequence getLongestKeyPrefixing(CharSequence pattern);
+    public CharSequence getLongestKeyPrefixing(CharSequence document);
 
     /**
-     * Gets key and value in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
+     * Returns the value associated with the longest key in the tree which is a prefix of the given document.
+     *
+     * @param document A document to be scanned for a key contained in the tree which prefixes the given document
+     * @return The value associated with longest key in the tree which is a prefix of the given document, or null if
+     * no such key is contained in the tree
      */
-    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern);
+    public O getValueForLongestKeyPrefixing(CharSequence document);
+
+    /**
+     * Returns the {@link KeyValuePair} for the longest key in the tree which is a prefix of the given document.
+     *
+     * @param document A document to be scanned for a key contained in the tree which prefixes the given document
+     * @return The {@link KeyValuePair} for the longest key in the tree which is a prefix of the given document,
+     * or null if no such key is contained in the tree
+     */
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence document);
 
     /**
      * Returns a lazy iterable which returns the set of keys in the tree which are contained in the given document.
