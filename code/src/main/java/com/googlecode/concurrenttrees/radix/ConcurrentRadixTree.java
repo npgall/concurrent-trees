@@ -15,17 +15,18 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static com.googlecode.concurrenttrees.radix.ConcurrentRadixTree.SearchResult.Classification;
 
 /**
@@ -44,11 +45,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
 
     protected volatile Node root;
 
-    // Write operations acquire write lock.
-    // Read operations are lock-free by default, but can be forced to acquire read locks via constructor flag...
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    // If true, force reading threads to acquire read lock (they will block on writes).
-    private final boolean restrictConcurrency;
+    // Write operations acquire write lock, read operations are lock-free.
+    private final Lock writeLock = new ReentrantLock();
 
     /**
      * Creates a new {@link ConcurrentRadixTree} which will use the given {@link NodeFactory} to create nodes.
@@ -57,22 +55,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      * implementations optimized for storing the values supplied to it for the creation of each node
      */
     public ConcurrentRadixTree(NodeFactory nodeFactory) {
-        this(nodeFactory, false);
-    }
-
-    /**
-     * Creates a new {@link ConcurrentRadixTree} which will use the given {@link NodeFactory} to create nodes.
-     * 
-     * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node 
-     * implementations optimized for storing the values supplied to it for the creation of each node
-     * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
-     * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
-     * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
-     * by other threads
-     */
-    public ConcurrentRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
         this.nodeFactory = nodeFactory;
-        this.restrictConcurrency = restrictConcurrency;
         @SuppressWarnings({"NullableProblems", "UnnecessaryLocalVariable"})
         Node rootNode = nodeFactory.createNode("", null, Collections.<Node>emptyList(), true);
         this.root = rootNode;
@@ -81,25 +64,11 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
     // ------------- Helper methods for serializing writes -------------
 
     protected void acquireWriteLock() {
-        readWriteLock.writeLock().lock();
+        writeLock.lock();
     }
 
     protected void releaseWriteLock() {
-        readWriteLock.writeLock().unlock();
-    }
-
-    // Temporary helper methods for read locks, read locks will be removed in future...
-
-    protected void acquireReadLockIfNecessary() {
-        if (restrictConcurrency) { // restrictConcurrency is final
-            readWriteLock.readLock().lock();
-        }
-    }
-
-    protected void releaseReadLockIfNecessary() {
-        if (restrictConcurrency) {  // restrictConcurrency is final
-            readWriteLock.readLock().unlock();
-        }
+        writeLock.unlock();
     }
 
     // ------------- Public API methods -------------
@@ -130,19 +99,13 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public O getValueForExactKey(CharSequence key) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(key);
-            if (searchResult.classification.equals(SearchResult.Classification.EXACT_MATCH)) {
-                @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-                O value = (O) searchResult.nodeFound.getValue();
-                return value;
-            }
-            return null;
+        SearchResult searchResult = searchTree(key);
+        if (searchResult.classification.equals(SearchResult.Classification.EXACT_MATCH)) {
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            O value = (O) searchResult.nodeFound.getValue();
+            return value;
         }
-        finally {
-            releaseReadLockIfNecessary();
-        }
+        return null;
     }
 
     /**
@@ -150,30 +113,24 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<CharSequence> getKeysStartingWith(CharSequence prefix) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(prefix);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantKeys(prefix, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
-                    return getDescendantKeys(prefix, searchResult.nodeFound);
-                }
-                default: {
-                    // Incomplete match means key is not a prefix of any node...
-                    return Collections.emptySet();
-                }
+        SearchResult searchResult = searchTree(prefix);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantKeys(prefix, searchResult.nodeFound);
             }
-        }
-        finally {
-            releaseReadLockIfNecessary();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                prefix = CharSequences.concatenate(prefix, edgeSuffix);
+                return getDescendantKeys(prefix, searchResult.nodeFound);
+            }
+            default: {
+                // Incomplete match means key is not a prefix of any node...
+                return Collections.emptySet();
+            }
         }
     }
 
@@ -182,30 +139,24 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<O> getValuesForKeysStartingWith(CharSequence prefix) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(prefix);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantValues(prefix, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
-                    return getDescendantValues(prefix, searchResult.nodeFound);
-                }
-                default: {
-                    // Incomplete match means key is not a prefix of any node...
-                    return Collections.emptySet();
-                }
+        SearchResult searchResult = searchTree(prefix);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantValues(prefix, searchResult.nodeFound);
             }
-        }
-        finally {
-            releaseReadLockIfNecessary();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                prefix = CharSequences.concatenate(prefix, edgeSuffix);
+                return getDescendantValues(prefix, searchResult.nodeFound);
+            }
+            default: {
+                // Incomplete match means key is not a prefix of any node...
+                return Collections.emptySet();
+            }
         }
     }
 
@@ -214,30 +165,24 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(prefix);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    prefix = CharSequences.concatenate(prefix, edgeSuffix);
-                    return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
-                }
-                default: {
-                    // Incomplete match means key is not a prefix of any node...
-                    return Collections.emptySet();
-                }
+        SearchResult searchResult = searchTree(prefix);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
             }
-        }
-        finally {
-            releaseReadLockIfNecessary();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                prefix = CharSequences.concatenate(prefix, edgeSuffix);
+                return getDescendantKeyValuePairs(prefix, searchResult.nodeFound);
+            }
+            default: {
+                // Incomplete match means key is not a prefix of any node...
+                return Collections.emptySet();
+            }
         }
     }
 
@@ -348,45 +293,39 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<CharSequence> getClosestKeys(CharSequence candidate) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(candidate);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantKeys(candidate, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
-                    return getDescendantKeys(candidate, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
-                    // Example: if we searched for CX, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
-                    return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
-                    if (searchResult.charsMatched == 0) {
-                        // Closest match is the root node, we don't consider this a match for anything...
-                        break;
-                    }
-                    // Example: if we searched for COFFEE, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
-                    return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
-                }
+        SearchResult searchResult = searchTree(candidate);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantKeys(candidate, searchResult.nodeFound);
             }
-            return Collections.emptySet();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                candidate = CharSequences.concatenate(candidate, edgeSuffix);
+                return getDescendantKeys(candidate, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
+                // Example: if we searched for CX, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
+                if (searchResult.charsMatched == 0) {
+                    // Closest match is the root node, we don't consider this a match for anything...
+                    break;
+                }
+                // Example: if we searched for COFFEE, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
+                return getDescendantKeys(keyOfNodeFound, searchResult.nodeFound);
+            }
         }
-        finally {
-            releaseReadLockIfNecessary();
-        }
+        return Collections.emptySet();
     }
 
     /**
@@ -394,45 +333,39 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<O> getValuesForClosestKeys(CharSequence candidate) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(candidate);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantValues(candidate, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
-                    return getDescendantValues(candidate, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
-                    // Example: if we searched for CX, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
-                    return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
-                    if (searchResult.charsMatched == 0) {
-                        // Closest match is the root node, we don't consider this a match for anything...
-                        break;
-                    }
-                    // Example: if we searched for COFFEE, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
-                    return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
-                }
+        SearchResult searchResult = searchTree(candidate);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantValues(candidate, searchResult.nodeFound);
             }
-            return Collections.emptySet();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                candidate = CharSequences.concatenate(candidate, edgeSuffix);
+                return getDescendantValues(candidate, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
+                // Example: if we searched for CX, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
+                if (searchResult.charsMatched == 0) {
+                    // Closest match is the root node, we don't consider this a match for anything...
+                    break;
+                }
+                // Example: if we searched for COFFEE, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
+                return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
+            }
         }
-        finally {
-            releaseReadLockIfNecessary();
-        }
+        return Collections.emptySet();
     }
 
     /**
@@ -440,45 +373,39 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate) {
-        acquireReadLockIfNecessary();
-        try {
-            SearchResult searchResult = searchTree(candidate);
-            Classification classification = searchResult.classification;
-            switch (classification) {
-                case EXACT_MATCH: {
-                    return getDescendantKeyValuePairs(candidate, searchResult.nodeFound);
-                }
-                case KEY_ENDS_MID_EDGE: {
-                    // Append the remaining characters of the edge to the key.
-                    // For example if we searched for CO, but first matching node was COFFEE,
-                    // the key associated with the first node should be COFFEE...
-                    CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                    candidate = CharSequences.concatenate(candidate, edgeSuffix);
-                    return getDescendantKeyValuePairs(candidate, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
-                    // Example: if we searched for CX, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                    CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
-                    return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
-                }
-                case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
-                    if (searchResult.charsMatched == 0) {
-                        // Closest match is the root node, we don't consider this a match for anything...
-                        break;
-                    }
-                    // Example: if we searched for COFFEE, but deepest matching node was CO,
-                    // the results should include node CO and its descendants...
-                    CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
-                    return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
-                }
+        SearchResult searchResult = searchTree(candidate);
+        Classification classification = searchResult.classification;
+        switch (classification) {
+            case EXACT_MATCH: {
+                return getDescendantKeyValuePairs(candidate, searchResult.nodeFound);
             }
-            return Collections.emptySet();
+            case KEY_ENDS_MID_EDGE: {
+                // Append the remaining characters of the edge to the key.
+                // For example if we searched for CO, but first matching node was COFFEE,
+                // the key associated with the first node should be COFFEE...
+                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
+                candidate = CharSequences.concatenate(candidate, edgeSuffix);
+                return getDescendantKeyValuePairs(candidate, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
+                // Example: if we searched for CX, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
+                CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
+                return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
+            }
+            case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
+                if (searchResult.charsMatched == 0) {
+                    // Closest match is the root node, we don't consider this a match for anything...
+                    break;
+                }
+                // Example: if we searched for COFFEE, but deepest matching node was CO,
+                // the results should include node CO and its descendants...
+                CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
+                return getDescendantKeyValuePairs(keyOfNodeFound, searchResult.nodeFound);
+            }
         }
-        finally {
-            releaseReadLockIfNecessary();
-        }
+        return Collections.emptySet();
     }
 
     /**

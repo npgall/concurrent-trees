@@ -964,13 +964,6 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
-    public void testRestrictConcurrency() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory(), true);
-        tree.acquireReadLockIfNecessary();
-        tree.releaseReadLockIfNecessary();
-    }
-
-    @Test
     public void testSerialization() {
         ConcurrentRadixTree<Integer> tree1 = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree1.put("TEST", 1);

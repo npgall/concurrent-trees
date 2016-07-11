@@ -425,12 +425,6 @@ public class ConcurrentInvertedRadixTreeTest {
     }
 
     @Test
-    public void testRestrictConcurrency() {
-        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory(), true);
-        assertNotNull(tree);
-    }
-
-    @Test
     public void testInheritedMethods() {
         // Basic tests for methods inherited from ConcurrentRadixTree, complete coverage in ConcurrentRadixTreeTest...
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());

@@ -44,10 +44,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             super(nodeFactory);
         }
 
-        public ConcurrentSuffixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            super(nodeFactory, restrictConcurrency);
-        }
-
         @Override
         protected void acquireWriteLock() {
             super.acquireWriteLock();
@@ -71,22 +67,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
      */
     public ConcurrentSuffixTree(NodeFactory nodeFactory) {
         this.radixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory);
-        this.valueMap = new ConcurrentHashMap<String, O>();
-    }
-
-    /**
-     * Creates a new {@link ConcurrentSuffixTree} which will use the given {@link NodeFactory} to create nodes.
-     *
-     * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
-     * on-demand, and which might return node implementations optimized for storing the values supplied to it for the
-     * creation of each node
-     * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
-     * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
-     * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
-     * by other threads
-     */
-    public ConcurrentSuffixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
-        this.radixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory, restrictConcurrency);
         this.valueMap = new ConcurrentHashMap<String, O>();
     }
 

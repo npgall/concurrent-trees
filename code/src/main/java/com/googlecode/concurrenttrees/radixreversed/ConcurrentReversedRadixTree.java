@@ -41,10 +41,6 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
             super(nodeFactory);
         }
 
-        public ConcurrentReverseRadixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            super(nodeFactory, restrictConcurrency);
-        }
-
         // Override this hook method to reverse the order of keys stored in the tree and about to be returned to the
         // application, this undoes the reversing of keys when added to the tree in the first place...
         @Override
@@ -62,20 +58,6 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
      */
     public ConcurrentReversedRadixTree(NodeFactory nodeFactory) {
         this.radixTree = new ConcurrentReverseRadixTreeImpl<O>(nodeFactory);
-    }
-
-    /**
-     * Creates a new {@link ConcurrentReversedRadixTree} which will use the given {@link NodeFactory} to create nodes.
-     *
-     * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node
-     * implementations optimized for storing the values supplied to it for the creation of each node
-     * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
-     * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
-     * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
-     * by other threads
-     */
-    public ConcurrentReversedRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
-        this.radixTree = new ConcurrentReverseRadixTreeImpl<O>(nodeFactory, restrictConcurrency);
     }
 
     /**

@@ -40,10 +40,6 @@ public class LCSubstringSolver {
             super(nodeFactory);
         }
 
-        public ConcurrentSuffixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            super(nodeFactory, restrictConcurrency);
-        }
-
         @Override
         protected void acquireWriteLock() {
             super.acquireWriteLock();
@@ -157,22 +153,6 @@ public class LCSubstringSolver {
      */
     public LCSubstringSolver(NodeFactory nodeFactory) {
         this.suffixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory);
-        this.originalDocuments = createSetForOriginalKeys();
-    }
-
-    /**
-     * Creates a new {@link LCSubstringSolver} which will use the given {@link NodeFactory} to create nodes.
-     *
-     * @param nodeFactory An object which creates {@link com.googlecode.concurrenttrees.radix.node.Node} objects
-     * on-demand, and which might return node implementations optimized for storing the values supplied to it for the
-     * creation of each node
-     * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
-     * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
-     * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
-     * by other threads
-     */
-    public LCSubstringSolver(NodeFactory nodeFactory, boolean restrictConcurrency) {
-        this.suffixTree = new ConcurrentSuffixTreeImpl<Set<String>>(nodeFactory, restrictConcurrency);
         this.originalDocuments = createSetForOriginalKeys();
     }
 

@@ -43,10 +43,6 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             super(nodeFactory);
         }
 
-        public ConcurrentInvertedRadixTreeImpl(NodeFactory nodeFactory, boolean restrictConcurrency) {
-            super(nodeFactory, restrictConcurrency);
-        }
-
         /**
          * Lazily traverses the tree based on characters in the given input, and returns from the tree the next node
          * and its value where the key associated with the node matches the characters from the input. More than
@@ -179,20 +175,6 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      */
     public ConcurrentInvertedRadixTree(NodeFactory nodeFactory) {
         this.radixTree = new ConcurrentInvertedRadixTreeImpl<O>(nodeFactory);
-    }
-
-    /**
-     * Creates a new {@link ConcurrentInvertedRadixTree} which will use the given {@link NodeFactory} to create nodes.
-     *
-     * @param nodeFactory An object which creates {@link Node} objects on-demand, and which might return node
-     * implementations optimized for storing the values supplied to it for the creation of each node
-     * @param restrictConcurrency If true, configures use of a {@link java.util.concurrent.locks.ReadWriteLock} allowing
-     * concurrent reads, except when writes are being performed by other threads, in which case writes block all reads;
-     * if false, configures lock-free reads; allows concurrent non-blocking reads, even if writes are being performed
-     * by other threads
-     */
-    public ConcurrentInvertedRadixTree(NodeFactory nodeFactory, boolean restrictConcurrency) {
-        this.radixTree = new ConcurrentInvertedRadixTreeImpl<O>(nodeFactory, restrictConcurrency);
     }
 
     /**

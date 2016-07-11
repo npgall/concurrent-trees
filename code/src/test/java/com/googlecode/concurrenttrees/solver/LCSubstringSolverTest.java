@@ -52,9 +52,6 @@ public class LCSubstringSolverTest {
         assertEquals("albert einstein", longestCommonSubstring);
     }
 
-
-
-
     @Test
     public void testAddSuffixesToRadixTree_DuplicateHandling() {
         LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
@@ -88,11 +85,5 @@ public class LCSubstringSolverTest {
         LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory());
         //noinspection NullableProblems
         solver.add(null);
-    }
-
-    @Test
-    public void testRestrictConcurrency() {
-        LCSubstringSolver solver = new LCSubstringSolver(new DefaultCharSequenceNodeFactory(), true);
-        assertNotNull(solver);
     }
 }

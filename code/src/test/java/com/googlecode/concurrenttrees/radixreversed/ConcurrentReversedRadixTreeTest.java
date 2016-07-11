@@ -168,12 +168,6 @@ public class ConcurrentReversedRadixTreeTest {
     }
 
     @Test
-    public void testRestrictConcurrency() {
-        ConcurrentReversedRadixTree<Integer> tree = new ConcurrentReversedRadixTree<Integer>(getNodeFactory(), true);
-        assertNotNull(tree);
-    }
-
-    @Test
     public void testSerialization() {
         ConcurrentReversedRadixTree<Integer> tree1 = new ConcurrentReversedRadixTree<Integer>(getNodeFactory());
         tree1.put("TEST", 1);

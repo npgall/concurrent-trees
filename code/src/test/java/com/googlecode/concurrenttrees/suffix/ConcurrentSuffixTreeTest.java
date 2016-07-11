@@ -435,15 +435,9 @@ public class ConcurrentSuffixTreeTest {
     }
 
     @Test
-    public void testRestrictConcurrency() {
-        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory(), true);
-        assertNotNull(tree);
-    }
-
-    @Test
     public void testCreateSetForOriginalKeys() {
         // Test the default (production) implementation of this method, should return a set based on ConcurrentHashMap...
-        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory(), true);
+        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory());
         assertTrue(tree.createSetForOriginalKeys().getClass().equals(Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>()).getClass()));
     }
 
