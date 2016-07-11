@@ -16,7 +16,6 @@
 package com.googlecode.concurrenttrees.radix;
 
 import com.googlecode.concurrenttrees.common.KeyValuePair;
-import com.googlecode.concurrenttrees.radix.node.Node;
 
 /**
  * API of a radix tree, that is a tree which allows values to be looked up based on <i>prefixes</i> of the keys
@@ -160,26 +159,4 @@ public interface RadixTree<O> {
      * @return The number of keys/values stored in the tree
      */
     int size();
-
-    /**
-     * Gets value in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
-     */
-    public O getValueForLongestKeyPrefixing(CharSequence pattern);
-
-
-    /**
-     * Gets key in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
-     */
-    public CharSequence getLongestKeyPrefixing(CharSequence pattern);
-
-    /**
-     * Gets key and value in the tree that is the longest subsequence of the pattern (longest prefix match)
-     * @param pattern
-     * @return
-     */
-    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern);
 }

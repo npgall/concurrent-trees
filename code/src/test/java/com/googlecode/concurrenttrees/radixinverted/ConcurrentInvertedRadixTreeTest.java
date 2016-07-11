@@ -205,6 +205,84 @@ public class ConcurrentInvertedRadixTreeTest {
     }
 
     @Test
+    public void testGetValueForLongestKeyPrefixing() {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+        tree.put("CODFISHES", 4);
+
+
+        //    ○
+        //    └── ○ CO
+        //    ├── ○ D (1)
+        //    │   └── ○ FISH (2)
+        //    │       └── ○ ES (4)
+        //    └── ○ FFEE (3)
+
+        assertEquals(new Integer(1), tree.getValueForLongestKeyPrefixing("COD"));
+        assertEquals(new Integer(2), tree.getValueForLongestKeyPrefixing("CODFISH"));
+        assertEquals(new Integer(4), tree.getValueForLongestKeyPrefixing("CODFISHES"));
+        assertEquals(new Integer(1), tree.getValueForLongestKeyPrefixing("CODFUNKY"));
+        assertEquals(new Integer(2), tree.getValueForLongestKeyPrefixing("CODFISHING"));
+        assertNull(tree.getValueForLongestKeyPrefixing("DOESNOTEXISTS"));
+        assertNull(tree.getValueForLongestKeyPrefixing("C"));
+        assertNull(tree.getValueForLongestKeyPrefixing("CO"));
+    }
+
+    @Test
+    public void testGetLongestKeyPrefixing() {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+        tree.put("CODFISHES", 4);
+
+
+        //    ○
+        //    └── ○ CO
+        //    ├── ○ D (1)
+        //    │   └── ○ FISH (2)
+        //    │       └── ○ ES (4)
+        //    └── ○ FFEE (3)
+
+        assertEquals("COD", tree.getLongestKeyPrefixing("COD"));
+        assertEquals("CODFISH", tree.getLongestKeyPrefixing("CODFISH"));
+        assertEquals("CODFISHES", tree.getLongestKeyPrefixing("CODFISHES"));
+        assertEquals("COD", tree.getLongestKeyPrefixing("CODFUNKY"));
+        assertEquals("CODFISH", tree.getLongestKeyPrefixing("CODFISHING"));
+        assertNull(tree.getValueForLongestKeyPrefixing("DOESNOTEXISTS"));
+        assertNull(tree.getValueForLongestKeyPrefixing("C"));
+        assertNull(tree.getValueForLongestKeyPrefixing("CO"));
+    }
+
+    @Test
+    public void testGetKeyValuePairForLongestKeyPrefixing() {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        tree.put("COD", 1);
+        tree.put("CODFISH", 2);
+        tree.put("COFFEE", 3);
+        tree.put("CODFISHES", 4);
+
+
+        //    ○
+        //    └── ○ CO
+        //    ├── ○ D (1)
+        //    │   └── ○ FISH (2)
+        //    │       └── ○ ES (4)
+        //    └── ○ FFEE (3)
+
+        assertEquals("(COD, 1)", tree.getKeyValuePairForLongestKeyPrefixing("COD").toString());
+        assertEquals("(CODFISH, 2)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISH").toString());
+        assertEquals("(CODFISHES, 4)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISHES").toString());
+        assertEquals("(COD, 1)", tree.getKeyValuePairForLongestKeyPrefixing("CODFUNKY").toString());
+        assertEquals("(CODFISH, 2)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISHING").toString());
+        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("DOESNOTEXISTS"));
+        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("C"));
+        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("CO"));
+    }
+
+    @Test
     public void testGetKeysContainedIn() throws Exception {
         ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
         tree.put("see", 1);

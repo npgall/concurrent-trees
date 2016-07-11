@@ -107,6 +107,28 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
     Iterable<KeyValuePair<O>> getKeyValuePairsForKeysPrefixing(CharSequence document);
 
     /**
+     * Gets value in the tree that is the longest subsequence of the pattern (longest prefix match)
+     * @param pattern
+     * @return
+     */
+    public O getValueForLongestKeyPrefixing(CharSequence pattern);
+
+
+    /**
+     * Gets key in the tree that is the longest subsequence of the pattern (longest prefix match)
+     * @param pattern
+     * @return
+     */
+    public CharSequence getLongestKeyPrefixing(CharSequence pattern);
+
+    /**
+     * Gets key and value in the tree that is the longest subsequence of the pattern (longest prefix match)
+     * @param pattern
+     * @return
+     */
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern);
+
+    /**
      * Returns a lazy iterable which returns the set of keys in the tree which are contained in the given document.
      *
      * @param document A document to be scanned for keys contained in the tree

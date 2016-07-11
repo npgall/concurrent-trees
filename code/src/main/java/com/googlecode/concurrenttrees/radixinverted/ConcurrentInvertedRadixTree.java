@@ -113,6 +113,52 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             };
         }
 
+        protected KeyValuePair<O> scanForLongestKeyAtStartOfInput(final CharSequence input) {
+            acquireReadLockIfNecessary();
+            try {
+                O lastMatchedValue = null;
+                StringBuilder cummulativeMatchedKey = new StringBuilder();
+                Node nextNode = this.root;
+
+                CharSequence remaining = input;
+                while (remaining.length() > 0 && nextNode != null) {
+                    Node currentNode = nextNode.getOutgoingEdge(remaining.charAt(0));
+                    nextNode = null;
+
+                    if (currentNode != null) {
+
+                        CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
+                        int currentNodeEdgeLength = currentNodeEdgeCharacters.length();
+                        int shortTest = Math.min(currentNodeEdgeLength, remaining.length());
+                        int charsMatched;
+
+                        for (charsMatched = 0; charsMatched < shortTest; charsMatched++) {
+                            if (currentNodeEdgeCharacters.charAt(charsMatched) != remaining.charAt(charsMatched)) {
+                                break;
+                            }
+                        }
+
+                        if (charsMatched == currentNodeEdgeLength) {
+                            cummulativeMatchedKey.append(currentNodeEdgeCharacters);
+                            Object currentNodeValue = currentNode.getValue();
+                            if (currentNodeValue != null) {
+                                lastMatchedValue = (O) currentNodeValue;
+                            }
+
+                            nextNode = currentNode;
+                            remaining = remaining.subSequence(charsMatched, remaining.length());
+                        }
+                    }
+                }
+                if (lastMatchedValue != null)
+                    return new ConcurrentRadixTree.KeyValuePairImpl<O>(cummulativeMatchedKey.toString(), lastMatchedValue);
+
+                return null;
+            } finally {
+                releaseReadLockIfNecessary();
+            }
+        }
+
     }
 
     private final ConcurrentInvertedRadixTreeImpl<O> radixTree;
@@ -300,6 +346,41 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
      * {@inheritDoc}
      */
     @Override
+    public O getValueForLongestKeyPrefixing(CharSequence document) {
+        KeyValuePair<O> match = radixTree.scanForLongestKeyAtStartOfInput(document);
+
+        if (match != null)
+            return match.getValue();
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CharSequence getLongestKeyPrefixing(CharSequence document) {
+        KeyValuePair<O> match = radixTree.scanForLongestKeyAtStartOfInput(document);
+
+        if (match != null)
+            return match.getKey();
+
+        return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence document) {
+        return radixTree.scanForLongestKeyAtStartOfInput(document);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterable<CharSequence> getKeysContainedIn(final CharSequence document) {
         return new Iterable<CharSequence>() {
             @Override
@@ -392,30 +473,6 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
     @Override
     public int size() {
         return radixTree.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public O getValueForLongestKeyPrefixing(CharSequence pattern) {
-        return radixTree.getValueForLongestKeyPrefixing(pattern);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CharSequence getLongestKeyPrefixing(CharSequence pattern) {
-        return radixTree.getLongestKeyPrefixing(pattern);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence pattern) {
-        return radixTree.getKeyValuePairForLongestKeyPrefixing(pattern);
     }
 
     @Override

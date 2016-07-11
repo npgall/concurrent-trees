@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
@@ -25,10 +26,13 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNod
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import com.googlecode.concurrenttrees.testutil.TestUtility;
+import junit.framework.Assert;
 import org.junit.Test;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 /**
@@ -743,84 +747,6 @@ public class ConcurrentRadixTreeTest {
         assertEquals("[(COFFEE, 3)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("COF")));
         assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("DO")));
         assertEquals("[(CODFISH, 2)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("CODFISHES")));
-    }
-
-    @Test
-    public void testGetValueForLongestKeyPrefixing() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
-        tree.put("COD", 1);
-        tree.put("CODFISH", 2);
-        tree.put("COFFEE", 3);
-        tree.put("CODFISHES", 4);
-
-
-        //    ○
-        //    └── ○ CO
-        //    ├── ○ D (1)
-        //    │   └── ○ FISH (2)
-        //    │       └── ○ ES (4)
-        //    └── ○ FFEE (3)
-
-        assertEquals(new Integer(1), tree.getValueForLongestKeyPrefixing("COD"));
-        assertEquals(new Integer(2), tree.getValueForLongestKeyPrefixing("CODFISH"));
-        assertEquals(new Integer(4), tree.getValueForLongestKeyPrefixing("CODFISHES"));
-        assertEquals(new Integer(1), tree.getValueForLongestKeyPrefixing("CODFUNKY"));
-        assertEquals(new Integer(2), tree.getValueForLongestKeyPrefixing("CODFISHING"));
-        assertNull(tree.getValueForLongestKeyPrefixing("DOESNOTEXISTS"));
-        assertNull(tree.getValueForLongestKeyPrefixing("C"));
-        assertNull(tree.getValueForLongestKeyPrefixing("CO"));
-    }
-
-    @Test
-    public void testGetLongestKeyPrefixing() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
-        tree.put("COD", 1);
-        tree.put("CODFISH", 2);
-        tree.put("COFFEE", 3);
-        tree.put("CODFISHES", 4);
-
-
-        //    ○
-        //    └── ○ CO
-        //    ├── ○ D (1)
-        //    │   └── ○ FISH (2)
-        //    │       └── ○ ES (4)
-        //    └── ○ FFEE (3)
-
-        assertEquals("COD", tree.getLongestKeyPrefixing("COD"));
-        assertEquals("CODFISH", tree.getLongestKeyPrefixing("CODFISH"));
-        assertEquals("CODFISHES", tree.getLongestKeyPrefixing("CODFISHES"));
-        assertEquals("COD", tree.getLongestKeyPrefixing("CODFUNKY"));
-        assertEquals("CODFISH", tree.getLongestKeyPrefixing("CODFISHING"));
-        assertNull(tree.getValueForLongestKeyPrefixing("DOESNOTEXISTS"));
-        assertNull(tree.getValueForLongestKeyPrefixing("C"));
-        assertNull(tree.getValueForLongestKeyPrefixing("CO"));
-    }
-
-    @Test
-    public void testGetKeyValuePairForLongestKeyPrefixing() {
-        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
-        tree.put("COD", 1);
-        tree.put("CODFISH", 2);
-        tree.put("COFFEE", 3);
-        tree.put("CODFISHES", 4);
-
-
-        //    ○
-        //    └── ○ CO
-        //    ├── ○ D (1)
-        //    │   └── ○ FISH (2)
-        //    │       └── ○ ES (4)
-        //    └── ○ FFEE (3)
-
-        assertEquals("(COD, 1)", tree.getKeyValuePairForLongestKeyPrefixing("COD").toString());
-        assertEquals("(CODFISH, 2)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISH").toString());
-        assertEquals("(CODFISHES, 4)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISHES").toString());
-        assertEquals("(COD, 1)", tree.getKeyValuePairForLongestKeyPrefixing("CODFUNKY").toString());
-        assertEquals("(CODFISH, 2)", tree.getKeyValuePairForLongestKeyPrefixing("CODFISHING").toString());
-        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("DOESNOTEXISTS"));
-        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("C"));
-        assertNull(tree.getKeyValuePairForLongestKeyPrefixing("CO"));
     }
 
     @Test
