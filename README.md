@@ -101,7 +101,7 @@ Concurrent-Trees is in Maven Central. See [Downloads](documentation/Downloads.md
 
 ## Project Status ##
 
-As of writing (July 2016), version 2.5.0 of concurrent-trees is the latest release.
+As of writing (July 2016), version 2.6.0 of concurrent-trees is the latest release.
   * Full test coverage
   * Over 8,000 downloads per month and 88,000 downloads to-date
 
