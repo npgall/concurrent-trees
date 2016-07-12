@@ -1,5 +1,15 @@
 # Concurrent-Trees Release Notes #
 
+### Version 2.6.0 - 2016-07-12 ###
+  * Added new methods to `InvertedRadixTree` via pull request #17 from Jose Luis Pedrosa (many thanks!):
+      * `getLongestKeyPrefixing()`
+      * `getValueForLongestKeyPrefixing()`
+      * `getKeyValuePairForLongestKeyPrefixing()`
+  * Added support for using the library in OSGi environments via pull request #16 from Brian O'Connor (many thanks!)
+  * Removed the unused support internally to `restrictConcurrency`, and associated constructors which allowed it to be requested. As the feature was unused internally it's unlikely anyone was using these constructors, so this should not cause problems, but please open an issue if any are encountered
+  * Full test coverage
+  * Deployed to Maven central
+
 ### Version 2.5.0 - 2016-01-24 ###
   * The trees are now serializable
   * Deployed to Maven central
