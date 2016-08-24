@@ -9,7 +9,7 @@ This project provides concurrent [Radix Trees](http://en.wikipedia.org/wiki/Radi
 
 
 ## Overview ##
-A **Radix Tree** (also known as patricia trie, radix _trie_ or compact prefix tree) is a space-optimized tree data structure which allows keys (and optionally values associated with those keys) to be inserted for subsequent lookup using only a _prefix_ of the key rather than the whole key. Radix trees also have applications in string or document indexing and scanning, where they can allow faster scanning and lookup than brute force approaches. Some applications of Radix Trees:
+A **Radix Tree** (also known as patricia trie, radix _trie_ or compact prefix tree) is a space-optimized tree data structure which allows keys (and optionally values associated with those keys) to be inserted for subsequent lookup using only a _prefix_ of the key rather than the whole key. Radix trees have applications in string or document indexing and scanning, where they can allow faster scanning and lookup than brute force approaches. Some applications of Radix Trees:
   * Associate objects with keys which have a natural _hierarchy_ (for example nested categories, or paths in a file system)
   * Scan documents for large numbers of keywords in a _scalable way_ (i.e. more scalable than naively running `document.contains(keyword)`, see below)
   * Build indexes supporting fast "starts with", "ends with" or "equals" lookup
