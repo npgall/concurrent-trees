@@ -143,15 +143,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         Classification classification = searchResult.classification;
         switch (classification) {
             case EXACT_MATCH: {
-                return getDescendantValues(prefix, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
             case KEY_ENDS_MID_EDGE: {
-                // Append the remaining characters of the edge to the key.
-                // For example if we searched for CO, but first matching node was COFFEE,
-                // the key associated with the first node should be COFFEE...
-                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                prefix = CharSequences.concatenate(prefix, edgeSuffix);
-                return getDescendantValues(prefix, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
             default: {
                 // Incomplete match means key is not a prefix of any node...
@@ -337,32 +332,20 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         Classification classification = searchResult.classification;
         switch (classification) {
             case EXACT_MATCH: {
-                return getDescendantValues(candidate, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
             case KEY_ENDS_MID_EDGE: {
-                // Append the remaining characters of the edge to the key.
-                // For example if we searched for CO, but first matching node was COFFEE,
-                // the key associated with the first node should be COFFEE...
-                CharSequence edgeSuffix = CharSequences.getSuffix(searchResult.nodeFound.getIncomingEdge(), searchResult.charsMatchedInNodeFound);
-                candidate = CharSequences.concatenate(candidate, edgeSuffix);
-                return getDescendantValues(candidate, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
             case INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE: {
-                // Example: if we searched for CX, but deepest matching node was CO,
-                // the results should include node CO and its descendants...
-                CharSequence keyOfParentNode = CharSequences.getPrefix(candidate, searchResult.charsMatched - searchResult.charsMatchedInNodeFound);
-                CharSequence keyOfNodeFound = CharSequences.concatenate(keyOfParentNode, searchResult.nodeFound.getIncomingEdge());
-                return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
             case INCOMPLETE_MATCH_TO_END_OF_EDGE: {
                 if (searchResult.charsMatched == 0) {
                     // Closest match is the root node, we don't consider this a match for anything...
                     break;
                 }
-                // Example: if we searched for COFFEE, but deepest matching node was CO,
-                // the results should include node CO and its descendants...
-                CharSequence keyOfNodeFound = CharSequences.getPrefix(candidate, searchResult.charsMatched);
-                return getDescendantValues(keyOfNodeFound, searchResult.nodeFound);
+                return getDescendantValues(searchResult.nodeFound);
             }
         }
         return Collections.emptySet();
@@ -605,23 +588,37 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
     }
 
     /**
-     * Returns a lazy iterable which will return values which are associated with keys in the tree for which
-     * the given key is a prefix.
+     * Returns a lazy iterable which will return values which are stored in descendants of the given node.
      */
     @SuppressWarnings({"JavaDoc"})
-    <O> Iterable<O> getDescendantValues(final CharSequence startKey, final Node startNode) {
-        return new Iterable<O> () {
+    <O> Iterable<O> getDescendantValues(final Node startNode) {
+        return new Iterable<O>() {
             @Override
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
-                    Iterator<NodeKeyPair> descendantNodes = lazyTraverseDescendants(startKey, startNode).iterator();
+
+                    Deque<Node> stack = new LinkedList<Node>();
+                    {
+                        stack.push(startNode);
+                    }
 
                     @Override
                     protected O computeNext() {
-                        // Traverse to the next matching node in the tree and return its key and value...
-                        while (descendantNodes.hasNext()) {
-                            NodeKeyPair nodeKeyPair = descendantNodes.next();
-                            Object value = nodeKeyPair.node.getValue();
+                        while (true) {
+                            if (stack.isEmpty()) {
+                                return endOfData();
+                            }
+                            Node current = stack.pop();
+                            List<Node> childNodes = current.getOutgoingEdges();
+
+                            // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
+                            // to counteract that pushing them onto the stack alone would otherwise reverse their processing order.
+                            // This ensures that we actually process nodes in ascending alphabetical order.
+                            for (int i = childNodes.size(); i > 0; i--) {
+                                Node child = childNodes.get(i - 1);
+                                stack.push(child);
+                            }
+                            Object value = current.getValue();
                             if (value != null) {
                                 // Dealing with a node explicitly added to tree (rather than an automatically-added split node).
 
@@ -630,12 +627,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                                 // and we use arrays in nodes. We choose to cast here (in wrapper logic around the tree) rather than
                                 // pollute the already-complex tree manipulation logic with casts.
                                 @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-                                O valueTyped = (O)value;
+                                O valueTyped = (O) value;
                                 return valueTyped;
                             }
                         }
-                        // Finished traversing the tree, no more matching nodes to return...
-                        return endOfData();
                     }
                 };
             }
