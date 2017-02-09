@@ -9,6 +9,7 @@ import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.googlecode.concurrenttrees.wildcard.node.DefaultWildcardNodeFactory;
 import com.googlecode.concurrenttrees.wildcard.node.WildcardNode;
 import com.googlecode.concurrenttrees.wildcard.node.WildcardNodeFactory;
+import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,15 +42,16 @@ public class ConcurrentWildcardTree<O> {
             if (notLastSegment) {
                 if (wildcardNode == null) {
                     // Create a WildcardNode without a value, to point to the new subtree for the next segment...
-                    wildcardNode = wildcardNodeFactory.createNode(null, null, createSubtree());
+                    // TODO: predicates..
+                    wildcardNode = wildcardNodeFactory.createNode(Collections.<WildcardPredicate>emptyList(), createSubtree(), null);
                     currentTree.put(segment, wildcardNode);
-                } else if (wildcardNode.getSubtree() == null) {
+                } else if (wildcardNode.getNextSubtree() == null) {
                     // A WildcardNode with a value already exists.
                     // Recreate it to retain the same value, but adding pointer to the new subtree for next segment...
                     wildcardNode = wildcardNodeFactory.createNode(
-                            wildcardNode.getKey(),
-                            wildcardNode.getValue(),
-                            createSubtree()
+                            wildcardNode.getNextSubtreePredicates(), // TODO ..predicates?
+                            createSubtree(),
+                            wildcardNode.getValue()
                     );
                     currentTree.put(segment, wildcardNode);
                 }
@@ -57,16 +59,16 @@ public class ConcurrentWildcardTree<O> {
             } else {
                 if (wildcardNode == null) {
                     // Create a WildcardNode with the given a value, with no subtree...
-                    wildcardNode = wildcardNodeFactory.createNode(key, value, null);
+                    wildcardNode = wildcardNodeFactory.createNode(null, null, value);
                 } else {
                     // A WildcardNode with a subtree and possibly a value already exists.
                     // Remember the existing value so we can return it...
                     existingValue = (O) wildcardNode.getValue();
                     // Replace the value in this node, leaving the pointer to any existing subtree intact...
                     wildcardNode = wildcardNodeFactory.createNode(
-                            key,
-                            value,
-                            wildcardNode.getSubtree()
+                            wildcardNode.getNextSubtreePredicates(),
+                            wildcardNode.getNextSubtree(),
+                            value
                     );
                 }
                 currentTree.put(segment, wildcardNode);

@@ -2,55 +2,39 @@ package com.googlecode.concurrenttrees.wildcard.node;
 
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.googlecode.concurrenttrees.wildcard.WildcardPattern;
+import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
+
+import java.util.Collection;
 
 /**
  * @author npgall
  */
 public class WildcardNodeDefault implements WildcardNode {
 
-    final WildcardPattern key;
-    final Object value;
-    final InvertedRadixTree<WildcardNode> subtree;
+    final Collection<WildcardPredicate> nextSubtreePredicates;
 
-    public WildcardNodeDefault(WildcardPattern key, Object value, InvertedRadixTree<WildcardNode> subtree) {
-        this.key = key;
+    final InvertedRadixTree<WildcardNode> nextSubtree;
+
+    final Object value;
+
+    public WildcardNodeDefault(Collection<WildcardPredicate> nextSubtreePredicates, InvertedRadixTree<WildcardNode> nextSubtree, Object value) {
+        this.nextSubtreePredicates = nextSubtreePredicates;
+        this.nextSubtree = nextSubtree;
         this.value = value;
-        this.subtree = subtree;
     }
 
     @Override
-    public WildcardPattern getKey() {
-        return key;
+    public Collection<WildcardPredicate> getNextSubtreePredicates() {
+        return this.nextSubtreePredicates;
+    }
+
+    @Override
+    public InvertedRadixTree<WildcardNode> getNextSubtree() {
+        return this.nextSubtree;
     }
 
     @Override
     public Object getValue() {
-        return value;
-    }
-
-    @Override
-    public InvertedRadixTree<WildcardNode> getSubtree() {
-        return subtree;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof WildcardNodeDefault)) return false;
-
-        WildcardNodeDefault that = (WildcardNodeDefault) o;
-
-        if (key != null ? !key.equals(that.key) : that.key != null) return false;
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
-        return subtree != null ? subtree.equals(that.subtree) : that.subtree == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = key != null ? key.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        result = 31 * result + (subtree != null ? subtree.hashCode() : 0);
-        return result;
+        return this.value;
     }
 }

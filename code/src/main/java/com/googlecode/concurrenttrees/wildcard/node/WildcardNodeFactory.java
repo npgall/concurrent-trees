@@ -18,8 +18,10 @@ package com.googlecode.concurrenttrees.wildcard.node;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.googlecode.concurrenttrees.wildcard.WildcardPattern;
+import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,5 +41,5 @@ public interface WildcardNodeFactory extends Serializable {
      *
      * @return An object implementing the {@link WildcardNode} interface which stores the given variables
      */
-    WildcardNode createNode(WildcardPattern key, Object value, InvertedRadixTree<WildcardNode> subtree);
+    WildcardNode createNode(Collection<WildcardPredicate> nextSubtreePredicates, InvertedRadixTree<WildcardNode> nextSubtree, Object value);
 }

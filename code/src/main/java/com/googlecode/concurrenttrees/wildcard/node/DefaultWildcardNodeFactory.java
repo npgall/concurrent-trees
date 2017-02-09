@@ -2,6 +2,9 @@ package com.googlecode.concurrenttrees.wildcard.node;
 
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.googlecode.concurrenttrees.wildcard.WildcardPattern;
+import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
+
+import java.util.Collection;
 
 /**
  * @author npgall
@@ -9,14 +12,7 @@ import com.googlecode.concurrenttrees.wildcard.WildcardPattern;
 public class DefaultWildcardNodeFactory implements WildcardNodeFactory {
 
     @Override
-    public WildcardNode createNode(WildcardPattern key, Object value, InvertedRadixTree<WildcardNode> subtree) {
-        if (key != null && value == null) {
-            throw new IllegalStateException("Cannot create WildcardNode with a key but no value");
-        }
-        if (key == null && subtree == null) {
-            throw new IllegalStateException("Cannot create WildcardNode with neither a key nor a subtree");
-        }
-        // At this point we have either a key+value, a subtree, or a key+value+subtree.
-        return new WildcardNodeDefault(key, value, subtree);
+    public WildcardNode createNode(Collection<WildcardPredicate> nextSubtreePredicates, InvertedRadixTree<WildcardNode> nextSubtree, Object value) {
+        return new WildcardNodeDefault(nextSubtreePredicates, nextSubtree, value);
     }
 }
