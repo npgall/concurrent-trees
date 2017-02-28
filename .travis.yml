@@ -7,6 +7,10 @@ jdk:
 
 install: /bin/true
 
+branches:
+  only:
+  - master
+
 script:
 - cd code
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode --show-version
