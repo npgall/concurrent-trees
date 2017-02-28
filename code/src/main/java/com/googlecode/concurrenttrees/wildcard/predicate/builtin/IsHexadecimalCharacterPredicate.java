@@ -23,4 +23,9 @@ public class IsHexadecimalCharacterPredicate implements CharacterPredicate {
     public int hashCode() {
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return "[0-9A-Fa-f]";
+    }
 }

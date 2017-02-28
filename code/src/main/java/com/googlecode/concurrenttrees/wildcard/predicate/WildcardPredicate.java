@@ -43,4 +43,26 @@ public class WildcardPredicate {
         result = 31 * result + maxLength;
         return result;
     }
+
+    @Override
+    public String toString() {
+        if (minLength == 0 && maxLength == 1) {
+            return characterPredicate + "?";
+        }
+        else if (minLength == 0 && maxLength == Integer.MAX_VALUE) {
+            return characterPredicate + "*";
+        }
+        else if (minLength == 1 && maxLength == Integer.MAX_VALUE) {
+            return characterPredicate + "+";
+        }
+        else if (minLength == maxLength) {
+            return characterPredicate + "{" + minLength + "}";
+        }
+        else if (maxLength == Integer.MAX_VALUE) {
+            return characterPredicate + "{" + minLength + ",}";
+        }
+        else {
+            return characterPredicate.toString() + "{" + minLength + "," + maxLength + "}";
+        }
+    }
 }

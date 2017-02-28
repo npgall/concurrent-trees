@@ -6,16 +6,18 @@ import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author npgall
  */
 public interface WildcardNode {
 
-    Collection<WildcardPredicate> getNextSubtreePredicates();
+    Set<WildcardPredicate> getWildcardPredicates();
 
-    InvertedRadixTree<WildcardNode> getNextSubtree();
+    InvertedRadixTree<WildcardNode> getSubtree();
     
-    Object getValue();
+    ConcurrentMap<WildcardPattern, Object> getWildcardPatternsMatched();
 
 }

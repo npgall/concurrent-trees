@@ -7,10 +7,10 @@ import java.util.List;
  */
 public class WildcardPattern {
 
-    final List<String> segments;
+    final List<WildcardComponent> wildcardComponents;
 
-    public WildcardPattern(List<String> segments) {
-        this.segments = segments;
+    public WildcardPattern(List<WildcardComponent> wildcardComponents) {
+        this.wildcardComponents = wildcardComponents;
     }
 
     @Override
@@ -20,11 +20,18 @@ public class WildcardPattern {
 
         WildcardPattern that = (WildcardPattern) o;
 
-        return segments.equals(that.segments);
+        return wildcardComponents.equals(that.wildcardComponents);
     }
 
     @Override
     public int hashCode() {
-        return segments.hashCode();
+        return wildcardComponents.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "WildcardPattern{" +
+                "wildcardComponents=" + wildcardComponents +
+                '}';
     }
 }

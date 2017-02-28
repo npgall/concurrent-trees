@@ -34,4 +34,15 @@ public class NotBlacklistedCharacterPredicate implements CharacterPredicate {
     public int hashCode() {
         return blacklist.hashCode();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[^");
+        for (Character c : blacklist) {
+            sb.append(c);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

@@ -34,4 +34,16 @@ public class IsWhitelistedCharacterPredicate implements CharacterPredicate {
     public int hashCode() {
         return whitelist.hashCode();
     }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (Character c : whitelist) {
+            sb.append(c);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

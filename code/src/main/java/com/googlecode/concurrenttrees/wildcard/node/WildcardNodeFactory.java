@@ -23,6 +23,9 @@ import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * An interface for a factory which creates new {@link WildcardNode} objects on demand, to encapsulate specified
@@ -41,5 +44,8 @@ public interface WildcardNodeFactory extends Serializable {
      *
      * @return An object implementing the {@link WildcardNode} interface which stores the given variables
      */
-    WildcardNode createNode(Collection<WildcardPredicate> nextSubtreePredicates, InvertedRadixTree<WildcardNode> nextSubtree, Object value);
+    WildcardNode createNode(Set<WildcardPredicate> wildcardPredicates, InvertedRadixTree<WildcardNode> subtree, ConcurrentMap<WildcardPattern, Object> wildcardPatternsMatched);
+
+    WildcardNode createNode(InvertedRadixTree<WildcardNode> subtree);
+
 }

@@ -3,78 +3,58 @@ package com.googlecode.concurrenttrees.wildcard;
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
+import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
+import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
-import com.googlecode.concurrenttrees.wildcard.node.DefaultWildcardNodeFactory;
 import com.googlecode.concurrenttrees.wildcard.node.WildcardNode;
 import com.googlecode.concurrenttrees.wildcard.node.WildcardNodeFactory;
-import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author npgall
  */
-public class ConcurrentWildcardTree<O> {
+public class ConcurrentWildcardTree<O> implements PrettyPrintable {
 
-    final NodeFactory nodeFactory;
-    final WildcardNodeFactory wildcardNodeFactory = new DefaultWildcardNodeFactory();
-    final InvertedRadixTree<WildcardNode> rootTree;
+    final NodeFactory radixNodeFactory;
+    final WildcardNodeFactory wildcardNodeFactory;
 
-    public ConcurrentWildcardTree(NodeFactory nodeFactory) {
-        this.nodeFactory = nodeFactory;
-        this.rootTree = createSubtree();
+    volatile WildcardNode rootNode;
+
+    public ConcurrentWildcardTree(NodeFactory radixNodeFactory, WildcardNodeFactory wildcardNodeFactory) {
+        this.radixNodeFactory = radixNodeFactory;
+        this.wildcardNodeFactory = wildcardNodeFactory;
+        this.rootNode = wildcardNodeFactory.createNode(createSubtree());
     }
 
     InvertedRadixTree<WildcardNode> createSubtree() {
-        return new ConcurrentInvertedRadixTree<WildcardNode>(nodeFactory);
+        return new ConcurrentInvertedRadixTree<WildcardNode>(radixNodeFactory);
     }
 
-    public O put(WildcardPattern key, O value) {
-        InvertedRadixTree<WildcardNode> currentTree = rootTree;
-        O existingValue = null;
-        for (Iterator<String> segmentsIterator = key.segments.iterator(); segmentsIterator.hasNext(); ) {
-            String segment = segmentsIterator.next();
-            boolean notLastSegment = !segmentsIterator.hasNext();
-            WildcardNode wildcardNode = currentTree.getValueForExactKey(segment);
-            if (notLastSegment) {
-                if (wildcardNode == null) {
-                    // Create a WildcardNode without a value, to point to the new subtree for the next segment...
-                    // TODO: predicates..
-                    wildcardNode = wildcardNodeFactory.createNode(Collections.<WildcardPredicate>emptyList(), createSubtree(), null);
-                    currentTree.put(segment, wildcardNode);
-                } else if (wildcardNode.getNextSubtree() == null) {
-                    // A WildcardNode with a value already exists.
-                    // Recreate it to retain the same value, but adding pointer to the new subtree for next segment...
-                    wildcardNode = wildcardNodeFactory.createNode(
-                            wildcardNode.getNextSubtreePredicates(), // TODO ..predicates?
-                            createSubtree(),
-                            wildcardNode.getValue()
-                    );
-                    currentTree.put(segment, wildcardNode);
-                }
-                // ..else no need to modify the existing WildcardNode.
-            } else {
-                if (wildcardNode == null) {
-                    // Create a WildcardNode with the given a value, with no subtree...
-                    wildcardNode = wildcardNodeFactory.createNode(null, null, value);
-                } else {
-                    // A WildcardNode with a subtree and possibly a value already exists.
-                    // Remember the existing value so we can return it...
-                    existingValue = (O) wildcardNode.getValue();
-                    // Replace the value in this node, leaving the pointer to any existing subtree intact...
-                    wildcardNode = wildcardNodeFactory.createNode(
-                            wildcardNode.getNextSubtreePredicates(),
-                            wildcardNode.getNextSubtree(),
-                            value
-                    );
-                }
-                currentTree.put(segment, wildcardNode);
+    public O put(WildcardPattern wildcardPattern, O value) {
+        WildcardNode currentNode = rootNode;
+        Object existingValue = null;
+        for (Iterator<WildcardComponent> iterator = wildcardPattern.wildcardComponents.iterator(); iterator.hasNext(); ) {
+            WildcardComponent wildcardComponent = iterator.next();
+
+            currentNode.getWildcardPredicates().add(wildcardComponent.wildcardPredicate);
+
+            WildcardNode nextNode = currentNode.getSubtree().getValueForExactKey(wildcardComponent.characterSequence);
+            if (nextNode == null) {
+                nextNode = wildcardNodeFactory.createNode(createSubtree());
+                currentNode.getSubtree().put(wildcardComponent.characterSequence, nextNode);
             }
+            if (!iterator.hasNext()) {
+                existingValue = nextNode.getWildcardPatternsMatched().put(wildcardPattern, value);
+            }
+            currentNode = nextNode;
         }
-        return existingValue;
+        @SuppressWarnings("unchecked")
+        O existingValueTyped = (O) existingValue;
+        return existingValueTyped;
     }
 
 
@@ -108,6 +88,68 @@ public class ConcurrentWildcardTree<O> {
             }
         };
 
+    }
+
+    @Override
+    public Node getNode() {
+        return new WildcardNodeAdapter(this.rootNode);
+    }
+
+    static class WildcardNodeAdapter implements Node {
+
+        static final NodeFactory radixNodeFactoryForWildcards = new DefaultCharSequenceNodeFactory();
+
+        final WildcardNode wildcardNode;
+        final Node subtreeRootNode;
+
+        public WildcardNodeAdapter(WildcardNode wildcardNode) {
+            this.wildcardNode = wildcardNode;
+            this.subtreeRootNode = ((PrettyPrintable)wildcardNode.getSubtree()).getNode();
+        }
+
+        @Override
+        public Character getIncomingEdgeFirstCharacter() {
+            return getIncomingEdge().charAt(0);
+        }
+
+        @Override
+        public CharSequence getIncomingEdge() {
+            String str = wildcardNode.toString();
+            return str.length() == 0 ? "_" : str;
+        }
+
+        @Override
+        public Object getValue() {
+            return wildcardNode.getWildcardPatternsMatched().isEmpty() ? null : wildcardNode.getWildcardPatternsMatched();
+        }
+
+        @Override
+        public Node getOutgoingEdge(Character edgeFirstCharacter) {
+            return subtreeRootNode.getOutgoingEdge(edgeFirstCharacter);
+        }
+
+        @Override
+        public void updateOutgoingEdge(Node childNode) {
+            subtreeRootNode.updateOutgoingEdge(childNode);
+        }
+
+        @Override
+        public List<Node> getOutgoingEdges() {
+            List<Node> outgoingEdges = new ArrayList<Node>();
+            for (Node outgoingEdge : subtreeRootNode.getOutgoingEdges()) {
+                if (outgoingEdge.getValue() instanceof WildcardNode) {
+                    WildcardNode wildcardNode = (WildcardNode) outgoingEdge.getValue();
+
+                    List<Node> nestedOutgoingEdges = new ArrayList<Node>();
+                    nestedOutgoingEdges.addAll(outgoingEdge.getOutgoingEdges());
+                    nestedOutgoingEdges.add(new WildcardNodeAdapter(wildcardNode));
+                    outgoingEdge = radixNodeFactoryForWildcards.createNode(outgoingEdge.getIncomingEdge(), null, nestedOutgoingEdges, false);
+                }
+                outgoingEdges.add(outgoingEdge);
+
+            }
+            return outgoingEdges;
+        }
     }
 
 }

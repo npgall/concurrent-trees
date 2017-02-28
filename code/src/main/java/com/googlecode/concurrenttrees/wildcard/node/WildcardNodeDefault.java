@@ -4,37 +4,53 @@ import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 import com.googlecode.concurrenttrees.wildcard.WildcardPattern;
 import com.googlecode.concurrenttrees.wildcard.predicate.WildcardPredicate;
 
-import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author npgall
  */
 public class WildcardNodeDefault implements WildcardNode {
 
-    final Collection<WildcardPredicate> nextSubtreePredicates;
+    final Set<WildcardPredicate> wildcardPredicates;
 
-    final InvertedRadixTree<WildcardNode> nextSubtree;
+    final InvertedRadixTree<WildcardNode> subtree;
 
-    final Object value;
+    final ConcurrentMap<WildcardPattern, Object> wildcardPatternsMatched;
 
-    public WildcardNodeDefault(Collection<WildcardPredicate> nextSubtreePredicates, InvertedRadixTree<WildcardNode> nextSubtree, Object value) {
-        this.nextSubtreePredicates = nextSubtreePredicates;
-        this.nextSubtree = nextSubtree;
-        this.value = value;
+    public WildcardNodeDefault(Set<WildcardPredicate> wildcardPredicates, InvertedRadixTree<WildcardNode> subtree, ConcurrentMap<WildcardPattern, Object> wildcardPatternsMatched) {
+        this.wildcardPredicates = wildcardPredicates;
+        this.subtree = subtree;
+        this.wildcardPatternsMatched = wildcardPatternsMatched;
     }
 
     @Override
-    public Collection<WildcardPredicate> getNextSubtreePredicates() {
-        return this.nextSubtreePredicates;
+    public Set<WildcardPredicate> getWildcardPredicates() {
+        return wildcardPredicates;
     }
 
     @Override
-    public InvertedRadixTree<WildcardNode> getNextSubtree() {
-        return this.nextSubtree;
+    public InvertedRadixTree<WildcardNode> getSubtree() {
+        return subtree;
     }
 
     @Override
-    public Object getValue() {
-        return this.value;
+    public ConcurrentMap<WildcardPattern, Object> getWildcardPatternsMatched() {
+        return wildcardPatternsMatched;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Iterator<WildcardPredicate> iterator = wildcardPredicates.iterator(); iterator.hasNext(); ) {
+            WildcardPredicate wildcardPredicate = iterator.next();
+            sb.append(wildcardPredicate);
+            if (iterator.hasNext()) {
+                sb.append("|");
+            }
+        }
+        return sb.toString();
     }
 }
