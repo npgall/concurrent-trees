@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/npgall/concurrent-trees.svg?branch=master)](https://travis-ci.org/npgall/concurrent-trees)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.googlecode.concurrent-trees/concurrent-trees/badge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.googlecode.concurrent-trees%22%20AND%20a%3Aconcurrent-trees)
+
 
 _"A tree is a tree. How many more do you have to look at?"_
 
