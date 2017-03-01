@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/npgall/concurrent-trees.svg?branch=master)](https://travis-ci.org/npgall/concurrent-trees)
+
 _"A tree is a tree. How many more do you have to look at?"_
 
 ―Ronald Reagan
