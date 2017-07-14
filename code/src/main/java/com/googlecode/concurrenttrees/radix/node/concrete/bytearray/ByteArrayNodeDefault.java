@@ -45,6 +45,9 @@ public class ByteArrayNodeDefault implements Node {
     // nodes provided new edges start with the same first character...
     private final AtomicReferenceArray<Node> outgoingEdges;
 
+    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
+    private final List<Node> outgoingEdgesAsList;
+
     // An arbitrary value which the application associates with a key matching the path to this node in the tree.
     // This value can be null...
     private final Object value;
@@ -56,6 +59,7 @@ public class ByteArrayNodeDefault implements Node {
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
         this.value = value;
+        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -102,7 +106,7 @@ public class ByteArrayNodeDefault implements Node {
 
     @Override
     public List<Node> getOutgoingEdges() {
-        return new AtomicReferenceArrayListAdapter<Node>(outgoingEdges);
+        return outgoingEdgesAsList;
     }
 
     @Override

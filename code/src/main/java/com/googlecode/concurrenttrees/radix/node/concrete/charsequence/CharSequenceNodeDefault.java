@@ -61,6 +61,9 @@ public class CharSequenceNodeDefault implements Node {
     // nodes provided new edges start with the same first character...
     private final AtomicReferenceArray<Node> outgoingEdges;
 
+    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
+    private final List<Node> outgoingEdgesAsList;
+
     // An arbitrary value which the application associates with a key matching the path to this node in the tree.
     // This value can be null...
     private final Object value;
@@ -72,6 +75,7 @@ public class CharSequenceNodeDefault implements Node {
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharSequence = edgeCharSequence;
         this.value = value;
+        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -118,7 +122,7 @@ public class CharSequenceNodeDefault implements Node {
 
     @Override
     public List<Node> getOutgoingEdges() {
-        return new AtomicReferenceArrayListAdapter<Node>(outgoingEdges);
+        return outgoingEdgesAsList;
     }
 
     @Override

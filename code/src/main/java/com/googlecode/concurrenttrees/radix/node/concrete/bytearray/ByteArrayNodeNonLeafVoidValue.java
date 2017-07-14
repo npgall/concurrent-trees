@@ -45,6 +45,8 @@ public class ByteArrayNodeNonLeafVoidValue implements Node {
     // nodes provided new edges start with the same first character...
     private final AtomicReferenceArray<Node> outgoingEdges;
 
+    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
+    private final List<Node> outgoingEdgesAsList;
 
     public ByteArrayNodeNonLeafVoidValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[outgoingEdges.size()]);
@@ -52,6 +54,7 @@ public class ByteArrayNodeNonLeafVoidValue implements Node {
         Arrays.sort(childNodeArray, new NodeCharacterComparator());
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -98,7 +101,7 @@ public class ByteArrayNodeNonLeafVoidValue implements Node {
 
     @Override
     public List<Node> getOutgoingEdges() {
-        return new AtomicReferenceArrayListAdapter<Node>(outgoingEdges);
+        return outgoingEdgesAsList;
     }
 
     @Override
