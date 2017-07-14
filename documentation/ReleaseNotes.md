@@ -1,5 +1,11 @@
 # Concurrent-Trees Release Notes #
 
+### Version 2.6.1 - 2017-07-14 ###
+  * Performance improvements.
+  * Reduced GC overhead of binary search during tree traversals, via pull request #27 from Clement Pang (many thanks!)
+  * Additionally added some caching to further reduce GC overhead of the Node.getOutgoingEdges() method during tree traversals
+  * Deployed to Maven central
+  
 ### Version 2.6.0 - 2016-07-12 ###
   * Added new methods to `InvertedRadixTree` via pull request #17 from Jose Luis Pedrosa (many thanks!):
       * `getLongestKeyPrefixing()`
