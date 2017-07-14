@@ -33,8 +33,6 @@ public class NodeUtil {
     NodeUtil() {
     }
 
-    private static final Comparator<NodeCharacterProvider> NODE_COMPARATOR = new NodeCharacterComparator();
-
     /**
      * Returns the index of the node in the given {@link AtomicReferenceArray} whose edge starts with the given
      * first character.
@@ -63,9 +61,23 @@ public class NodeUtil {
      * array
      */
     public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, Character edgeFirstCharacter) {
-        List<? extends NodeCharacterProvider> childNodesList = new AtomicReferenceArrayListAdapter<Node>(childNodes);
-        NodeCharacterProvider searchKey = new NodeCharacterKey(edgeFirstCharacter);
-        return Collections.binarySearch(childNodesList, searchKey, NODE_COMPARATOR);
+        // inspired by Collections#indexedBinarySearch()
+        int low = 0;
+        int high = childNodes.length() - 1;
+
+        while (low <= high) {
+            int mid = (low + high) >>> 1;
+            Node midVal = childNodes.get(mid);
+            int cmp = midVal.getIncomingEdgeFirstCharacter().compareTo(edgeFirstCharacter);
+
+            if (cmp < 0)
+                low = mid + 1;
+            else if (cmp > 0)
+                high = mid - 1;
+            else
+                return mid; // key found
+        }
+        return -(low + 1);  // key not found
     }
 
     /**
