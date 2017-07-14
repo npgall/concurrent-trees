@@ -15,6 +15,7 @@
  */
 package com.googlecode.concurrenttrees.radix.node.util;
 
+import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  *
  * @author Niall Gallagher
  */
-public class AtomicReferenceArrayListAdapter<T> extends AbstractList<T> {
+public class AtomicReferenceArrayListAdapter<T> extends AbstractList<T> implements Serializable {
 
     private final AtomicReferenceArray<T> atomicReferenceArray;
 
