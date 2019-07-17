@@ -106,11 +106,13 @@ Concurrent-Trees is in Maven Central. See [Downloads](documentation/Downloads.md
 
 ## Project Status ##
 
-As of writing (July 2017), version 2.6.1 of concurrent-trees is the latest release.
+As of writing (July 2019), version 2.6.1 of concurrent-trees is the latest release.
   * Full test coverage
-  * Over 14,000 downloads per month and over 150,000 downloads to-date
+  * Over 120,000 downloads from Maven Central per month, and over 1 million downloads to-date
 
 See [Release Notes](documentation/ReleaseNotes.md) and [Frequently Asked Questions](documentation/FrequentlyAskedQuestions.md) for details.
+
+![concurrent-trees-downloads-june-2019.png](documentation/images/concurrent-trees-downloads-june-2019.png)
 
 Report any bugs/feature requests in the [Issues](http://github.com/npgall/concurrent-trees/issues) tab.
 For support please use the [Discussion Group](http://groups.google.com/forum/?fromgroups#!forum/concurrent-trees-discuss), not direct email to the developers.
