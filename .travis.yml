@@ -4,7 +4,6 @@ dist: trusty
 
 jdk:
 - openjdk8
-- oraclejdk11
 
 install: /bin/true
 
