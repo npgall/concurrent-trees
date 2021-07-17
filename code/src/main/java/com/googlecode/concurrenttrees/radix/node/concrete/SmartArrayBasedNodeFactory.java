@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,8 @@ import java.util.List;
  * @author Niall Gallagher
  */
 public class SmartArrayBasedNodeFactory implements NodeFactory {
+
+    private static final long serialVersionUID = 1L;
 
     final NodeFactory charArrayNodeFactory = new DefaultCharArrayNodeFactory();
     final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory();

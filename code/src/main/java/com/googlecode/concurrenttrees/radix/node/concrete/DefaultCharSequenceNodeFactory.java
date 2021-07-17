@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,8 @@ import java.util.List;
  * @author Niall Gallagher
  */
 public class DefaultCharSequenceNodeFactory implements NodeFactory {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {

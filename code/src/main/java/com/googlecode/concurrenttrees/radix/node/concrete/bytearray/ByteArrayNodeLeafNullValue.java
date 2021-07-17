@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import java.util.List;
  */
 public class ByteArrayNodeLeafNullValue implements Node {
 
+    private static final long serialVersionUID = 1L;
 
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
