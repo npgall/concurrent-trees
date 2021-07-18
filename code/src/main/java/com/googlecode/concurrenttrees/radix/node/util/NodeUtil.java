@@ -81,19 +81,17 @@ public class NodeUtil {
     }
 
     /**
-     * Throws an exception if any nodes in the given list represent edges having the same first character.
+     * Checks if any nodes in the given list represent edges having the same first character.
      *
      * @param nodes The list of nodes to validate
-     * @throws IllegalStateException If a duplicate edge is detected
+     * @return {@code true} if the supplied edges are free of duplicates.
      */
-    public static void ensureNoDuplicateEdges(List<Node> nodes) {
+    public static boolean hasNoDuplicateEdges(List<Node> nodes) {
         // Sanity check that no two nodes specify an edge with the same first character...
         Set<Character> uniqueChars = new HashSet<Character>(nodes.size());
         for (Node node : nodes) {
             uniqueChars.add(node.getIncomingEdgeFirstCharacter());
         }
-        if (nodes.size() != uniqueChars.size()) {
-            throw new IllegalStateException("Duplicate edge detected in list of nodes supplied: " + nodes);
-        }
+        return nodes.size() == uniqueChars.size();
     }
 }

@@ -16,30 +16,42 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+
+import static junit.framework.Assert.assertTrue;
 
 /**
  * @author Niall Gallagher
  */
 public class DefaultByteArrayNodeFactoryTest {
 
+    private boolean assertions;
 
-    @Test(expected = IllegalStateException.class)
+    @Before
+    public void setUp() {
+        assert assertions = true;
+    }
+
+    @Test(expected = AssertionError.class)
     public void testCreateNode_NullEdge() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
         new DefaultByteArrayNodeFactory().createNode(null, 1, Collections.<Node>emptyList(), false);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = AssertionError.class)
     public void testCreateNode_EmptyEdgeNonRoot() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
         new DefaultByteArrayNodeFactory().createNode("", 1, Collections.<Node>emptyList(), false);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = AssertionError.class)
     public void testCreateNode_NullEdges() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
         new DefaultByteArrayNodeFactory().createNode("FOO", 1, null, false);
     }

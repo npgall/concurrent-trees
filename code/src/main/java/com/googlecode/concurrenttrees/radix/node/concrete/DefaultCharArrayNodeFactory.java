@@ -48,16 +48,10 @@ public class DefaultCharArrayNodeFactory implements NodeFactory {
 
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
-        if (edgeCharacters == null) {
-            throw new IllegalStateException("The edgeCharacters argument was null");
-        }
-        if (!isRoot && edgeCharacters.length() == 0) {
-            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters));
-        }
-        if (childNodes == null) {
-            throw new IllegalStateException("The childNodes argument was null");
-        }
-        NodeUtil.ensureNoDuplicateEdges(childNodes);
+        assert edgeCharacters != null : "The edgeCharacters argument was null";
+        assert isRoot || edgeCharacters.length() > 0 : "Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters);
+        assert childNodes != null : "The edgeCharacters argument was null";
+        assert NodeUtil.hasNoDuplicateEdges(childNodes) : "Duplicate edge detected in list of nodes supplied: " + childNodes;
         if (childNodes.isEmpty()) {
             // Leaf node...
             if (value instanceof VoidValue) {
