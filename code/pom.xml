@@ -43,8 +43,7 @@
         <plugins>
             <plugin>
                 <!--
-                    Configure javac compiler for Java 6 compatibility.
-                    Note that actually the library might also be compatible with Java 5, but this has not been tested.
+                    Configure javac compiler for Java 5 compatibility.
                 -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
