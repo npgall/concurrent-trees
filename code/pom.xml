@@ -78,6 +78,9 @@
                     <archive>
                         <!-- This is required by bnd-maven-plugin -->
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${project.groupId}.${project.artifactId}</Automatic-Module-Name>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
