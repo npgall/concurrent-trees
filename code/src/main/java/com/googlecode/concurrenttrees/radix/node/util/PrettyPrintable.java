@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,5 +24,5 @@ import com.googlecode.concurrenttrees.radix.node.Node;
  * @author Niall Gallagher
  */
 public interface PrettyPrintable {
-    public Node getNode();
+    Node getNode();
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -113,7 +113,7 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
      * @return The longest key in the tree which is a prefix of the given document, or null if no such key is
      * contained in the tree
      */
-    public CharSequence getLongestKeyPrefixing(CharSequence document);
+    CharSequence getLongestKeyPrefixing(CharSequence document);
 
     /**
      * Returns the value associated with the longest key in the tree which is a prefix of the given document.
@@ -122,7 +122,7 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
      * @return The value associated with longest key in the tree which is a prefix of the given document, or null if
      * no such key is contained in the tree
      */
-    public O getValueForLongestKeyPrefixing(CharSequence document);
+    O getValueForLongestKeyPrefixing(CharSequence document);
 
     /**
      * Returns the {@link KeyValuePair} for the longest key in the tree which is a prefix of the given document.
@@ -131,7 +131,7 @@ public interface InvertedRadixTree<O> extends RadixTree<O> {
      * @return The {@link KeyValuePair} for the longest key in the tree which is a prefix of the given document,
      * or null if no such key is contained in the tree
      */
-    public KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence document);
+    KeyValuePair<O> getKeyValuePairForLongestKeyPrefixing(CharSequence document);
 
     /**
      * Returns a lazy iterable which returns the set of keys in the tree which are contained in the given document.

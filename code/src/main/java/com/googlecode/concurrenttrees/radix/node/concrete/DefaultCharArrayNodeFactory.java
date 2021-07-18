@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,18 +44,14 @@ import java.util.List;
  */
 public class DefaultCharArrayNodeFactory implements NodeFactory {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
-        if (edgeCharacters == null) {
-            throw new IllegalStateException("The edgeCharacters argument was null");
-        }
-        if (!isRoot && edgeCharacters.length() == 0) {
-            throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters));
-        }
-        if (childNodes == null) {
-            throw new IllegalStateException("The childNodes argument was null");
-        }
-        NodeUtil.ensureNoDuplicateEdges(childNodes);
+        assert edgeCharacters != null : "The edgeCharacters argument was null";
+        assert isRoot || edgeCharacters.length() > 0 : "Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters);
+        assert childNodes != null : "The edgeCharacters argument was null";
+        assert NodeUtil.hasNoDuplicateEdges(childNodes) : "Duplicate edge detected in list of nodes supplied: " + childNodes;
         if (childNodes.isEmpty()) {
             // Leaf node...
             if (value instanceof VoidValue) {

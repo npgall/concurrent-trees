@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * @author Niall Gallagher
  */
 public class AtomicReferenceArrayListAdapter<T> extends AbstractList<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final AtomicReferenceArray<T> atomicReferenceArray;
 

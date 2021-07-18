@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,11 @@ import java.io.Serializable;
  */
 public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, PrettyPrintable, Serializable {
 
-    class ConcurrentReverseRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
+    private static final long serialVersionUID = 1L;
+
+    static class ConcurrentReverseRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
+
+        private static final long serialVersionUID = 1L;
 
         public ConcurrentReverseRadixTreeImpl(NodeFactory nodeFactory) {
             super(nodeFactory);

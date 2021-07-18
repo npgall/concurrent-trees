@@ -282,6 +282,9 @@ public class ConcurrentRadixTreeTest {
         }
         // Override searchTree() to return the InvalidSearchResult...
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory()) {
+
+            private static final long serialVersionUID = 1L;
+
             @Override
             SearchResult searchTree(CharSequence key) {
                 return new InvalidSearchResult("FOO", root, 4, 4, null, null);

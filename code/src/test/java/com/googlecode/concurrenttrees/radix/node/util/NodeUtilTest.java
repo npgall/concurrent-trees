@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import static junit.framework.Assert.assertFalse;
+
 /**
  * @author Niall Gallagher
  */
@@ -68,13 +70,7 @@ public class NodeUtilTest {
                 nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
                 nodeFactory.createNode("C", null, Collections.<Node>emptyList(), false)
         );
-        try {
-            NodeUtil.ensureNoDuplicateEdges(nodes);
-            Assert.fail("Should throw exception");
-        }
-        catch (IllegalStateException expected) {
-            // Expected
-        }
+        assertFalse(NodeUtil.hasNoDuplicateEdges(nodes));
     }
 
     @Test

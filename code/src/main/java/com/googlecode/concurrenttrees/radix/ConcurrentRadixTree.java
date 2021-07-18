@@ -40,6 +40,8 @@ import static com.googlecode.concurrenttrees.radix.ConcurrentRadixTree.SearchRes
  * @author Niall Gallagher
  */
 public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private final NodeFactory nodeFactory;
 
@@ -413,14 +415,14 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public int size() {
-        Deque<Node> stack = new LinkedList<Node>();
-        stack.push(this.root);
+        LinkedList<Node> stack = new LinkedList<Node>();
+        stack.addFirst(this.root);
         int count = 0;
         while (true) {
             if (stack.isEmpty()) {
                 return count;
             }
-            Node current = stack.pop();
+            Node current = stack.removeFirst();
             stack.addAll(current.getOutgoingEdges());
             if (current.getValue() != null) {
                 count++;
@@ -738,7 +740,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            KeyValuePairImpl that = (KeyValuePairImpl) o;
+            KeyValuePairImpl<?> that = (KeyValuePairImpl<?>) o;
 
             return key.equals(that.key);
 
@@ -782,9 +784,9 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             public Iterator<NodeKeyPair> iterator() {
                 return new LazyIterator<NodeKeyPair>() {
 
-                    Deque<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
+                    final LinkedList<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
                     {
-                        stack.push(new NodeKeyPair(startNode, startKey));
+                        stack.addFirst(new NodeKeyPair(startNode, startKey));
                     }
 
                     @Override
@@ -792,7 +794,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                         if (stack.isEmpty()) {
                             return endOfData();
                         }
-                        NodeKeyPair current = stack.pop();
+                        NodeKeyPair current = stack.removeFirst();
                         List<Node> childNodes = current.node.getOutgoingEdges();
 
                         // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
@@ -800,7 +802,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                         // This ensures that we actually process nodes in ascending alphabetical order.
                         for (int i = childNodes.size(); i > 0; i--) {
                             Node child = childNodes.get(i - 1);
-                            stack.push(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
+                            stack.addFirst(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
                         }
                         return current;
                     }

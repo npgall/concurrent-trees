@@ -18,6 +18,7 @@ package com.googlecode.concurrenttrees.suffix;
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
+import com.googlecode.concurrenttrees.common.SetFromMap;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
@@ -38,7 +39,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, Serializable {
 
-    class ConcurrentSuffixTreeImpl<V> extends ConcurrentRadixTree<V> {
+    private static final long serialVersionUID = 1L;
+
+    static class ConcurrentSuffixTreeImpl<V> extends ConcurrentRadixTree<V> {
+
+        private static final long serialVersionUID = 1L;
 
         public ConcurrentSuffixTreeImpl(NodeFactory nodeFactory) {
             super(nodeFactory);
@@ -197,7 +202,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
      * @return A new {@link Set} in which original keys from which a suffix was generated can be stored
      */
     protected Set<String> createSetForOriginalKeys() {
-        return Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+        return new SetFromMap<String>(new ConcurrentHashMap<String, Boolean>());
     }
 
     /**
@@ -234,7 +239,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             @Override
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
-                    Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
+                    final Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
 
                     @Override
                     protected O computeNext() {
@@ -262,7 +267,7 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             @Override
             public Iterator<KeyValuePair<O>> iterator() {
                 return new LazyIterator<KeyValuePair<O>>() {
-                    Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
+                    final Iterator<String> originalKeys = nullSafeIterator(radixTree.getValueForExactKey(suffix));
 
                     @Override
                     protected KeyValuePair<O> computeNext() {
@@ -292,12 +297,12 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             public Iterator<CharSequence> iterator() {
                 return new LazyIterator<CharSequence>() {
 
-                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    final Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
                     Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
 
                     // A given fragment can be contained many times within the same key, so track keys processed
                     // so far, so that we can avoid re-processing the same key multiple times...
-                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+                    final Set<String> keysAlreadyProcessed = new HashSet<String>();
 
                     @Override
                     protected CharSequence computeNext() {
@@ -332,12 +337,12 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
 
-                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    final Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
                     Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
 
                     // A given fragment can be contained many times within the same key, so track keys processed
                     // so far, so that we can avoid re-processing the same key multiple times...
-                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+                    final Set<String> keysAlreadyProcessed = new HashSet<String>();
 
                     @Override
                     protected O computeNext() {
@@ -376,12 +381,12 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
             public Iterator<KeyValuePair<O>> iterator() {
                 return new LazyIterator<KeyValuePair<O>>() {
 
-                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
+                    final Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
                     Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
 
                     // A given fragment can be contained many times within the same key, so track keys processed
                     // so far, so that we can avoid re-processing the same key multiple times...
-                    Set<String> keysAlreadyProcessed = new HashSet<String>();
+                    final Set<String> keysAlreadyProcessed = new HashSet<String>();
 
                     @Override
                     protected KeyValuePair<O> computeNext() {
@@ -422,7 +427,6 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
     /**
      * Utility method to return an iterator for the given iterable, or an empty iterator if the iterable is null.
      */
-    @SuppressWarnings({"JavaDoc"})
     static <T> Iterator<T> nullSafeIterator(Iterable<T> iterable) {
         return iterable == null ? Collections.<T>emptyList().iterator() : iterable.iterator();
     }
