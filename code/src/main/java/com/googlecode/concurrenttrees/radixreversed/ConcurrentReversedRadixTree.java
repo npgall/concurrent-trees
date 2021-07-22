@@ -17,12 +17,14 @@ package com.googlecode.concurrenttrees.radixreversed;
 
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
+import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * An implementation of {@link ReversedRadixTree} which supports lock-free concurrent reads, and allows items to be added
@@ -122,6 +124,26 @@ public class ConcurrentReversedRadixTree<O> implements ReversedRadixTree<O>, Pre
     @Override
     public int size() {
         return radixTree.size();
+    }
+
+    @Override
+    public Iterator<KeyValuePair<O>> iterator() {
+        return new LazyIterator<KeyValuePair<O>>() {
+
+            final Iterator<KeyValuePair<O>> it = radixTree.iterator();
+
+            @Override
+            protected KeyValuePair<O> computeNext() {
+                if (it.hasNext()) {
+                    KeyValuePair<O> current = it.next();
+                    return new ConcurrentRadixTree.KeyValuePairImpl<O>(
+                            CharSequences.toString(CharSequences.reverse(current.getKey())),
+                            current.getValue());
+                } else {
+                    return endOfData();
+                }
+            }
+        };
     }
 
     @Override

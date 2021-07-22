@@ -32,6 +32,7 @@ import org.junit.Test;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -961,6 +962,29 @@ public class ConcurrentRadixTreeTest {
         // Testing the various (unlikely) ways to fall through classification to have the exception thrown...
         Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
             new ConcurrentRadixTree.SearchResult("DUMMY", dummyNodeFound, 4, 70, null, null);
+    }
+
+    @Test
+    public void testIteration() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+
+        Iterator<KeyValuePair<Integer>> it = tree.iterator();
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> team = it.next();
+        assertEquals("TEAM", team.getKey());
+        assertEquals(2, (Object) team.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> test = it.next();
+        assertEquals("TEST", test.getKey());
+        assertEquals(1, (Object) test.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> toast = it.next();
+        assertEquals("TOAST", toast.getKey());
+        assertEquals(3, (Object) toast.getValue());
+        assertFalse(it.hasNext());
     }
 
     @Test

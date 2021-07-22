@@ -428,7 +428,38 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         }
     }
 
-    // ------------- Helper method for put() -------------
+    @Override
+    public Iterator<KeyValuePair<O>> iterator() {
+        return new LazyIterator<KeyValuePair<O>>() {
+
+            final LinkedList<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
+            {
+                stack.push(new NodeKeyPair(root, root.getIncomingEdge()));
+            }
+
+            @Override
+            protected KeyValuePair<O> computeNext() {
+                while (!stack.isEmpty()) {
+                    NodeKeyPair current = stack.removeFirst();
+                    List<Node> childNodes = current.node.getOutgoingEdges();
+                    // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
+                    // to counteract that pushing them onto the stack alone would otherwise reverse their processing order.
+                    // This ensures that we actually process nodes in ascending alphabetical order.
+                    for (int i = childNodes.size(); i > 0; i--) {
+                        Node child = childNodes.get(i - 1);
+                        stack.addFirst(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
+                    }
+                    Object value = current.node.getValue();
+                    if (value != null) {
+                        return new KeyValuePairImpl<O>(CharSequences.toString(current.key), value);
+                    }
+                }
+                return endOfData();
+            }
+        };
+    }
+
+// ------------- Helper method for put() -------------
 
     /**
      * Atomically adds the given value to the tree, creating a node for the value as necessary. If the value is already
@@ -811,7 +842,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
 
 
     /**
-     * Encapsulates a node and its associated key. Used internally by {@link #lazyTraverseDescendants}.
+     * Encapsulates a node and its associated key. Used internally by {@link #lazyTraverseDescendants} and {@link #iterator()}.
      */
     protected static class NodeKeyPair {
         public final Node node;

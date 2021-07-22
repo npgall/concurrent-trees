@@ -16,11 +16,14 @@
 package com.googlecode.concurrenttrees.radixinverted;
 
 import com.googlecode.concurrenttrees.common.Iterables;
+import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.testutil.TestUtility;
 import org.junit.Test;
+
+import java.util.Iterator;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -438,6 +441,29 @@ public class ConcurrentInvertedRadixTreeTest {
         assertEquals("[FOO, FOOD]", Iterables.toString(tree.getClosestKeys("FOB")));
         assertEquals("[2, 1]", Iterables.toString(tree.getValuesForClosestKeys("FOB")));
         assertEquals("[(FOO, 2), (FOOD, 1)]", Iterables.toString(tree.getKeyValuePairsForClosestKeys("FOB")));
+    }
+
+    @Test
+    public void testIteration() {
+        ConcurrentInvertedRadixTree<Integer> tree = new ConcurrentInvertedRadixTree<Integer>(getNodeFactory());
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+
+        Iterator<KeyValuePair<Integer>> it = tree.iterator();
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> team = it.next();
+        assertEquals("TEAM", team.getKey());
+        assertEquals(2, (Object) team.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> test = it.next();
+        assertEquals("TEST", test.getKey());
+        assertEquals(1, (Object) test.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> toast = it.next();
+        assertEquals("TOAST", toast.getKey());
+        assertEquals(3, (Object) toast.getValue());
+        assertFalse(it.hasNext());
     }
 
     @Test

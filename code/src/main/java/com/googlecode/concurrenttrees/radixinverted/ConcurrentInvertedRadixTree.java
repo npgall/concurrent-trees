@@ -458,9 +458,12 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
     }
 
     @Override
+    public Iterator<KeyValuePair<O>> iterator() {
+        return radixTree.iterator();
+    }
+
+    @Override
     public Node getNode() {
         return radixTree.getNode();
     }
-
-
 }
