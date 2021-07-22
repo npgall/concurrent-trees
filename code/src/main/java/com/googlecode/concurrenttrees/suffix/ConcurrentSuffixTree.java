@@ -371,42 +371,16 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
      */
     @Override
     public Iterable<KeyValuePair<O>> getKeyValuePairsForKeysContaining(final CharSequence fragment) {
+        final Iterable<Set<String>> values = radixTree.getValuesForKeysStartingWith(fragment);
         return new Iterable<KeyValuePair<O>>() {
             @Override
             public Iterator<KeyValuePair<O>> iterator() {
-                return new LazyIterator<KeyValuePair<O>>() {
-
-                    Iterator<Set<String>> originalKeysSets = radixTree.getValuesForKeysStartingWith(fragment).iterator();
-                    Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
-
-                    // A given fragment can be contained many times within the same key, so track keys processed
-                    // so far, so that we can avoid re-processing the same key multiple times...
-                    Set<String> keysAlreadyProcessed = new HashSet<String>();
-
+                return ConcurrentSuffixTree.this.iterator(values, new KeyIterator<Set<String>>() {
                     @Override
-                    protected KeyValuePair<O> computeNext() {
-                        String originalKey = null;
-                        O value = null;
-                        while (value == null) {
-                            while (!keyIterator.hasNext()) {
-                                if (!originalKeysSets.hasNext()) {
-                                    return endOfData();
-                                }
-                                keyIterator = originalKeysSets.next().iterator();
-                            }
-                            originalKey = keyIterator.next();
-
-                            if (keysAlreadyProcessed.add(originalKey)) {
-                                // Key was not in the already-processed set, so proceed with looking up the value...
-                                value = valueMap.get(originalKey);
-
-                                // value could still be null due to race condition if key/value was removed while
-                                // iterating, hence if so, we loop again to find the next non-null key/value...
-                            }
-                        }
-                        return new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value);
+                    public Iterable<String> toKeys(Set<String> value) {
+                        return value;
                     }
-                };
+                });
             }
         };
     }
@@ -417,6 +391,58 @@ public class ConcurrentSuffixTree<O> implements SuffixTree<O>, PrettyPrintable, 
     @Override
     public int size() {
         return valueMap.size();
+    }
+
+    @Override
+    public Iterator<KeyValuePair<O>> iterator() {
+        return iterator(radixTree, new KeyIterator<KeyValuePair<Set<String>>>() {
+            @Override
+            public Iterable<String> toKeys(KeyValuePair<Set<String>> value) {
+                return value.getValue();
+            }
+        });
+    }
+
+    <V> Iterator<KeyValuePair<O>> iterator(final Iterable<V> it, final KeyIterator<V> resolver) {
+        return new LazyIterator<KeyValuePair<O>>() {
+
+            final Iterator<V> originalKeysSets = it.iterator();
+            Iterator<String> keyIterator = Collections.<String>emptyList().iterator();
+
+            // A given fragment can be contained many times within the same key, so track keys processed
+            // so far, so that we can avoid re-processing the same key multiple times...
+            final Set<String> keysAlreadyProcessed = new HashSet<String>();
+
+            @Override
+            protected KeyValuePair<O> computeNext() {
+                String originalKey = null;
+                O value = null;
+                while (value == null) {
+                    while (!keyIterator.hasNext()) {
+                        if (!originalKeysSets.hasNext()) {
+                            return endOfData();
+                        }
+                        V current = originalKeysSets.next();
+                        keyIterator = resolver.toKeys(current).iterator();
+                    }
+                    originalKey = keyIterator.next();
+
+                    if (keysAlreadyProcessed.add(originalKey)) {
+                        // Key was not in the already-processed set, so proceed with looking up the value...
+                        value = valueMap.get(originalKey);
+
+                        // value could still be null due to race condition if key/value was removed while
+                        // iterating, hence if so, we loop again to find the next non-null key/value...
+                    }
+                }
+                return new ConcurrentRadixTree.KeyValuePairImpl<O>(originalKey, value);
+            }
+        };
+    }
+
+    private interface KeyIterator<V> {
+
+        Iterable<String> toKeys(V value);
     }
 
     /**

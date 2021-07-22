@@ -34,7 +34,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
  * @see com.googlecode.concurrenttrees.radix.RadixTree
  * @author Niall Gallagher
  */
-public interface ReversedRadixTree<O> {
+public interface ReversedRadixTree<O> extends Iterable<KeyValuePair<O>> {
 
     /**
      * Associates the given value with the given key; replacing any previous value associated with the key.

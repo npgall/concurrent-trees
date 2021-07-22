@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.suffix;
 
 import com.googlecode.concurrenttrees.common.Iterables;
+import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -455,6 +456,29 @@ public class ConcurrentSuffixTreeTest {
                 return new LinkedHashSet<String>();
             }
         };
+    }
+
+    @Test
+    public void testIteration() {
+        ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTreeTestImpl<Integer>(getNodeFactory());
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+
+        Iterator<KeyValuePair<Integer>> it = tree.iterator();
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> team = it.next();
+        assertEquals("TEAM", team.getKey());
+        assertEquals(2, (Object) team.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> toast = it.next();
+        assertEquals("TOAST", toast.getKey());
+        assertEquals(3, (Object) toast.getValue());
+        assertTrue(it.hasNext());
+        KeyValuePair<Integer> test = it.next();
+        assertEquals("TEST", test.getKey());
+        assertEquals(1, (Object) test.getValue());
+        assertFalse(it.hasNext());
     }
 
     @Test

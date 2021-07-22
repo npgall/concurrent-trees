@@ -28,7 +28,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
  *
  * @author Niall Gallagher
  */
-public interface RadixTree<O> {
+public interface RadixTree<O> extends Iterable<KeyValuePair<O>> {
 
     /**
      * Associates the given value with the given key; replacing any previous value associated with the key.
