@@ -41,6 +41,6 @@ public class ByteArrayNodeLeafNullValueTest {
     @Test
     public void testGetIncomingEdgeFirstCharacter() throws Exception {
         Node node = new ByteArrayNodeLeafNullValue("FOO");
-        Assert.assertEquals(Character.valueOf('F'), node.getIncomingEdgeFirstCharacter());
+        Assert.assertEquals('F', node.getIncomingEdgeFirstCharacter());
     }
 }

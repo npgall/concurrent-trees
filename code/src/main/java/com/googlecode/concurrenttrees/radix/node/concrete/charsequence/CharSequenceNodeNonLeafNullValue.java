@@ -62,7 +62,7 @@ public class CharSequenceNodeNonLeafNullValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharSequence.charAt(0);
     }
 
@@ -72,7 +72,7 @@ public class CharSequenceNodeNonLeafNullValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         // Binary search for the index of the node whose edge starts with the given character.
         // Note that this binary search is safe in the face of concurrent modification due to constraints
         // we enforce on use of the array, as documented in the binarySearchForEdge method...

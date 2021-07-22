@@ -60,7 +60,7 @@ public class NodeUtil {
      * @return The index of the node representing the indicated edge, or a value < 0 if no such node exists in the
      * array
      */
-    public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, Character edgeFirstCharacter) {
+    public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, char edgeFirstCharacter) {
         // inspired by Collections#indexedBinarySearch()
         int low = 0;
         int high = childNodes.length() - 1;
@@ -68,7 +68,7 @@ public class NodeUtil {
         while (low <= high) {
             int mid = (low + high) >>> 1;
             Node midVal = childNodes.get(mid);
-            int cmp = midVal.getIncomingEdgeFirstCharacter().compareTo(edgeFirstCharacter);
+            int cmp = midVal.getIncomingEdgeFirstCharacter() - edgeFirstCharacter;
 
             if (cmp < 0)
                 low = mid + 1;

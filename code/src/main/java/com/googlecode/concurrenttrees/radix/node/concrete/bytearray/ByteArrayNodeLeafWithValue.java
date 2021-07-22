@@ -52,7 +52,7 @@ public class ByteArrayNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return (char) (incomingEdgeCharArray[0] & 0xFF);
     }
 
@@ -62,7 +62,7 @@ public class ByteArrayNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         return null;
     }
 

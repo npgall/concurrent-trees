@@ -27,5 +27,5 @@ package com.googlecode.concurrenttrees.radix.node.util;
  */
 public interface NodeCharacterProvider {
 
-    Character getIncomingEdgeFirstCharacter();
+    char getIncomingEdgeFirstCharacter();
 }

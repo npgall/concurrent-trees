@@ -50,7 +50,7 @@ public class CharSequenceNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharSequence.charAt(0);
     }
 
@@ -60,7 +60,7 @@ public class CharSequenceNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         return null;
     }
 

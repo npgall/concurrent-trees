@@ -50,7 +50,7 @@ public class CharArrayNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharArray[0];
     }
 
@@ -60,7 +60,7 @@ public class CharArrayNodeLeafWithValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         return null;
     }
 

@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * This implementation stores references to child nodes in an {@link AtomicReferenceArray}, in ascending sorted order
  * of the first character of the edges which child nodes define.
  * <p/>
- * The {@link #getOutgoingEdge(Character)} method uses binary search to locate a requested node, given the first character
+ * The {@link #getOutgoingEdge(char)} method uses binary search to locate a requested node, given the first character
  * of an edge indicated. The node is then read and returned atomically from the {@link AtomicReferenceArray}.
  * <p/>
  * The {@link #updateOutgoingEdge(com.googlecode.concurrenttrees.radix.node.Node)} method ensures that any
@@ -85,7 +85,7 @@ public class CharArrayNodeDefault implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharArray[0];
     }
 
@@ -95,7 +95,7 @@ public class CharArrayNodeDefault implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         // Binary search for the index of the node whose edge starts with the given character.
         // Note that this binary search is safe in the face of concurrent modification due to constraints
         // we enforce on use of the array, as documented in the binarySearchForEdge method...

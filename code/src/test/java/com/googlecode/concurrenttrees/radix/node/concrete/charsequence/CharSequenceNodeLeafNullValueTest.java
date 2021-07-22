@@ -41,6 +41,6 @@ public class CharSequenceNodeLeafNullValueTest {
     @Test
     public void testGetIncomingEdgeFirstCharacter() {
         Node node = new CharSequenceNodeLeafNullValue("FOO");
-        Assert.assertEquals(Character.valueOf('F'), node.getIncomingEdgeFirstCharacter());
+        Assert.assertEquals('F', node.getIncomingEdgeFirstCharacter());
     }
 }
