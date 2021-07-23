@@ -101,10 +101,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public O getValueForExactKey(CharSequence key) {
-        SearchResult searchResult = searchTree(key);
-        if (searchResult.classification.equals(SearchResult.Classification.EXACT_MATCH)) {
+        Node searchResult = (Node) searchTree(key, true);
+        if (searchResult != null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            O value = (O) searchResult.nodeFound.getValue();
+            O value = (O) searchResult.getValue();
             return value;
         }
         return null;
@@ -901,7 +901,21 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      * parent node, the number of characters of the key which were matched in total and within the edge of the
      * matched node, and a {@link SearchResult#classification} of the match as described above
      */
+
     SearchResult searchTree(CharSequence key) {
+        return (SearchResult) searchTree(key, false);
+    }
+
+    /**
+     * Implements {@link #searchTree(CharSequence)} but gives an option to return the exactly matched node directly
+     * without allocating a {@link SearchResult}.
+     *
+     * @param key a key for which the node matching the longest prefix of the key is required
+     * @param exactOnly If {@code true}, an exactly matched node is returned if such a node was found or {@code null}
+     *                  otherwise. If {@code false}, a {@link SearchResult} is returned.
+     * @return The resolved {@link SearchResult} or a {@link Node} if {@code exactOnly} was set to {@code true}.
+     */
+    private Object searchTree(CharSequence key, boolean exactOnly) {
         Node parentNodesParent = null;
         Node parentNode = null;
         Node currentNode = root;
@@ -931,7 +945,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                 charsMatchedInNodeFound++;
             }
         }
-        return new SearchResult(key, currentNode, charsMatched, charsMatchedInNodeFound, parentNode, parentNodesParent);
+        if (exactOnly) {
+            if (SearchResult.doClassify(key, currentNode, charsMatched, charsMatchedInNodeFound).equals(Classification.EXACT_MATCH)) {
+                return currentNode;
+            } else {
+                return null;
+            }
+        } else {
+            return new SearchResult(key, currentNode, charsMatched, charsMatchedInNodeFound, parentNode, parentNodesParent);
+        }
     }
 
     /**
@@ -972,6 +994,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         }
 
         protected Classification classify(CharSequence key, Node nodeFound, int charsMatched, int charsMatchedInNodeFound) {
+            return doClassify(key, nodeFound, charsMatched, charsMatchedInNodeFound);
+        }
+
+        protected static Classification doClassify(CharSequence key, Node nodeFound, int charsMatched, int charsMatchedInNodeFound) {
             if (charsMatched == key.length()) {
                 if (charsMatchedInNodeFound == nodeFound.getIncomingEdge().length()) {
                     return Classification.EXACT_MATCH;
@@ -988,7 +1014,12 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                     return Classification.INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE;
                 }
             }
-            throw new IllegalStateException("Unexpected failure to classify SearchResult: " + this);
+            throw new IllegalStateException("Unexpected failure to classify SearchResult: {" +
+                    "key=" + key +
+                    ", nodeFound=" + nodeFound +
+                    ", charsMatched=" + charsMatched +
+                    ", charsMatchedInNodeFound=" + charsMatchedInNodeFound +
+                    '}');
         }
 
         @Override
