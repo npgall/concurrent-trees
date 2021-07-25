@@ -52,7 +52,7 @@ public class ByteArrayNodeNonLeafNullValue implements Node {
     public ByteArrayNodeNonLeafNullValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
         // Sort the child nodes...
-        Arrays.sort(childNodeArray, new NodeCharacterComparator());
+        Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
         this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);

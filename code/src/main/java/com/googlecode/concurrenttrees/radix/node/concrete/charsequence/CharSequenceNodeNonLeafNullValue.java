@@ -50,7 +50,7 @@ public class CharSequenceNodeNonLeafNullValue implements Node {
     public CharSequenceNodeNonLeafNullValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
         // Sort the child nodes...
-        Arrays.sort(childNodeArray, new NodeCharacterComparator());
+        Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
         this.incomingEdgeCharSequence = edgeCharSequence;
         this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);

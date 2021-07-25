@@ -25,8 +25,13 @@ import java.util.Comparator;
  */
 public class NodeCharacterComparator implements Comparator<NodeCharacterProvider> {
 
+    NodeCharacterComparator() {
+    }
+
     @Override
     public int compare(NodeCharacterProvider o1, NodeCharacterProvider o2) {
         return o1.getIncomingEdgeFirstCharacter() - o2.getIncomingEdgeFirstCharacter();
     }
+
+    public static final Comparator<NodeCharacterProvider> SINGLETON = new NodeCharacterComparator();
 }
