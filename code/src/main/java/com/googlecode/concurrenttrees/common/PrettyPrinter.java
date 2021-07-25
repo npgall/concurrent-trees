@@ -83,7 +83,7 @@ public class PrettyPrinter {
             StringBuilder label = new StringBuilder();
             if (isRoot) {
                 label.append("○");
-                if (node.getIncomingEdge().length() > 0) {
+                if (node.getIncomingEdgeLength() > 0) {
                     label.append(" ");
                 }
             }

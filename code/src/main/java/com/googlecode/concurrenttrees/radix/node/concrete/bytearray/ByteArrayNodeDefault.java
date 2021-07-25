@@ -69,6 +69,16 @@ public class ByteArrayNodeDefault implements Node {
     }
 
     @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharArray.length;
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return (char) (incomingEdgeCharArray[index] & 0xFF);
+    }
+
+    @Override
     public char getIncomingEdgeFirstCharacter() {
         return (char) (incomingEdgeCharArray[0] & 0xFF);
     }

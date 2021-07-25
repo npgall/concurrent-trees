@@ -934,9 +934,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             parentNode = currentNode;
             currentNode = nextNode;
             charsMatchedInNodeFound = 0;
-            CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-            for (int i = 0, numEdgeChars = currentNodeEdgeCharacters.length(); i < numEdgeChars && charsMatched < keyLength; i++) {
-                if (currentNodeEdgeCharacters.charAt(i) != key.charAt(charsMatched)) {
+            for (int i = 0, numEdgeChars = currentNode.getIncomingEdgeLength(); i < numEdgeChars && charsMatched < keyLength; i++) {
+                if (currentNode.getIncomingEdgeCharacterAt(i) != key.charAt(charsMatched)) {
                     // Found a difference in chars between character in key and a character in current node.
                     // Current node is the deepest match (inexact match)....
                     break outer_loop;
@@ -999,18 +998,18 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
 
         protected static Classification doClassify(CharSequence key, Node nodeFound, int charsMatched, int charsMatchedInNodeFound) {
             if (charsMatched == key.length()) {
-                if (charsMatchedInNodeFound == nodeFound.getIncomingEdge().length()) {
+                if (charsMatchedInNodeFound == nodeFound.getIncomingEdgeLength()) {
                     return Classification.EXACT_MATCH;
                 }
-                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdge().length()) {
+                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdgeLength()) {
                     return Classification.KEY_ENDS_MID_EDGE;
                 }
             }
             else if (charsMatched < key.length()) {
-                if (charsMatchedInNodeFound == nodeFound.getIncomingEdge().length()) {
+                if (charsMatchedInNodeFound == nodeFound.getIncomingEdgeLength()) {
                     return Classification.INCOMPLETE_MATCH_TO_END_OF_EDGE;
                 }
-                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdge().length()) {
+                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdgeLength()) {
                     return Classification.INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE;
                 }
             }

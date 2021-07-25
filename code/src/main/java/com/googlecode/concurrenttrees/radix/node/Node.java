@@ -98,6 +98,10 @@ public interface Node extends NodeCharacterProvider, Serializable {
      */
     char getIncomingEdgeFirstCharacter();
 
+    int getIncomingEdgeLength();
+
+    char getIncomingEdgeCharacterAt(int index);
+
     /**
      * Returns all characters of the "edge" encoded in this node, belonging to the connection from a parent node to this
      * node.
@@ -114,7 +118,6 @@ public interface Node extends NodeCharacterProvider, Serializable {
      * <code>null</code> if no value is stored in this node
      */
     Object getValue();
-
 
     /**
      * Returns the child of this node whose edge starts with the given first character.

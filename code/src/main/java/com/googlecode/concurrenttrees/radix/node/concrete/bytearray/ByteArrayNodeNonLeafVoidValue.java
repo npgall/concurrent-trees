@@ -70,6 +70,16 @@ public class ByteArrayNodeNonLeafVoidValue implements Node {
     }
 
     @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharArray.length;
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return (char) (incomingEdgeCharArray[index] & 0xFF);
+    }
+
+    @Override
     public Object getValue() {
         return VoidValue.SINGLETON;
     }

@@ -68,6 +68,16 @@ public class CharSequenceNodeNonLeafVoidValue implements Node {
     }
 
     @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharSequence.length();
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return incomingEdgeCharSequence.charAt(index);
+    }
+
+    @Override
     public Object getValue() {
         return VoidValue.SINGLETON;
     }

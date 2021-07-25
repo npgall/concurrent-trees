@@ -84,14 +84,13 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
                                 }
 
                                 currentNode = nextNode;
-                                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                                final int numCharsInEdge = currentNode.getIncomingEdgeLength();
                                 if (numCharsInEdge + charsMatched > documentLength) {
                                     // This node can't be a match because it is too long...
                                     return endOfData();
                                 }
                                 for (int i = 0; i < numCharsInEdge; i++) {
-                                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                                    if (currentNode.getIncomingEdgeCharacterAt(i) != input.charAt(charsMatched + i)) {
                                         // Found a difference between a character in the input
                                         // and a character in the edge represented by current node,
                                         // current node is a dead end...
@@ -142,14 +141,13 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
                 }
 
                 currentNode = nextNode;
-                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                final int numCharsInEdge = currentNode.getIncomingEdgeLength();
                 if (numCharsInEdge + charsMatched > documentLength) {
                     // This node can't be a match because it is too long...
                     break;
                 }
                 for (int i = 0; i < numCharsInEdge; i++) {
-                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                    if (currentNode.getIncomingEdgeCharacterAt(i) != input.charAt(charsMatched + i)) {
                         // Found a difference between a character in the input
                         // and a character in the edge represented by current node,
                         // current node is a dead end...

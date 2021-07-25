@@ -55,6 +55,16 @@ public class CharArrayNodeLeafWithValue implements Node {
     }
 
     @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharArray.length;
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return incomingEdgeCharArray[index];
+    }
+
+    @Override
     public Object getValue() {
         return value;
     }
