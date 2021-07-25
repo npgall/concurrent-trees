@@ -98,8 +98,23 @@ public interface Node extends NodeCharacterProvider, Serializable {
      */
     char getIncomingEdgeFirstCharacter();
 
+    /**
+     * Returns the length of the "edge" encoded in this node, belonging to the connection from a parent node to this
+     * node.
+     * <p/>
+     *
+     * @return The length of the "edge" encoded in this node
+     */
     int getIncomingEdgeLength();
 
+    /**
+     * Returns the character at a given index of the "edge" encoded in this node, belonging to the connection from a
+     * parent node to this node.
+     * <p/>
+     *
+     * @param index The index of the character to resolve of the "edge" encoded in this node
+     * @return The character at the index of the "edge" encoded in this node
+     */
     char getIncomingEdgeCharacterAt(int index);
 
     /**
