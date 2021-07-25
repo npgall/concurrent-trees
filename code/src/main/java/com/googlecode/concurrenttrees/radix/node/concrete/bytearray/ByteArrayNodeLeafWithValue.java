@@ -42,7 +42,11 @@ public class ByteArrayNodeLeafWithValue implements Node {
     private final Object value;
 
     public ByteArrayNodeLeafWithValue(CharSequence edgeCharSequence, Object value) {
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence), value);
+    }
+
+    public ByteArrayNodeLeafWithValue(byte[] incomingEdgeCharArray, Object value) {
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
         this.value = value;
     }
 

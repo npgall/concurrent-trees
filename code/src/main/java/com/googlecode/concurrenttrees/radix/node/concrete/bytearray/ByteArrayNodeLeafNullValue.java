@@ -38,7 +38,11 @@ public class ByteArrayNodeLeafNullValue implements Node {
     private final byte[] incomingEdgeCharArray;
 
     public ByteArrayNodeLeafNullValue(CharSequence edgeCharSequence) {
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence));
+    }
+
+    public ByteArrayNodeLeafNullValue(byte[] incomingEdgeCharArray) {
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
     }
 
     @Override

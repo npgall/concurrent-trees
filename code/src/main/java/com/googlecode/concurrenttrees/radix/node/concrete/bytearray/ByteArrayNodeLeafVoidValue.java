@@ -39,7 +39,11 @@ public class ByteArrayNodeLeafVoidValue implements Node {
     private final byte[] incomingEdgeCharArray;
 
     public ByteArrayNodeLeafVoidValue(CharSequence edgeCharSequence) {
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence));
+    }
+
+    public ByteArrayNodeLeafVoidValue(byte[] incomingEdgeCharArray) {
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
     }
 
     @Override

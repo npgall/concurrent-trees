@@ -54,11 +54,15 @@ public class ByteArrayNodeDefault implements Node {
     private final Object value;
 
     public ByteArrayNodeDefault(CharSequence edgeCharSequence, Object value, List<Node> outgoingEdges) {
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence), value, outgoingEdges);
+    }
+
+    public ByteArrayNodeDefault(byte[] incomingEdgeCharArray, Object value, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
         // Sort the child nodes...
         Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
         this.value = value;
         this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }

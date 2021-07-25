@@ -71,12 +71,20 @@ public class ByteArrayCharSequence implements CharSequence {
      * @throws IllegalStateException If the characters cannot be encoded as described
      */
     public static byte[] toSingleByteUtf8Encoding(CharSequence charSequence) {
+        return toSingleByteUtf8Encoding(charSequence, false);
+    }
+
+    public static byte[] toSingleByteUtf8Encoding(CharSequence charSequence, boolean fast) {
         final int length = charSequence.length();
         byte[] bytes = new byte[length];
         for (int i = 0; i < length; i++) {
             char inputChar = charSequence.charAt(i);
             if (inputChar > 255) {
-                throw new IncompatibleCharacterException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
+                if (fast) {
+                    throw new IncompatibleCharacterException.FastThrow();
+                } else {
+                    throw new IncompatibleCharacterException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
+                }
             }
             bytes[i] = (byte)inputChar;
         }
@@ -89,6 +97,16 @@ public class ByteArrayCharSequence implements CharSequence {
 
         public IncompatibleCharacterException(String s) {
             super(s);
+        }
+
+        public static class FastThrow extends IllegalStateException {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Throwable fillInStackTrace() {
+                return this;
+            }
         }
     }
 }

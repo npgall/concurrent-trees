@@ -33,14 +33,14 @@ public class SmartArrayBasedNodeFactory implements NodeFactory {
     private static final long serialVersionUID = 1L;
 
     final NodeFactory charArrayNodeFactory = new DefaultCharArrayNodeFactory();
-    final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory();
+    final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory(true);
 
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
         try {
             return byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
         }
-        catch (ByteArrayCharSequence.IncompatibleCharacterException e) {
+        catch (ByteArrayCharSequence.IncompatibleCharacterException.FastThrow ignored) {
             return charArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
         }
     }

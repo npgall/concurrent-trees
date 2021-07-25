@@ -39,34 +39,45 @@ public class DefaultByteArrayNodeFactory implements NodeFactory {
 
     private static final long serialVersionUID = 1L;
 
+    private final boolean fast;
+
+    public DefaultByteArrayNodeFactory() {
+        fast = false;
+    }
+
+    DefaultByteArrayNodeFactory(boolean fast) {
+        this.fast = fast;
+    }
+
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
         assert edgeCharacters != null : "The edgeCharacters argument was null";
         assert isRoot || edgeCharacters.length() > 0 : "Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters);
         assert childNodes != null : "The edgeCharacters argument was null";
         assert NodeUtil.hasNoDuplicateEdges(childNodes) : "Duplicate edge detected in list of nodes supplied: " + childNodes;
+        byte[] incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharacters, true);
         if (childNodes.isEmpty()) {
             // Leaf node...
             if (value instanceof VoidValue) {
-                return new ByteArrayNodeLeafVoidValue(edgeCharacters);
+                return new ByteArrayNodeLeafVoidValue(incomingEdgeCharArray);
             }
             else if (value != null) {
-                return new ByteArrayNodeLeafWithValue(edgeCharacters, value);
+                return new ByteArrayNodeLeafWithValue(incomingEdgeCharArray, value);
             }
             else {
-                return new ByteArrayNodeLeafNullValue(edgeCharacters);
+                return new ByteArrayNodeLeafNullValue(incomingEdgeCharArray);
             }
         }
         else {
             // Non-leaf node...
             if (value instanceof VoidValue) {
-                return new ByteArrayNodeNonLeafVoidValue(edgeCharacters, childNodes);
+                return new ByteArrayNodeNonLeafVoidValue(incomingEdgeCharArray, childNodes);
             }
             else if (value == null) {
-                return new ByteArrayNodeNonLeafNullValue(edgeCharacters, childNodes);
+                return new ByteArrayNodeNonLeafNullValue(incomingEdgeCharArray, childNodes);
             }
             else {
-                return new ByteArrayNodeDefault(edgeCharacters, value, childNodes);
+                return new ByteArrayNodeDefault(incomingEdgeCharArray, value, childNodes);
             }
         }
     }

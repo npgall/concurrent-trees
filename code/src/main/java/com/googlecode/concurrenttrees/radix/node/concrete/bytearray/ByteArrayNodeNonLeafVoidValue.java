@@ -51,11 +51,15 @@ public class ByteArrayNodeNonLeafVoidValue implements Node {
     private final List<Node> outgoingEdgesAsList;
 
     public ByteArrayNodeNonLeafVoidValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence), outgoingEdges);
+    }
+
+    public ByteArrayNodeNonLeafVoidValue(byte[] incomingEdgeCharArray, List<Node> outgoingEdges) {
         Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
         // Sort the child nodes...
         Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
         this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
         this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
