@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
-import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
@@ -27,13 +26,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNod
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import com.googlecode.concurrenttrees.testutil.TestUtility;
-import junit.framework.Assert;
 import org.junit.Test;
-
-import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.*;
 /**

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,7 @@ package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
-import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeDefault;
 import org.junit.Test;
-
-import java.util.Collections;
 
 /**
  * @author Niall Gallagher
