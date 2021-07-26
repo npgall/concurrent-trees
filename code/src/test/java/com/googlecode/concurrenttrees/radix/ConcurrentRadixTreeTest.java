@@ -21,6 +21,7 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -59,14 +60,14 @@ public class ConcurrentRadixTreeTest {
         //                └── ○ DANA (4)
 
         final Node root, n1, n2, n3, n4, n5, n6;
-        n6 = getNodeFactory().createNode("A", 6, Collections.<Node>emptyList(), false);
-        n5 = getNodeFactory().createNode("AN", 5, Arrays.asList(n6), false);
-        n4 = getNodeFactory().createNode("DANA", 4, Collections.<Node>emptyList(), false);
-        n3 = getNodeFactory().createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort alphabetically such that n5 is first
-        n2 = getNodeFactory().createNode("A", 2, Arrays.asList(n3), false);
-        n1 = getNodeFactory().createNode("B", 1, Arrays.asList(n2), false);
+        n6 = getNodeFactory().createNode("A", 6, SimpleNodeList.EMPTY, false);
+        n5 = getNodeFactory().createNode("AN", 5, new SimpleNodeList(n6), false);
+        n4 = getNodeFactory().createNode("DANA", 4, SimpleNodeList.EMPTY, false);
+        n3 = getNodeFactory().createNode("N", 3, new SimpleNodeList(n4, n5), false); // note: it should sort alphabetically such that n5 is first
+        n2 = getNodeFactory().createNode("A", 2, new SimpleNodeList(n3), false);
+        n1 = getNodeFactory().createNode("B", 1, new SimpleNodeList(n2), false);
         //noinspection NullableProblems
-        root = getNodeFactory().createNode("", null, Arrays.asList(n1), true);
+        root = getNodeFactory().createNode("", null, new SimpleNodeList(n1), true);
 
         String expected =
                 "○\n" +
@@ -853,14 +854,14 @@ public class ConcurrentRadixTreeTest {
         //                └── ○ DANA (4)
 
         final Node root, n1, n2, n3, n4, n5, n6;
-        n6 = getNodeFactory().createNode("A", 6, Collections.<Node>emptyList(), false);
-        n5 = getNodeFactory().createNode("AN", 5, Arrays.asList(n6), false);
-        n4 = getNodeFactory().createNode("DANA", 4, Collections.<Node>emptyList(), false);
-        n3 = getNodeFactory().createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort these such that n5 is first
-        n2 = getNodeFactory().createNode("A", 2, Arrays.asList(n3), false);
-        n1 = getNodeFactory().createNode("B", 1, Arrays.asList(n2), false);
+        n6 = getNodeFactory().createNode("A", 6, SimpleNodeList.EMPTY, false);
+        n5 = getNodeFactory().createNode("AN", 5, new SimpleNodeList(n6), false);
+        n4 = getNodeFactory().createNode("DANA", 4, SimpleNodeList.EMPTY, false);
+        n3 = getNodeFactory().createNode("N", 3, new SimpleNodeList(n4, n5), false); // note: it should sort these such that n5 is first
+        n2 = getNodeFactory().createNode("A", 2, new SimpleNodeList(n3), false);
+        n1 = getNodeFactory().createNode("B", 1, new SimpleNodeList(n2), false);
         //noinspection NullableProblems
-        root = getNodeFactory().createNode("", null, Arrays.asList(n1), true);
+        root = getNodeFactory().createNode("", null, new SimpleNodeList(n1), true);
 
         // Overwrite the tree's default root with the one built by hand...
         tree.root = root;
@@ -954,7 +955,7 @@ public class ConcurrentRadixTreeTest {
     @Test(expected = IllegalStateException.class)
     public void testSearchResult_FailureToClassify2() {
         // Testing the various (unlikely) ways to fall through classification to have the exception thrown...
-        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
+        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, SimpleNodeList.EMPTY, false);
         new ConcurrentRadixTree.SearchResult("DUMMY", dummyNodeFound, 5, 70, null, null);
 
     }
@@ -962,7 +963,7 @@ public class ConcurrentRadixTreeTest {
     @Test(expected = IllegalStateException.class)
     public void testSearchResult_FailureToClassify3() {
         // Testing the various (unlikely) ways to fall through classification to have the exception thrown...
-        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, Collections.<Node>emptyList(), false);
+        Node dummyNodeFound = getNodeFactory().createNode("DUMMY", 1, SimpleNodeList.EMPTY, false);
             new ConcurrentRadixTree.SearchResult("DUMMY", dummyNodeFound, 4, 70, null, null);
     }
 

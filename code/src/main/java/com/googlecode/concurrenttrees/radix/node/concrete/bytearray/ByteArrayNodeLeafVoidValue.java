@@ -16,10 +16,9 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Similar to {@link com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeLeafVoidValue} but represents
@@ -82,8 +81,8 @@ public class ByteArrayNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

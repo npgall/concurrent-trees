@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class CharArrayNodeLeafVoidValueTest {
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge() throws Exception {
         Node node = new CharArrayNodeLeafVoidValue("FOO");
-        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test

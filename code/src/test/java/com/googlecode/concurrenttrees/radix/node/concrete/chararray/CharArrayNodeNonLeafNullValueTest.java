@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,19 +30,19 @@ public class CharArrayNodeNonLeafNullValueTest {
 
     @Test
     public void testUpdateOutgoingEdge() throws Exception {
-        Node node = new CharArrayNodeNonLeafNullValue("FOO", Arrays.asList((Node)new CharArrayNodeDefault("BAR1", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR2", null, Collections.<Node>emptyList()));
+        Node node = new CharArrayNodeNonLeafNullValue("FOO", new SimpleNodeList(new CharArrayNodeDefault("BAR1", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR2", null, SimpleNodeList.EMPTY));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new CharArrayNodeNonLeafNullValue("FOO", Arrays.asList((Node)new CharArrayNodeDefault("BAR", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new CharArrayNodeDefault("CAR", null, Collections.<Node>emptyList()));
+        Node node = new CharArrayNodeNonLeafNullValue("FOO", new SimpleNodeList(new CharArrayNodeDefault("BAR", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new CharArrayNodeDefault("CAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test
     public void testToString() throws Exception {
-        Node node = new CharArrayNodeNonLeafNullValue("FOO", Collections.<Node>emptyList());
+        Node node = new CharArrayNodeNonLeafNullValue("FOO", SimpleNodeList.EMPTY);
         Assert.assertEquals("Node{edge=FOO, value=null, edges=[]}", node.toString());
     }
 }

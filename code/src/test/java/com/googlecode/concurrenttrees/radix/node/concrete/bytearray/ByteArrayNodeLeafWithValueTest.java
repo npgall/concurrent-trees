@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class ByteArrayNodeLeafWithValueTest {
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge() throws Exception {
         Node node = new ByteArrayNodeLeafWithValue("FOO", 1);
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test

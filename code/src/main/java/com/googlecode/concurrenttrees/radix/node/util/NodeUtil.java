@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.util;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -86,11 +87,11 @@ public class NodeUtil {
      * @param nodes The list of nodes to validate
      * @return {@code true} if the supplied edges are free of duplicates.
      */
-    public static boolean hasNoDuplicateEdges(List<Node> nodes) {
+    public static boolean hasNoDuplicateEdges(NodeList nodes) {
         // Sanity check that no two nodes specify an edge with the same first character...
         Set<Character> uniqueChars = new HashSet<Character>(nodes.size());
-        for (Node node : nodes) {
-            uniqueChars.add(node.getIncomingEdgeFirstCharacter());
+        for (int index = 0; index < nodes.size(); index++) {
+            uniqueChars.add(nodes.get(index).getIncomingEdgeFirstCharacter());
         }
         return nodes.size() == uniqueChars.size();
     }

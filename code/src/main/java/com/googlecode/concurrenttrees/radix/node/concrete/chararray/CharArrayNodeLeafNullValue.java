@@ -17,9 +17,8 @@ package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
-
-import java.util.Collections;
-import java.util.List;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 
 /**
  * Stores only incoming edge as a {@code char[]}.
@@ -75,8 +74,8 @@ public class CharArrayNodeLeafNullValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.bytearray.ByteArrayNodeLeafVoidValue;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeLeafVoidValue;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
@@ -33,13 +34,13 @@ public class SmartArrayBasedNodeFactoryTest {
 
     @Test
     public void testCreateNode_CompatibleCharacters() throws Exception {
-        Node node = smartNodeFactory.createNode("FOOBAR", VoidValue.SINGLETON, Collections.<Node>emptyList(), false);
+        Node node = smartNodeFactory.createNode("FOOBAR", VoidValue.SINGLETON, SimpleNodeList.EMPTY, false);
         Assert.assertEquals(ByteArrayNodeLeafVoidValue.class, node.getClass());
     }
 
     @Test
     public void testCreateNode_IncompatibleCharacters() throws Exception {
-        Node node = smartNodeFactory.createNode("FOOBAR○", VoidValue.SINGLETON, Collections.<Node>emptyList(), false);
+        Node node = smartNodeFactory.createNode("FOOBAR○", VoidValue.SINGLETON, SimpleNodeList.EMPTY, false);
         Assert.assertEquals(CharArrayNodeLeafVoidValue.class, node.getClass());
     }
 }

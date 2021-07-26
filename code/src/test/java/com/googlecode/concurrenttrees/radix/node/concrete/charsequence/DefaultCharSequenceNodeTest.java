@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.charsequence;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.charsequence.CharSequenceNodeDefault;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,14 +30,14 @@ public class DefaultCharSequenceNodeTest {
 
     @Test
     public void testToString() throws Exception {
-        Node node = new CharSequenceNodeDefault("FOO", null, Collections.<Node>emptyList());
+        Node node = new CharSequenceNodeDefault("FOO", null, SimpleNodeList.EMPTY);
         Assert.assertEquals("Node{edge=FOO, value=null, edges=[]}", node.toString());
 
     }
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new CharSequenceNodeDefault("FOO", null, Collections.<Node>emptyList());
-        node.updateOutgoingEdge(new CharSequenceNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        Node node = new CharSequenceNodeDefault("FOO", null, SimpleNodeList.EMPTY);
+        node.updateOutgoingEdge(new CharSequenceNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 }

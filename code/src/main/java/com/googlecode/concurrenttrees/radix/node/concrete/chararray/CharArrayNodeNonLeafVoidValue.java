@@ -17,13 +17,13 @@ package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
+import com.googlecode.concurrenttrees.radix.node.util.AtomicNodeReferenceArray;
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
@@ -43,18 +43,14 @@ public class CharArrayNodeNonLeafVoidValue implements Node {
     // References to child nodes representing outgoing edges from this node.
     // Once assigned we never add or remove references, but we do update existing references to point to new child
     // nodes provided new edges start with the same first character...
-    private final AtomicReferenceArray<Node> outgoingEdges;
+    private final AtomicNodeReferenceArray outgoingEdges;
 
-    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
-    private final List<Node> outgoingEdgesAsList;
-
-    public CharArrayNodeNonLeafVoidValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
-        Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
+    public CharArrayNodeNonLeafVoidValue(CharSequence edgeCharSequence, NodeList outgoingEdges) {
+        Node[] childNodeArray = outgoingEdges.toArray();
         // Sort the child nodes...
         Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
-        this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
+        this.outgoingEdges = new AtomicNodeReferenceArray(childNodeArray);
         this.incomingEdgeCharArray = CharSequences.toCharArray(edgeCharSequence);
-        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -110,8 +106,8 @@ public class CharArrayNodeNonLeafVoidValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return outgoingEdgesAsList;
+    public NodeList getOutgoingEdges() {
+        return outgoingEdges;
     }
 
     @Override

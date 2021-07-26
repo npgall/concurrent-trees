@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,32 +30,32 @@ public class ByteArrayNodeNonLeafVoidValueTest {
     
     @Test
     public void testUpdateOutgoingEdge() throws Exception {
-        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", Arrays.asList((Node) new ByteArrayNodeDefault("BAR1", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR2", null, Collections.<Node>emptyList()));
+        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR1", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR2", null, SimpleNodeList.EMPTY));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", Arrays.asList((Node)new ByteArrayNodeDefault("BAR", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("CAR", null, Collections.<Node>emptyList()));
+        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("CAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test
     public void testToString() throws Exception {
-        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", Collections.<Node>emptyList());
+        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", SimpleNodeList.EMPTY);
         Assert.assertEquals("Node{edge=FOO, value=-, edges=[]}", node.toString());
     }
 
     @Test
     public void testGetOutgoingEdge() throws Exception {
-        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", Arrays.asList((Node) new ByteArrayNodeDefault("BAR1", 1, Collections.<Node>emptyList())));
+        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR1", 1, SimpleNodeList.EMPTY)));
         Assert.assertNotNull(node.getOutgoingEdge('B'));
         Assert.assertEquals(1, node.getOutgoingEdge('B').getValue());
     }
 
     @Test
     public void testGetOutgoingEdge_NonExistent() throws Exception {
-        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", Arrays.asList((Node) new ByteArrayNodeDefault("BAR1", 1, Collections.<Node>emptyList())));
+        Node node = new ByteArrayNodeNonLeafVoidValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR1", 1, SimpleNodeList.EMPTY)));
         Assert.assertNull(node.getOutgoingEdge('C'));
     }
 }

@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,14 +40,14 @@ public class DefaultCharSequenceNodeFactoryTest {
     public void testCreateNode_NullEdge() throws Exception {
         assertTrue(assertions);
         //noinspection NullableProblems
-        new DefaultCharSequenceNodeFactory().createNode(null, 1, Collections.<Node>emptyList(), false);
+        new DefaultCharSequenceNodeFactory().createNode(null, 1, SimpleNodeList.EMPTY, false);
     }
 
     @Test(expected = AssertionError.class)
     public void testCreateNode_EmptyEdgeNonRoot() throws Exception {
         assertTrue(assertions);
         //noinspection NullableProblems
-        new DefaultCharSequenceNodeFactory().createNode("", 1, Collections.<Node>emptyList(), false);
+        new DefaultCharSequenceNodeFactory().createNode("", 1, SimpleNodeList.EMPTY, false);
     }
 
     @Test(expected = AssertionError.class)

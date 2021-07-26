@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeDefault;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class CharArrayNodeDefaultTest {
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new CharArrayNodeDefault("FOO", null, Collections.<Node>emptyList());
-        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        Node node = new CharArrayNodeDefault("FOO", null, SimpleNodeList.EMPTY);
+        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 }

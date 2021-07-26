@@ -16,13 +16,12 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.util.AtomicNodeReferenceArray;
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Similar to {@link com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeNonLeafNullValue} but represents
@@ -44,22 +43,18 @@ public class ByteArrayNodeNonLeafNullValue implements Node {
     // References to child nodes representing outgoing edges from this node.
     // Once assigned we never add or remove references, but we do update existing references to point to new child
     // nodes provided new edges start with the same first character...
-    private final AtomicReferenceArray<Node> outgoingEdges;
+    private final AtomicNodeReferenceArray outgoingEdges;
 
-    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
-    private final List<Node> outgoingEdgesAsList;
-
-    public ByteArrayNodeNonLeafNullValue(CharSequence edgeCharSequence, List<Node> outgoingEdges) {
+    public ByteArrayNodeNonLeafNullValue(CharSequence edgeCharSequence, NodeList outgoingEdges) {
         this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence), outgoingEdges);
     }
 
-    public ByteArrayNodeNonLeafNullValue(byte[] incomingEdgeCharArray, List<Node> outgoingEdges) {
-        Node[] childNodeArray = outgoingEdges.toArray(new Node[0]);
+    public ByteArrayNodeNonLeafNullValue(byte[] incomingEdgeCharArray, NodeList outgoingEdges) {
+        Node[] childNodeArray = outgoingEdges.toArray();
         // Sort the child nodes...
         Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
-        this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
+        this.outgoingEdges = new AtomicNodeReferenceArray(childNodeArray);
         this.incomingEdgeCharArray = incomingEdgeCharArray;
-        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -115,8 +110,8 @@ public class ByteArrayNodeNonLeafNullValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return outgoingEdgesAsList;
+    public NodeList getOutgoingEdges() {
+        return outgoingEdges;
     }
 
     @Override

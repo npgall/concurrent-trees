@@ -15,14 +15,13 @@
  */
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
+import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.*;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-import com.googlecode.concurrenttrees.common.CharSequences;
-
-import java.util.List;
 
 /**
  * A {@link NodeFactory} which creates various implementations of {@link Node} objects all of which store incoming
@@ -47,7 +46,7 @@ public class DefaultCharArrayNodeFactory implements NodeFactory {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
+    public Node createNode(CharSequence edgeCharacters, Object value, NodeList childNodes, boolean isRoot) {
         assert edgeCharacters != null : "The edgeCharacters argument was null";
         assert isRoot || edgeCharacters.length() > 0 : "Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters);
         assert childNodes != null : "The edgeCharacters argument was null";

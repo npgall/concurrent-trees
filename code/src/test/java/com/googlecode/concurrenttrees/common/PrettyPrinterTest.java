@@ -17,6 +17,8 @@ package com.googlecode.concurrenttrees.common;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import org.junit.Assert;
@@ -110,14 +112,14 @@ public class PrettyPrinterTest {
         //                └── ○ DANA (4)
 
         final Node n1, n2, n3, n4, n5, n6;
-        n6 = nodeFactory.createNode("A", 6, Collections.<Node>emptyList(), false);
-        n5 = nodeFactory.createNode("AN", 5, Arrays.asList(n6), false);
-        n4 = nodeFactory.createNode("DANA", 4, Collections.<Node>emptyList(), false);
-        n3 = nodeFactory.createNode("N", 3, Arrays.asList(n4, n5), false); // note: it should sort these such that n5 is first
-        n2 = nodeFactory.createNode("A", 2, Arrays.asList(n3), false);
-        n1 = nodeFactory.createNode("B", 1, Arrays.asList(n2), false);
+        n6 = nodeFactory.createNode("A", 6, SimpleNodeList.EMPTY, false);
+        n5 = nodeFactory.createNode("AN", 5, new SimpleNodeList(n6), false);
+        n4 = nodeFactory.createNode("DANA", 4, SimpleNodeList.EMPTY, false);
+        n3 = nodeFactory.createNode("N", 3, new SimpleNodeList(n4, n5), false); // note: it should sort these such that n5 is first
+        n2 = nodeFactory.createNode("A", 2, new SimpleNodeList(n3), false);
+        n1 = nodeFactory.createNode("B", 1, new SimpleNodeList(n2), false);
         //noinspection NullableProblems
-        return nodeFactory.createNode("", null, Arrays.asList(n1), true); // root
+        return nodeFactory.createNode("", null, new SimpleNodeList(n1), true); // root
     }
 
     PrettyPrintable wrapNodeForPrinting(final Node node) {

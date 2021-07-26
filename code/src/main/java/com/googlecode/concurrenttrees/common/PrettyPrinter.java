@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.common;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class PrettyPrinter {
                 label.append(" (").append(node.getValue()).append(")");
             }
             sb.append(prefix).append(isTail ? isRoot ? "" : "└── ○ " : "├── ○ ").append(label).append("\n");
-            List<Node> children = node.getOutgoingEdges();
+            NodeList children = node.getOutgoingEdges();
             for (int i = 0; i < children.size() - 1; i++) {
                 prettyPrint(children.get(i), sb, prefix + (isTail ? isRoot ? "" : "    " : "│   "), false, false);
             }

@@ -17,9 +17,8 @@ package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.bytearray.ByteArrayCharSequence;
-
-import java.util.List;
 
 /**
  * A {@link NodeFactory} which internally uses {@link DefaultByteArrayNodeFactory} to create nodes by default (which
@@ -36,7 +35,7 @@ public class SmartArrayBasedNodeFactory implements NodeFactory {
     final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory(true);
 
     @Override
-    public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
+    public Node createNode(CharSequence edgeCharacters, Object value, NodeList childNodes, boolean isRoot) {
         try {
             return byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
         }

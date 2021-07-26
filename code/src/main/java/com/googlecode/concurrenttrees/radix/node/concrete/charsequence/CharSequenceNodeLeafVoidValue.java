@@ -16,15 +16,9 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.charsequence;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
-import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
-import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Stores only incoming edge as a {@link CharSequence} (a <i>view</i> onto the original key) rather than copying the
@@ -80,8 +74,8 @@ public class CharSequenceNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

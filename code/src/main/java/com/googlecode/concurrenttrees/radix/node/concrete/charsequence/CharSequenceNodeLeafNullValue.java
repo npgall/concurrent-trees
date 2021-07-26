@@ -16,9 +16,8 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.charsequence;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
-
-import java.util.Collections;
-import java.util.List;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 
 /**
  * Stores only incoming edge as a {@link CharSequence} (a <i>view</i> onto the original key) rather than copying the
@@ -74,8 +73,8 @@ public class CharSequenceNodeLeafNullValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

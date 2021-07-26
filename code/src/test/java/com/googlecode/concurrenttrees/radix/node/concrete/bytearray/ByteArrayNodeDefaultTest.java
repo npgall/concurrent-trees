@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -27,7 +28,7 @@ public class ByteArrayNodeDefaultTest {
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new ByteArrayNodeDefault("FOO", null, Collections.<Node>emptyList());
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        Node node = new ByteArrayNodeDefault("FOO", null, SimpleNodeList.EMPTY);
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 }

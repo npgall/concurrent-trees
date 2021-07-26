@@ -47,6 +47,6 @@ public interface NodeFactory extends Serializable {
      *
      * @return An object implementing the {@link Node} interface which stores the given variables
      */
-    Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot);
+    Node createNode(CharSequence edgeCharacters, Object value, NodeList childNodes, boolean isRoot);
 
 }
