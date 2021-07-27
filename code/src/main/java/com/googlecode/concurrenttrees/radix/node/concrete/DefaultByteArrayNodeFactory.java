@@ -54,7 +54,10 @@ public class DefaultByteArrayNodeFactory implements NodeFactory {
         assert isRoot || edgeCharacters.length() > 0 : "Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters);
         assert childNodes != null : "The edgeCharacters argument was null";
         assert NodeUtil.hasNoDuplicateEdges(childNodes) : "Duplicate edge detected in list of nodes supplied: " + childNodes;
-        byte[] incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharacters, true);
+        byte[] incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharacters, fast);
+        if (incomingEdgeCharArray == null) {
+            return null;
+        }
         if (childNodes.isEmpty()) {
             // Leaf node...
             if (value instanceof VoidValue) {

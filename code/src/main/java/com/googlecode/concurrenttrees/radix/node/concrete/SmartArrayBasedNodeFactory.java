@@ -36,11 +36,11 @@ public class SmartArrayBasedNodeFactory implements NodeFactory {
 
     @Override
     public Node createNode(CharSequence edgeCharacters, Object value, NodeList childNodes, boolean isRoot) {
-        try {
-            return byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
-        }
-        catch (ByteArrayCharSequence.IncompatibleCharacterException.FastThrow ignored) {
+        Node node = byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
+        if (node == null) {
             return charArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
+        } else {
+            return node;
         }
     }
 }
