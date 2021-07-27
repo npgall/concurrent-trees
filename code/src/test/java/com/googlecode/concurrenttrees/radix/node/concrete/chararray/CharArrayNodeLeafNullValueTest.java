@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,9 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Collections;
 
 /**
  * @author Niall Gallagher
@@ -29,7 +28,7 @@ public class CharArrayNodeLeafNullValueTest {
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge() throws Exception {
         Node node = new CharArrayNodeLeafNullValue("FOO");
-        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, Collections.<Node>emptyList()));
+        node.updateOutgoingEdge(new CharArrayNodeDefault("BAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test

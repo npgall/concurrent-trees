@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,9 @@ package com.googlecode.concurrenttrees.radix.node.concrete.chararray;
 
 import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Stores only incoming edge as a {@code char[]}.
@@ -29,6 +28,8 @@ import java.util.List;
  * @author Niall Gallagher
  */
 public class CharArrayNodeLeafVoidValue implements Node {
+
+    private static final long serialVersionUID = 1L;
 
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
@@ -44,8 +45,18 @@ public class CharArrayNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharArray[0];
+    }
+
+    @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharArray.length;
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return incomingEdgeCharArray[index];
     }
 
     @Override
@@ -54,7 +65,7 @@ public class CharArrayNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         return null;
     }
 
@@ -64,8 +75,8 @@ public class CharArrayNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

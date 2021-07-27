@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,12 +71,20 @@ public class ByteArrayCharSequence implements CharSequence {
      * @throws IllegalStateException If the characters cannot be encoded as described
      */
     public static byte[] toSingleByteUtf8Encoding(CharSequence charSequence) {
+        return toSingleByteUtf8Encoding(charSequence, false);
+    }
+
+    public static byte[] toSingleByteUtf8Encoding(CharSequence charSequence, boolean nullIfIncompatible) {
         final int length = charSequence.length();
         byte[] bytes = new byte[length];
         for (int i = 0; i < length; i++) {
             char inputChar = charSequence.charAt(i);
             if (inputChar > 255) {
-                throw new IncompatibleCharacterException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
+                if (nullIfIncompatible) {
+                    return null;
+                } else {
+                    throw new IncompatibleCharacterException("Input contains a character which cannot be represented as a single byte in UTF-8: " + inputChar);
+                }
             }
             bytes[i] = (byte)inputChar;
         }
@@ -84,6 +92,9 @@ public class ByteArrayCharSequence implements CharSequence {
     }
 
     public static class IncompatibleCharacterException extends IllegalStateException {
+
+        private static final long serialVersionUID = 1L;
+
         public IncompatibleCharacterException(String s) {
             super(s);
         }

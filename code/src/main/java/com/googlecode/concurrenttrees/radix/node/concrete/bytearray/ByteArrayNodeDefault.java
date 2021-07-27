@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,12 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.util.AtomicNodeReferenceArray;
 import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
 import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Similar to {@link com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeDefault} but represents
@@ -35,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public class ByteArrayNodeDefault implements Node {
 
+    private static final long serialVersionUID = 1L;
 
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
@@ -43,23 +43,23 @@ public class ByteArrayNodeDefault implements Node {
     // References to child nodes representing outgoing edges from this node.
     // Once assigned we never add or remove references, but we do update existing references to point to new child
     // nodes provided new edges start with the same first character...
-    private final AtomicReferenceArray<Node> outgoingEdges;
-
-    // A read-only List wrapper around the outgoingEdges AtomicReferenceArray...
-    private final List<Node> outgoingEdgesAsList;
+    private final AtomicNodeReferenceArray outgoingEdges;
 
     // An arbitrary value which the application associates with a key matching the path to this node in the tree.
     // This value can be null...
     private final Object value;
 
-    public ByteArrayNodeDefault(CharSequence edgeCharSequence, Object value, List<Node> outgoingEdges) {
-        Node[] childNodeArray = outgoingEdges.toArray(new Node[outgoingEdges.size()]);
+    public ByteArrayNodeDefault(CharSequence edgeCharSequence, Object value, NodeList outgoingEdges) {
+        this(ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence), value, outgoingEdges);
+    }
+
+    public ByteArrayNodeDefault(byte[] incomingEdgeCharArray, Object value, NodeList outgoingEdges) {
+        Node[] childNodeArray = outgoingEdges.toArray();
         // Sort the child nodes...
-        Arrays.sort(childNodeArray, new NodeCharacterComparator());
-        this.outgoingEdges = new AtomicReferenceArray<Node>(childNodeArray);
-        this.incomingEdgeCharArray = ByteArrayCharSequence.toSingleByteUtf8Encoding(edgeCharSequence);
+        Arrays.sort(childNodeArray, NodeCharacterComparator.SINGLETON);
+        this.outgoingEdges = new AtomicNodeReferenceArray(childNodeArray);
+        this.incomingEdgeCharArray = incomingEdgeCharArray;
         this.value = value;
-        this.outgoingEdgesAsList = new AtomicReferenceArrayListAdapter<Node>(this.outgoingEdges);
     }
 
     @Override
@@ -68,7 +68,17 @@ public class ByteArrayNodeDefault implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharArray.length;
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return (char) (incomingEdgeCharArray[index] & 0xFF);
+    }
+
+    @Override
+    public char getIncomingEdgeFirstCharacter() {
         return (char) (incomingEdgeCharArray[0] & 0xFF);
     }
 
@@ -78,7 +88,7 @@ public class ByteArrayNodeDefault implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         // Binary search for the index of the node whose edge starts with the given character.
         // Note that this binary search is safe in the face of concurrent modification due to constraints
         // we enforce on use of the array, as documented in the binarySearchForEdge method...
@@ -105,8 +115,8 @@ public class ByteArrayNodeDefault implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return outgoingEdgesAsList;
+    public NodeList getOutgoingEdges() {
+        return outgoingEdges;
     }
 
     @Override

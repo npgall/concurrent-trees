@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,13 @@ import java.util.Comparator;
  */
 public class NodeCharacterComparator implements Comparator<NodeCharacterProvider> {
 
+    NodeCharacterComparator() {
+    }
+
     @Override
     public int compare(NodeCharacterProvider o1, NodeCharacterProvider o2) {
-        return o1.getIncomingEdgeFirstCharacter().compareTo(o2.getIncomingEdgeFirstCharacter());
+        return o1.getIncomingEdgeFirstCharacter() - o2.getIncomingEdgeFirstCharacter();
     }
+
+    public static final Comparator<NodeCharacterProvider> SINGLETON = new NodeCharacterComparator();
 }

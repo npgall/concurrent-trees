@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.radix.node.util;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -60,7 +61,7 @@ public class NodeUtil {
      * @return The index of the node representing the indicated edge, or a value < 0 if no such node exists in the
      * array
      */
-    public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, Character edgeFirstCharacter) {
+    public static int binarySearchForEdge(AtomicReferenceArray<Node> childNodes, char edgeFirstCharacter) {
         // inspired by Collections#indexedBinarySearch()
         int low = 0;
         int high = childNodes.length() - 1;
@@ -68,7 +69,7 @@ public class NodeUtil {
         while (low <= high) {
             int mid = (low + high) >>> 1;
             Node midVal = childNodes.get(mid);
-            int cmp = midVal.getIncomingEdgeFirstCharacter().compareTo(edgeFirstCharacter);
+            int cmp = midVal.getIncomingEdgeFirstCharacter() - edgeFirstCharacter;
 
             if (cmp < 0)
                 low = mid + 1;
@@ -81,19 +82,17 @@ public class NodeUtil {
     }
 
     /**
-     * Throws an exception if any nodes in the given list represent edges having the same first character.
+     * Checks if any nodes in the given list represent edges having the same first character.
      *
      * @param nodes The list of nodes to validate
-     * @throws IllegalStateException If a duplicate edge is detected
+     * @return {@code true} if the supplied edges are free of duplicates.
      */
-    public static void ensureNoDuplicateEdges(List<Node> nodes) {
+    public static boolean hasNoDuplicateEdges(NodeList nodes) {
         // Sanity check that no two nodes specify an edge with the same first character...
         Set<Character> uniqueChars = new HashSet<Character>(nodes.size());
-        for (Node node : nodes) {
-            uniqueChars.add(node.getIncomingEdgeFirstCharacter());
+        for (int index = 0; index < nodes.size(); index++) {
+            uniqueChars.add(nodes.get(index).getIncomingEdgeFirstCharacter());
         }
-        if (nodes.size() != uniqueChars.size()) {
-            throw new IllegalStateException("Duplicate edge detected in list of nodes supplied: " + nodes);
-        }
+        return nodes.size() == uniqueChars.size();
     }
 }

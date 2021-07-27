@@ -20,6 +20,8 @@ import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.LazyIterator;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.io.Serializable;
@@ -40,6 +42,8 @@ import static com.googlecode.concurrenttrees.radix.ConcurrentRadixTree.SearchRes
  * @author Niall Gallagher
  */
 public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private final NodeFactory nodeFactory;
 
@@ -57,7 +61,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
     public ConcurrentRadixTree(NodeFactory nodeFactory) {
         this.nodeFactory = nodeFactory;
         @SuppressWarnings({"NullableProblems", "UnnecessaryLocalVariable"})
-        Node rootNode = nodeFactory.createNode("", null, Collections.<Node>emptyList(), true);
+        Node rootNode = nodeFactory.createNode("", null, new SimpleNodeList(), true);
         this.root = rootNode;
     }
 
@@ -99,10 +103,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public O getValueForExactKey(CharSequence key) {
-        SearchResult searchResult = searchTree(key);
-        if (searchResult.classification.equals(SearchResult.Classification.EXACT_MATCH)) {
+        Node searchResult = (Node) searchTree(key, true);
+        if (searchResult != null) {
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
-            O value = (O) searchResult.nodeFound.getValue();
+            O value = (O) searchResult.getValue();
             return value;
         }
         return null;
@@ -207,7 +211,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                     }
 
                     // Proceed with deleting the node...
-                    List<Node> childEdges = searchResult.nodeFound.getOutgoingEdges();
+                    NodeList childEdges = searchResult.nodeFound.getOutgoingEdges();
                     if (childEdges.size() > 1) {
                         // This node has more than one child, so if we delete the value from this node, we still need
                         // to leave a similar node in place to act as the split between the child edges.
@@ -237,11 +241,11 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                         // (a special case which we never merge), then we also need to merge the parent with its
                         // remaining child.
 
-                        List<Node> currentEdgesFromParent = searchResult.parentNode.getOutgoingEdges();
+                        NodeList currentEdgesFromParent = searchResult.parentNode.getOutgoingEdges();
                         // Create a list of the outgoing edges of the parent which will remain
                         // if we remove this child...
                         // Use a non-resizable list, as a sanity check to force ArrayIndexOutOfBounds...
-                        List<Node> newEdgesOfParent = Arrays.asList(new Node[searchResult.parentNode.getOutgoingEdges().size() - 1]);
+                        NodeList newEdgesOfParent = new SimpleNodeList(new Node[searchResult.parentNode.getOutgoingEdges().size() - 1]);
                         for (int i = 0, added = 0, numParentEdges = currentEdgesFromParent.size(); i < numParentEdges; i++) {
                             Node node = currentEdgesFromParent.get(i);
                             if (node != searchResult.nodeFound) {
@@ -413,15 +417,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      */
     @Override
     public int size() {
-        Deque<Node> stack = new LinkedList<Node>();
-        stack.push(this.root);
+        LinkedList<Node> stack = new LinkedList<Node>();
+        stack.addFirst(this.root);
         int count = 0;
         while (true) {
             if (stack.isEmpty()) {
                 return count;
             }
-            Node current = stack.pop();
-            stack.addAll(current.getOutgoingEdges());
+            Node current = stack.removeFirst();
+            current.getOutgoingEdges().addTo(stack);
             if (current.getValue() != null) {
                 count++;
             }
@@ -484,7 +488,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
 
                     // Create new nodes...
                     Node newChild = nodeFactory.createNode(suffixFromExistingEdge, searchResult.nodeFound.getValue(), searchResult.nodeFound.getOutgoingEdges(), false);
-                    Node newParent = nodeFactory.createNode(commonPrefix, value, Arrays.asList(newChild), false);
+                    Node newParent = nodeFactory.createNode(commonPrefix, value, new SimpleNodeList(newChild), false);
 
                     // Add the new parent to the parent of the node being replaced (replacing the existing node)...
                     searchResult.parentNode.updateOutgoingEdge(newParent);
@@ -502,13 +506,13 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
 
                     // Create a new child node containing the trailing characters...
                     CharSequence keySuffix = key.subSequence(searchResult.charsMatched, key.length());
-                    Node newChild = nodeFactory.createNode(keySuffix, value, Collections.<Node>emptyList(), false);
+                    Node newChild = nodeFactory.createNode(keySuffix, value, new SimpleNodeList(), false);
 
                     // Clone the current node adding the new child...
                     List<Node> edges = new ArrayList<Node>(searchResult.nodeFound.getOutgoingEdges().size() + 1);
-                    edges.addAll(searchResult.nodeFound.getOutgoingEdges());
+                    searchResult.nodeFound.getOutgoingEdges().addTo(edges);
                     edges.add(newChild);
-                    Node clonedNode = nodeFactory.createNode(searchResult.nodeFound.getIncomingEdge(), searchResult.nodeFound.getValue(), edges, searchResult.nodeFound == root);
+                    Node clonedNode = nodeFactory.createNode(searchResult.nodeFound.getIncomingEdge(), searchResult.nodeFound.getValue(), new SimpleNodeList(edges), searchResult.nodeFound == root);
 
                     // Re-add the cloned node to its parent node...
                     if (searchResult.nodeFound == root) {
@@ -540,10 +544,10 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                     CharSequence suffixFromKey = key.subSequence(searchResult.charsMatched, key.length());
 
                     // Create new nodes...
-                    Node n1 = nodeFactory.createNode(suffixFromKey, value, Collections.<Node>emptyList(), false);
+                    Node n1 = nodeFactory.createNode(suffixFromKey, value, new SimpleNodeList(), false);
                     Node n2 = nodeFactory.createNode(suffixFromExistingEdge, searchResult.nodeFound.getValue(), searchResult.nodeFound.getOutgoingEdges(), false);
                     @SuppressWarnings({"NullableProblems"})
-                    Node n3 = nodeFactory.createNode(commonPrefix, null, Arrays.asList(n1, n2), false);
+                    Node n3 = nodeFactory.createNode(commonPrefix, null, new SimpleNodeList(n1, n2), false);
 
                     searchResult.parentNode.updateOutgoingEdge(n3);
 
@@ -738,7 +742,7 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            KeyValuePairImpl that = (KeyValuePairImpl) o;
+            KeyValuePairImpl<?> that = (KeyValuePairImpl<?>) o;
 
             return key.equals(that.key);
 
@@ -782,9 +786,9 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             public Iterator<NodeKeyPair> iterator() {
                 return new LazyIterator<NodeKeyPair>() {
 
-                    Deque<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
+                    final LinkedList<NodeKeyPair> stack = new LinkedList<NodeKeyPair>();
                     {
-                        stack.push(new NodeKeyPair(startNode, startKey));
+                        stack.addFirst(new NodeKeyPair(startNode, startKey));
                     }
 
                     @Override
@@ -792,15 +796,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                         if (stack.isEmpty()) {
                             return endOfData();
                         }
-                        NodeKeyPair current = stack.pop();
-                        List<Node> childNodes = current.node.getOutgoingEdges();
+                        NodeKeyPair current = stack.removeFirst();
+                        NodeList childNodes = current.node.getOutgoingEdges();
 
                         // -> Iterate child nodes in reverse order and so push them onto the stack in reverse order,
                         // to counteract that pushing them onto the stack alone would otherwise reverse their processing order.
                         // This ensures that we actually process nodes in ascending alphabetical order.
                         for (int i = childNodes.size(); i > 0; i--) {
                             Node child = childNodes.get(i - 1);
-                            stack.push(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
+                            stack.addFirst(new NodeKeyPair(child, CharSequences.concatenate(current.key, child.getIncomingEdge())));
                         }
                         return current;
                     }
@@ -899,7 +903,21 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
      * parent node, the number of characters of the key which were matched in total and within the edge of the
      * matched node, and a {@link SearchResult#classification} of the match as described above
      */
+
     SearchResult searchTree(CharSequence key) {
+        return (SearchResult) searchTree(key, false);
+    }
+
+    /**
+     * Implements {@link #searchTree(CharSequence)} but gives an option to return the exactly matched node directly
+     * without allocating a {@link SearchResult}.
+     *
+     * @param key a key for which the node matching the longest prefix of the key is required
+     * @param exactOnly If {@code true}, an exactly matched node is returned if such a node was found or {@code null}
+     *                  otherwise. If {@code false}, a {@link SearchResult} is returned.
+     * @return The resolved {@link SearchResult} or a {@link Node} if {@code exactOnly} was set to {@code true}.
+     */
+    private Object searchTree(CharSequence key, boolean exactOnly) {
         Node parentNodesParent = null;
         Node parentNode = null;
         Node currentNode = root;
@@ -918,9 +936,8 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
             parentNode = currentNode;
             currentNode = nextNode;
             charsMatchedInNodeFound = 0;
-            CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-            for (int i = 0, numEdgeChars = currentNodeEdgeCharacters.length(); i < numEdgeChars && charsMatched < keyLength; i++) {
-                if (currentNodeEdgeCharacters.charAt(i) != key.charAt(charsMatched)) {
+            for (int i = 0, numEdgeChars = currentNode.getIncomingEdgeLength(); i < numEdgeChars && charsMatched < keyLength; i++) {
+                if (currentNode.getIncomingEdgeCharacterAt(i) != key.charAt(charsMatched)) {
                     // Found a difference in chars between character in key and a character in current node.
                     // Current node is the deepest match (inexact match)....
                     break outer_loop;
@@ -929,7 +946,15 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
                 charsMatchedInNodeFound++;
             }
         }
-        return new SearchResult(key, currentNode, charsMatched, charsMatchedInNodeFound, parentNode, parentNodesParent);
+        if (exactOnly) {
+            if (SearchResult.doClassify(key, currentNode, charsMatched, charsMatchedInNodeFound).equals(Classification.EXACT_MATCH)) {
+                return currentNode;
+            } else {
+                return null;
+            }
+        } else {
+            return new SearchResult(key, currentNode, charsMatched, charsMatchedInNodeFound, parentNode, parentNodesParent);
+        }
     }
 
     /**
@@ -970,23 +995,32 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
         }
 
         protected Classification classify(CharSequence key, Node nodeFound, int charsMatched, int charsMatchedInNodeFound) {
+            return doClassify(key, nodeFound, charsMatched, charsMatchedInNodeFound);
+        }
+
+        protected static Classification doClassify(CharSequence key, Node nodeFound, int charsMatched, int charsMatchedInNodeFound) {
             if (charsMatched == key.length()) {
-                if (charsMatchedInNodeFound == nodeFound.getIncomingEdge().length()) {
+                if (charsMatchedInNodeFound == nodeFound.getIncomingEdgeLength()) {
                     return Classification.EXACT_MATCH;
                 }
-                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdge().length()) {
+                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdgeLength()) {
                     return Classification.KEY_ENDS_MID_EDGE;
                 }
             }
             else if (charsMatched < key.length()) {
-                if (charsMatchedInNodeFound == nodeFound.getIncomingEdge().length()) {
+                if (charsMatchedInNodeFound == nodeFound.getIncomingEdgeLength()) {
                     return Classification.INCOMPLETE_MATCH_TO_END_OF_EDGE;
                 }
-                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdge().length()) {
+                else if (charsMatchedInNodeFound < nodeFound.getIncomingEdgeLength()) {
                     return Classification.INCOMPLETE_MATCH_TO_MIDDLE_OF_EDGE;
                 }
             }
-            throw new IllegalStateException("Unexpected failure to classify SearchResult: " + this);
+            throw new IllegalStateException("Unexpected failure to classify SearchResult: {" +
+                    "key=" + key +
+                    ", nodeFound=" + nodeFound +
+                    ", charsMatched=" + charsMatched +
+                    ", charsMatchedInNodeFound=" + charsMatchedInNodeFound +
+                    '}');
         }
 
         @Override

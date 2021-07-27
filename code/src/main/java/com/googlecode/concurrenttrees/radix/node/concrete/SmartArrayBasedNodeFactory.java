@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,8 @@ package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.bytearray.ByteArrayCharSequence;
-
-import java.util.List;
 
 /**
  * A {@link NodeFactory} which internally uses {@link DefaultByteArrayNodeFactory} to create nodes by default (which
@@ -30,16 +29,18 @@ import java.util.List;
  */
 public class SmartArrayBasedNodeFactory implements NodeFactory {
 
+    private static final long serialVersionUID = 1L;
+
     final NodeFactory charArrayNodeFactory = new DefaultCharArrayNodeFactory();
-    final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory();
+    final NodeFactory byteArrayNodeFactory = new DefaultByteArrayNodeFactory(true);
 
     @Override
-    public Node createNode(CharSequence edgeCharacters, Object value, List<Node> childNodes, boolean isRoot) {
-        try {
-            return byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
-        }
-        catch (ByteArrayCharSequence.IncompatibleCharacterException e) {
+    public Node createNode(CharSequence edgeCharacters, Object value, NodeList childNodes, boolean isRoot) {
+        Node node = byteArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
+        if (node == null) {
             return charArrayNodeFactory.createNode(edgeCharacters, value, childNodes, isRoot);
+        } else {
+            return node;
         }
     }
 }

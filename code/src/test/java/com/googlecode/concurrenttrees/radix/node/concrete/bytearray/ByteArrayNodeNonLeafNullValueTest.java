@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,9 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.bytearray;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * @author Niall Gallagher
@@ -29,19 +27,19 @@ public class ByteArrayNodeNonLeafNullValueTest {
 
     @Test
     public void testUpdateOutgoingEdge() throws Exception {
-        Node node = new ByteArrayNodeNonLeafNullValue("FOO", Arrays.asList((Node)new ByteArrayNodeDefault("BAR1", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR2", null, Collections.<Node>emptyList()));
+        Node node = new ByteArrayNodeNonLeafNullValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR1", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("BAR2", null, SimpleNodeList.EMPTY));
     }
 
     @Test(expected = IllegalStateException.class)
     public void testUpdateOutgoingEdge_NonExistentEdge() throws Exception {
-        Node node = new ByteArrayNodeNonLeafNullValue("FOO", Arrays.asList((Node)new ByteArrayNodeDefault("BAR", 1, Collections.<Node>emptyList())));
-        node.updateOutgoingEdge(new ByteArrayNodeDefault("CAR", null, Collections.<Node>emptyList()));
+        Node node = new ByteArrayNodeNonLeafNullValue("FOO", new SimpleNodeList(new ByteArrayNodeDefault("BAR", 1, SimpleNodeList.EMPTY)));
+        node.updateOutgoingEdge(new ByteArrayNodeDefault("CAR", null, SimpleNodeList.EMPTY));
     }
 
     @Test
     public void testToString() throws Exception {
-        Node node = new ByteArrayNodeNonLeafNullValue("FOO", Collections.<Node>emptyList());
+        Node node = new ByteArrayNodeNonLeafNullValue("FOO", SimpleNodeList.EMPTY);
         Assert.assertEquals("Node{edge=FOO, value=null, edges=[]}", node.toString());
     }
 }

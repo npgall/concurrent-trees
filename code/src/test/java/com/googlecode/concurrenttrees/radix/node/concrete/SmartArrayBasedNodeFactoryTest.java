@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,12 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.bytearray.ByteArrayNodeLeafVoidValue;
 import com.googlecode.concurrenttrees.radix.node.concrete.chararray.CharArrayNodeLeafVoidValue;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Collections;
 
 /**
  * @author Niall Gallagher
@@ -33,13 +32,13 @@ public class SmartArrayBasedNodeFactoryTest {
 
     @Test
     public void testCreateNode_CompatibleCharacters() throws Exception {
-        Node node = smartNodeFactory.createNode("FOOBAR", VoidValue.SINGLETON, Collections.<Node>emptyList(), false);
+        Node node = smartNodeFactory.createNode("FOOBAR", VoidValue.SINGLETON, SimpleNodeList.EMPTY, false);
         Assert.assertEquals(ByteArrayNodeLeafVoidValue.class, node.getClass());
     }
 
     @Test
     public void testCreateNode_IncompatibleCharacters() throws Exception {
-        Node node = smartNodeFactory.createNode("FOOBAR○", VoidValue.SINGLETON, Collections.<Node>emptyList(), false);
+        Node node = smartNodeFactory.createNode("FOOBAR○", VoidValue.SINGLETON, SimpleNodeList.EMPTY, false);
         Assert.assertEquals(CharArrayNodeLeafVoidValue.class, node.getClass());
     }
 }

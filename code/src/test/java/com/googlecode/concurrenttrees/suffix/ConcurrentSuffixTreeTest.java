@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +17,13 @@ package com.googlecode.concurrenttrees.suffix;
 
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
+import com.googlecode.concurrenttrees.common.SetFromMap;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.testutil.TestUtility;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -435,10 +437,14 @@ public class ConcurrentSuffixTreeTest {
     }
 
     @Test
-    public void testCreateSetForOriginalKeys() {
-        // Test the default (production) implementation of this method, should return a set based on ConcurrentHashMap...
+    public void testCreateSetForOriginalKeys() throws Exception {
+        // Test the default (production) implementation of this method, should return a SetFromMap wrapper for a ConcurrentHashMap...
         ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<Integer>(getNodeFactory());
-        assertTrue(tree.createSetForOriginalKeys().getClass().equals(Collections.newSetFromMap(new ConcurrentHashMap<Object, Boolean>()).getClass()));
+        Set<String> setForOriginalKeys = tree.createSetForOriginalKeys();
+        assertEquals(setForOriginalKeys.getClass(), SetFromMap.class);
+        Field delegate = setForOriginalKeys.getClass().getDeclaredField("delegate");
+        delegate.setAccessible(true);
+        assertEquals(delegate.get(setForOriginalKeys).getClass(), ConcurrentHashMap.class);
     }
 
     /**
@@ -449,6 +455,9 @@ public class ConcurrentSuffixTreeTest {
     @SuppressWarnings({"JavaDoc"})
     <O> ConcurrentSuffixTree<O> newConcurrentSuffixTreeForUnitTests() {
         return new ConcurrentSuffixTree<O>(getNodeFactory()) {
+
+            private static final long serialVersionUID = 1L;
+
             // Override this method to return a set which has consistent iteration order, for unit testing...
             @Override
             protected Set<String> createSetForOriginalKeys() {
@@ -474,6 +483,9 @@ public class ConcurrentSuffixTreeTest {
      * Note that ordering of original keys is an internal implementation detail and is externally not defined.
      */
     static class ConcurrentSuffixTreeTestImpl<T> extends ConcurrentSuffixTree<T> {
+
+        private static final long serialVersionUID = 1L;
+
         public ConcurrentSuffixTreeTestImpl(NodeFactory nodeFactory) { super(nodeFactory); }
         @Override
         protected Set<String> createSetForOriginalKeys() {

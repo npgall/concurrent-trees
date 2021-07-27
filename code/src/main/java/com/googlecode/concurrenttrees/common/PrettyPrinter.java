@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.common;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class PrettyPrinter {
             StringBuilder label = new StringBuilder();
             if (isRoot) {
                 label.append("○");
-                if (node.getIncomingEdge().length() > 0) {
+                if (node.getIncomingEdgeLength() > 0) {
                     label.append(" ");
                 }
             }
@@ -92,7 +93,7 @@ public class PrettyPrinter {
                 label.append(" (").append(node.getValue()).append(")");
             }
             sb.append(prefix).append(isTail ? isRoot ? "" : "└── ○ " : "├── ○ ").append(label).append("\n");
-            List<Node> children = node.getOutgoingEdges();
+            NodeList children = node.getOutgoingEdges();
             for (int i = 0; i < children.size() - 1; i++) {
                 prettyPrint(children.get(i), sb, prefix + (isTail ? isRoot ? "" : "    " : "│   "), false, false);
             }

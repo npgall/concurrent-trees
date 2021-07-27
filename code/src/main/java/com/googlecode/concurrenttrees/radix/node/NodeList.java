@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.googlecode.concurrenttrees.radix.node.concrete.bytearray.functional;
+package com.googlecode.concurrenttrees.radix.node;
 
-import com.googlecode.concurrenttrees.radix.ConcurrentRadixTreeTest;
-import com.googlecode.concurrenttrees.radix.node.NodeFactory;
-import com.googlecode.concurrenttrees.radix.node.concrete.DefaultByteArrayNodeFactory;
+import java.util.Collection;
 
 /**
- * @author Niall Gallagher
+ * A list of {@link Node}s represented by a tree. This interface is used rather then a Java list, 
+ * to allow representing concurrent arrays as such lists and to avoid allocating wrapper instances.
  */
-public class ByteArrayNodeFactory_RadixTreeTest extends ConcurrentRadixTreeTest {
+public interface NodeList {
+    
+    int size();
 
-    private final NodeFactory nodeFactory = new DefaultByteArrayNodeFactory();
-    @Override
-    protected NodeFactory getNodeFactory() {
-        return nodeFactory;
-    }
+    Node get(int index);
+
+    boolean isEmpty();
+
+    void set(int index, Node node);
+
+    boolean contains(Node node);
+
+    void addTo(Collection<? super Node> nodes);
+
+    Node[] toArray();
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 package com.googlecode.concurrenttrees.solver;
 
 import com.googlecode.concurrenttrees.common.CharSequences;
+import com.googlecode.concurrenttrees.common.SetFromMap;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
@@ -35,6 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LCSubstringSolver {
 
     class ConcurrentSuffixTreeImpl<V> extends ConcurrentRadixTree<V> {
+
+        private static final long serialVersionUID = 1L;
 
         public ConcurrentSuffixTreeImpl(NodeFactory nodeFactory) {
             super(nodeFactory);
@@ -211,6 +214,6 @@ public class LCSubstringSolver {
     }
 
     protected Set<String> createSetForOriginalKeys() {
-        return Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+        return new SetFromMap<String>(new ConcurrentHashMap<String, Boolean>());
     }
 }

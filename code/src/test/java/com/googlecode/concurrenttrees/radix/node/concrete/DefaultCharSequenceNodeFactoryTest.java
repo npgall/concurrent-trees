@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,29 +16,43 @@
 package com.googlecode.concurrenttrees.radix.node.concrete;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+
+import static junit.framework.Assert.assertTrue;
 
 /**
  * @author Niall Gallagher
  */
 public class DefaultCharSequenceNodeFactoryTest {
 
-    @Test(expected = IllegalStateException.class)
+    private boolean assertions;
+
+    @Before
+    public void setUp() {
+        assert assertions = true;
+    }
+
+    @Test(expected = AssertionError.class)
     public void testCreateNode_NullEdge() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
-        new DefaultCharSequenceNodeFactory().createNode(null, 1, Collections.<Node>emptyList(), false);
+        new DefaultCharSequenceNodeFactory().createNode(null, 1, SimpleNodeList.EMPTY, false);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = AssertionError.class)
     public void testCreateNode_EmptyEdgeNonRoot() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
-        new DefaultCharSequenceNodeFactory().createNode("", 1, Collections.<Node>emptyList(), false);
+        new DefaultCharSequenceNodeFactory().createNode("", 1, SimpleNodeList.EMPTY, false);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = AssertionError.class)
     public void testCreateNode_NullEdges() throws Exception {
+        assertTrue(assertions);
         //noinspection NullableProblems
         new DefaultCharSequenceNodeFactory().createNode("FOO", 1, null, false);
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,21 +16,21 @@
 package com.googlecode.concurrenttrees.radix.node.util;
 
 /**
- * A lightweight object which simply wraps a {@link Character} and implements {@link NodeCharacterProvider}, which
+ * A lightweight object which simply wraps a {@code char} and implements {@link NodeCharacterProvider}, which
  * can be used as a key to locate a node having the same edge first character in a list of nodes using binary search.
  *
  * @author Niall Gallagher
  */
 public class NodeCharacterKey implements NodeCharacterProvider {
 
-    private final Character character;
+    private final char character;
 
-    public NodeCharacterKey(Character character) {
+    public NodeCharacterKey(char character) {
         this.character = character;
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return character;
     }
 }

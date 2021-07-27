@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@ package com.googlecode.concurrenttrees.radix.node.util;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
 import com.googlecode.concurrenttrees.radix.node.NodeFactory;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,6 +26,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+
+import static junit.framework.Assert.assertFalse;
 
 /**
  * @author Niall Gallagher
@@ -36,9 +39,9 @@ public class NodeUtilTest {
     public void testBinarySearchForEdge() throws Exception {
         NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
         Node[] nodes = new Node[] {
-                nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("C", null, Collections.<Node>emptyList(), false)
+                nodeFactory.createNode("A", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("B", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("C", null, SimpleNodeList.EMPTY, false)
         };
         AtomicReferenceArray<Node> atomicReferenceArray = new AtomicReferenceArray<Node>(nodes);
         Assert.assertEquals(0, NodeUtil.binarySearchForEdge(atomicReferenceArray, 'A'));
@@ -52,9 +55,9 @@ public class NodeUtilTest {
     public void testEnsureNoDuplicateEdges_Positive() throws Exception {
         NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
         List<Node> nodes = Arrays.asList(
-                nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("C", null, Collections.<Node>emptyList(), false)
+                nodeFactory.createNode("A", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("B", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("C", null, SimpleNodeList.EMPTY, false)
         );
     }
 
@@ -62,19 +65,13 @@ public class NodeUtilTest {
     @SuppressWarnings({"NullableProblems"})
     public void testEnsureNoDuplicateEdges_Negative() throws Exception {
         NodeFactory nodeFactory = new DefaultCharArrayNodeFactory();
-        List<Node> nodes = Arrays.asList(
-                nodeFactory.createNode("A", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("B", null, Collections.<Node>emptyList(), false),
-                nodeFactory.createNode("C", null, Collections.<Node>emptyList(), false)
+        SimpleNodeList nodes = new SimpleNodeList(
+                nodeFactory.createNode("A", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("B", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("B", null, SimpleNodeList.EMPTY, false),
+                nodeFactory.createNode("C", null, SimpleNodeList.EMPTY, false)
         );
-        try {
-            NodeUtil.ensureNoDuplicateEdges(nodes);
-            Assert.fail("Should throw exception");
-        }
-        catch (IllegalStateException expected) {
-            // Expected
-        }
+        assertFalse(NodeUtil.hasNoDuplicateEdges(nodes));
     }
 
     @Test

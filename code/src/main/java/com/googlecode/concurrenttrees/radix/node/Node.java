@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,7 +96,26 @@ public interface Node extends NodeCharacterProvider, Serializable {
      *
      * @return The first character of the "edge" encoded in this node
      */
-    Character getIncomingEdgeFirstCharacter();
+    char getIncomingEdgeFirstCharacter();
+
+    /**
+     * Returns the length of the "edge" encoded in this node, belonging to the connection from a parent node to this
+     * node.
+     * <p/>
+     *
+     * @return The length of the "edge" encoded in this node
+     */
+    int getIncomingEdgeLength();
+
+    /**
+     * Returns the character at a given index of the "edge" encoded in this node, belonging to the connection from a
+     * parent node to this node.
+     * <p/>
+     *
+     * @param index The index of the character to resolve of the "edge" encoded in this node
+     * @return The character at the index of the "edge" encoded in this node
+     */
+    char getIncomingEdgeCharacterAt(int index);
 
     /**
      * Returns all characters of the "edge" encoded in this node, belonging to the connection from a parent node to this
@@ -115,7 +134,6 @@ public interface Node extends NodeCharacterProvider, Serializable {
      */
     Object getValue();
 
-
     /**
      * Returns the child of this node whose edge starts with the given first character.
      * <p/>
@@ -126,7 +144,7 @@ public interface Node extends NodeCharacterProvider, Serializable {
      * @return The child of this node whose edge starts with the given first character, or <code>null</code> if this
      * node has no such outgoing edge
      */
-    Node getOutgoingEdge(Character edgeFirstCharacter);
+    Node getOutgoingEdge(char edgeFirstCharacter);
 
     /**
      * Updates the child node reference for a given edge (identified by its first character) to point to a different
@@ -136,7 +154,7 @@ public interface Node extends NodeCharacterProvider, Serializable {
      * edge from this node.
      * <p/>
      * This <i>write</i> must be performed <b><u>atomically</u></b>, in relation to reads made via
-     * {@link #getOutgoingEdge(Character)}.
+     * {@link #getOutgoingEdge(char)}.
      *
      * @param childNode The new child node to associated with this edge
      */
@@ -150,5 +168,5 @@ public interface Node extends NodeCharacterProvider, Serializable {
      *
      * @return A read-only list of the child nodes to which this node has outgoing edges
      */
-    List<Node> getOutgoingEdges();
+    NodeList getOutgoingEdges();
 }

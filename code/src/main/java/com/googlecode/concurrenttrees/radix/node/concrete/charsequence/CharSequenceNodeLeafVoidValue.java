@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,9 @@
 package com.googlecode.concurrenttrees.radix.node.concrete.charsequence;
 
 import com.googlecode.concurrenttrees.radix.node.Node;
+import com.googlecode.concurrenttrees.radix.node.NodeList;
+import com.googlecode.concurrenttrees.radix.node.SimpleNodeList;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-import com.googlecode.concurrenttrees.radix.node.util.AtomicReferenceArrayListAdapter;
-import com.googlecode.concurrenttrees.radix.node.util.NodeCharacterComparator;
-import com.googlecode.concurrenttrees.radix.node.util.NodeUtil;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Stores only incoming edge as a {@link CharSequence} (a <i>view</i> onto the original key) rather than copying the
@@ -34,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public class CharSequenceNodeLeafVoidValue implements Node {
 
+    private static final long serialVersionUID = 1L;
 
     // Characters in the edge arriving at this node from a parent node.
     // Once assigned, we never modify this...
@@ -49,8 +44,18 @@ public class CharSequenceNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public Character getIncomingEdgeFirstCharacter() {
+    public char getIncomingEdgeFirstCharacter() {
         return incomingEdgeCharSequence.charAt(0);
+    }
+
+    @Override
+    public int getIncomingEdgeLength() {
+        return incomingEdgeCharSequence.length();
+    }
+
+    @Override
+    public char getIncomingEdgeCharacterAt(int index) {
+        return incomingEdgeCharSequence.charAt(index);
     }
 
     @Override
@@ -59,7 +64,7 @@ public class CharSequenceNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public Node getOutgoingEdge(Character edgeFirstCharacter) {
+    public Node getOutgoingEdge(char edgeFirstCharacter) {
         return null;
     }
 
@@ -69,8 +74,8 @@ public class CharSequenceNodeLeafVoidValue implements Node {
     }
 
     @Override
-    public List<Node> getOutgoingEdges() {
-        return Collections.emptyList();
+    public NodeList getOutgoingEdges() {
+        return SimpleNodeList.EMPTY;
     }
 
     @Override

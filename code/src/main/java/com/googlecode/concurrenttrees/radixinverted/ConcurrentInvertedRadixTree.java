@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2012-2013 Niall Gallagher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,11 @@ import java.util.Iterator;
  */
 public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, PrettyPrintable, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     static class ConcurrentInvertedRadixTreeImpl<O> extends ConcurrentRadixTree<O> {
+
+        private static final long serialVersionUID = 1L;
 
         public ConcurrentInvertedRadixTreeImpl(NodeFactory nodeFactory) {
             super(nodeFactory);
@@ -80,14 +84,13 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
                                 }
 
                                 currentNode = nextNode;
-                                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                                final int numCharsInEdge = currentNode.getIncomingEdgeLength();
                                 if (numCharsInEdge + charsMatched > documentLength) {
                                     // This node can't be a match because it is too long...
                                     return endOfData();
                                 }
                                 for (int i = 0; i < numCharsInEdge; i++) {
-                                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                                    if (currentNode.getIncomingEdgeCharacterAt(i) != input.charAt(charsMatched + i)) {
                                         // Found a difference between a character in the input
                                         // and a character in the edge represented by current node,
                                         // current node is a dead end...
@@ -138,14 +141,13 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
                 }
 
                 currentNode = nextNode;
-                CharSequence currentNodeEdgeCharacters = currentNode.getIncomingEdge();
-                final int numCharsInEdge = currentNodeEdgeCharacters.length();
+                final int numCharsInEdge = currentNode.getIncomingEdgeLength();
                 if (numCharsInEdge + charsMatched > documentLength) {
                     // This node can't be a match because it is too long...
                     break;
                 }
                 for (int i = 0; i < numCharsInEdge; i++) {
-                    if (currentNodeEdgeCharacters.charAt(i) != input.charAt(charsMatched + i)) {
+                    if (currentNode.getIncomingEdgeCharacterAt(i) != input.charAt(charsMatched + i)) {
                         // Found a difference between a character in the input
                         // and a character in the edge represented by current node,
                         // current node is a dead end...
@@ -266,7 +268,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<CharSequence> iterator() {
                 return new LazyIterator<CharSequence>() {
-                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+                    final Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
 
                     @Override
                     protected CharSequence computeNext() {
@@ -291,7 +293,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
-                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+                    final Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
 
                     @Override
                     protected O computeNext() {
@@ -316,7 +318,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<KeyValuePair<O>> iterator() {
                 return new LazyIterator<KeyValuePair<O>>() {
-                    Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
+                    final Iterator<KeyValuePair<O>> matchesForCurrentSuffix = radixTree.scanForKeysAtStartOfInput(document).iterator();
 
                     @Override
                     protected KeyValuePair<O> computeNext() {
@@ -368,7 +370,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<CharSequence> iterator() {
                 return new LazyIterator<CharSequence>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
+                    final Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override
@@ -398,7 +400,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<O> iterator() {
                 return new LazyIterator<O>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
+                    final Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override
@@ -428,7 +430,7 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
             @Override
             public Iterator<KeyValuePair<O>> iterator() {
                 return new LazyIterator<KeyValuePair<O>>() {
-                    Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
+                    final Iterator<CharSequence> documentSuffixes = CharSequences.generateSuffixes(document).iterator();
                     Iterator<KeyValuePair<O>> matchesForCurrentSuffix = Collections.<KeyValuePair<O>>emptyList().iterator();
 
                     @Override
