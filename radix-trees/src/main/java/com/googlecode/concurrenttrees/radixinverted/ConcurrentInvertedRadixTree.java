@@ -458,8 +458,18 @@ public class ConcurrentInvertedRadixTree<O> implements InvertedRadixTree<O>, Pre
     }
 
     @Override
-    public Iterable<CharSequence> getKeysGreaterThanEqualTo(CharSequence prefix) {
-        return radixTree.getKeysGreaterThanEqualTo(prefix);
+    public Iterable<CharSequence> getGreaterThanEqualToKeys(CharSequence candidate) {
+        return radixTree.getGreaterThanEqualToKeys(candidate);
+    }
+
+    @Override
+    public Iterable<O> getValuesForGreaterThanEqualToKeys(CharSequence candidate) {
+        return radixTree.getValuesForGreaterThanEqualToKeys(candidate);
+    }
+
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForGreaterThanEqualToKeys(CharSequence candidate) {
+        return radixTree.getKeyValuePairsForGreaterThanEqualToKeys(candidate);
     }
 
     @Override

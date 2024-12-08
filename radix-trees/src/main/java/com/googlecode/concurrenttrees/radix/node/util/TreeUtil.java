@@ -14,11 +14,11 @@ public final class TreeUtil {
 
     private static final Comparator<NodeCharacterProvider> NODE_COMPARATOR = new NodeCharacterComparator();
 
-    record NodeWithParent<T>(Node node, int parentIndex, NodeWithParent parent, CharSequence key) implements KeyValuePair<T> {
-        public NodeWithParent(Node node, int parentIndex, NodeWithParent parent){
+    record NodeWithParent<T>(Node node, int parentIndex, NodeWithParent<T> parent, CharSequence key) implements KeyValuePair<T> {
+        public NodeWithParent(Node node, int parentIndex, NodeWithParent<T> parent){
             this(node,parentIndex,parent,getKey(node,parent));
         }
-        private static CharSequence getKey(Node node, NodeWithParent parent){
+        private static <T> CharSequence getKey(Node node, NodeWithParent<T> parent){
             if(parent!=null){
                 return "" + parent.key + node.getIncomingEdge();
             }
@@ -34,9 +34,14 @@ public final class TreeUtil {
         public T getValue() {
             return (T)node.getValue();
         }
+
+        @Override
+        public String toString() {
+            return "(" + key + ", " + node.getValue() + ")";
+        }
     }
 
-    private static <T> NodeWithParent<T> getFirstLeafNode(NodeWithParent node){
+    private static <T> NodeWithParent<T> getFirstLeafNode(NodeWithParent<T> node){
         if(node==null || node.node==null){
             return null;
         }
@@ -49,7 +54,7 @@ public final class TreeUtil {
             //shouldn't happen?
             return null;
         }
-        return getFirstLeafNode(new NodeWithParent(children.getFirst(), 0,node));
+        return getFirstLeafNode(new NodeWithParent<>(children.getFirst(), 0,node));
     }
 
     private static <T> NodeWithParent<T> getNextNode(NodeWithParent<T> current, boolean skipChildren){
@@ -79,13 +84,12 @@ public final class TreeUtil {
         return getNextNode(current.parent,true);
     }
 
-    public static <T>  NodeWithParent<T> getMatchingOrNextNode(CharSequence searchKey, Node root){
+    private static <T>  NodeWithParent<T> getMatchingOrNextNode(CharSequence searchKey, Node root){
         return searchTree(searchKey, root);
     }
 
     private static <T> NodeWithParent<T> searchTree(CharSequence key, Node root){
-        final NodeWithParent<T> rootNode = new NodeWithParent<>(root, -1, null);
-        NodeWithParent<T> currentNode = rootNode;
+        NodeWithParent<T> currentNode = new NodeWithParent<>(root, -1, null);
         int charsMatched = 0;
         final int keyLength = key.length();
         outer: while (charsMatched < keyLength) {
@@ -93,9 +97,6 @@ public final class TreeUtil {
             if (nextNode == null) {
                 // Next node search parent
                 currentNode = getNextNode(currentNode,true);
-                if(currentNode==null){
-                    currentNode = rootNode;
-                }
                 break ;
             }
             currentNode = nextNode;
@@ -112,7 +113,7 @@ public final class TreeUtil {
         return currentNode;
     }
 
-    private static <T> NodeWithParent<T> getNextNodeInSubTree(NodeWithParent parent, Character nextChar, boolean exactMatchOnly){
+    private static <T> NodeWithParent<T> getNextNodeInSubTree(NodeWithParent<T> parent, Character nextChar, boolean exactMatchOnly){
         if (parent==null || parent.node==null ){
             return null;
         }

@@ -15,7 +15,6 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
-import com.googlecode.concurrenttrees.common.CharSequences;
 import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.common.KeyValuePair;
 import com.googlecode.concurrenttrees.common.PrettyPrinter;
@@ -26,13 +25,10 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharSequenceNod
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radix.node.util.PrettyPrintable;
 import com.googlecode.concurrenttrees.testutil.TestUtility;
-import junit.framework.Assert;
 import org.junit.Test;
 
-import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.*;
 /**
@@ -687,7 +683,7 @@ public class ConcurrentRadixTreeTest {
     }
 
     @Test
-    public void testGetKeysForGreaterEqual() {
+    public void testGetGreaterThanEqualToKeys() {
         ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
         tree.put("TEST", 1);
         tree.put("TEAM", 2);
@@ -704,14 +700,73 @@ public class ConcurrentRadixTreeTest {
         //        │   └── ○ ST (1)
         //        └── ○ OAST (3)
 
-        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("")));
-        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("C")));
-        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("COFFEE")));
-        assertEquals("[TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("COFFEES")));
-        assertEquals("[TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("T")));
-        assertEquals("[TEAM, TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("TEAM")));
-        assertEquals("[TEST, TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("TEAMS")));
-        assertEquals("[TOAST]", Iterables.toString(tree.getKeysGreaterThanEqualTo("TO")));
+        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("")));
+        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("C")));
+        assertEquals("[COFFEE, TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("COFFEE")));
+        assertEquals("[TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("COFFEES")));
+        assertEquals("[TEA, TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("T")));
+        assertEquals("[TEAM, TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("TEAM")));
+        assertEquals("[TEST, TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("TEAMS")));
+        assertEquals("[TOAST]", Iterables.toString(tree.getGreaterThanEqualToKeys("TO")));
+        assertEquals("[]", Iterables.toString(tree.getGreaterThanEqualToKeys("US")));
+    }
+
+    @Test
+    public void testGetValuesForGreaterThanEqualToKeys() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+        tree.put("TEA", 4);
+        tree.put("COFFEE", 5);
+
+        //    ○
+        //    ├── ○ COFFEE (5)
+        //    └── ○ T
+        //        ├── ○ E
+        //        │   ├── ○ A (4)
+        //        │   │   └── ○ M (2)
+        //        │   └── ○ ST (1)
+        //        └── ○ OAST (3)
+
+        assertEquals("[5, 4, 2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("")));
+        assertEquals("[5, 4, 2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("C")));
+        assertEquals("[5, 4, 2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("COFFEE")));
+        assertEquals("[4, 2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("COFFEES")));
+        assertEquals("[4, 2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("T")));
+        assertEquals("[2, 1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("TEAM")));
+        assertEquals("[1, 3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("TEAMS")));
+        assertEquals("[3]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("TO")));
+        assertEquals("[]", Iterables.toString(tree.getValuesForGreaterThanEqualToKeys("US")));
+    }
+
+    @Test
+    public void testGetKeyValuePairsForGreaterThanEqualToKeys() {
+        ConcurrentRadixTree<Integer> tree = new ConcurrentRadixTree<Integer>(getNodeFactory());
+        tree.put("TEST", 1);
+        tree.put("TEAM", 2);
+        tree.put("TOAST", 3);
+        tree.put("TEA", 4);
+        tree.put("COFFEE", 5);
+
+        //    ○
+        //    ├── ○ COFFEE (5)
+        //    └── ○ T
+        //        ├── ○ E
+        //        │   ├── ○ A (4)
+        //        │   │   └── ○ M (2)
+        //        │   └── ○ ST (1)
+        //        └── ○ OAST (3)
+
+        assertEquals("[(COFFEE, 5), (TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("")));
+        assertEquals("[(COFFEE, 5), (TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("C")));
+        assertEquals("[(COFFEE, 5), (TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("COFFEE")));
+        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("COFFEES")));
+        assertEquals("[(TEA, 4), (TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("T")));
+        assertEquals("[(TEAM, 2), (TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("TEAM")));
+        assertEquals("[(TEST, 1), (TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("TEAMS")));
+        assertEquals("[(TOAST, 3)]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("TO")));
+        assertEquals("[]", Iterables.toString(tree.getKeyValuePairsForGreaterThanEqualToKeys("US")));
     }
 
     @Test

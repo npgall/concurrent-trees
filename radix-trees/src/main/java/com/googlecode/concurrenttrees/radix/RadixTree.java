@@ -161,11 +161,40 @@ public interface RadixTree<O> {
     int size();
 
     /**
-     * Returns a lazy iterable which returns the set of keys in the tree which are lexicographically greater than the given key.
+     * Returns a lazy iterable which returns the set of keys in the tree which are lexicographically greater or equal to the given
+     * candidate key.
      * <p/>
+     * Example:<br/>
+     * Tree contains: {@code Ford Focus}, {@code Ford Mondeo}, {@code BMW M3}<br/>
+     * <code>getGreaterThanEqualToKeys("Ford G")</code> -> returns {@code Ford Mondeo}<br/>
+     * <p/>
+     * This is <i>inclusive</i> - if the given candidate is an exact match for a key in the tree, that key is also
+     * returned.
      *
-     * @param key A key of sought keys that are greater or equal in the tree
-     * @return The set of keys in the tree which are greater or equal to key
+     * @param candidate A candidate key
+     * @return The set of keys in the tree which are lexicographically greater or equal to the given candidate key, inclusive
      */
-    Iterable<CharSequence> getKeysGreaterThanEqualTo(CharSequence key);
+    Iterable<CharSequence> getGreaterThanEqualToKeys(CharSequence candidate);
+
+    /**
+     * Returns a lazy iterable which returns the set of values associated with keys in the tree which are lexicographically greater or equal to the given
+     * candidate key.
+     * <p/>
+     * See {#getGreaterThanEqualToKeys} for more details.
+     *
+     * @param candidate A candidate key
+     * @return The set of values associated with keys in the tree which are lexicographically greater or equal to the given candidate key, inclusive
+     */
+    Iterable<O> getValuesForGreaterThanEqualToKeys(CharSequence candidate);
+
+    /**
+     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s associated with keys in the tree which are lexicographically greater or equal to the given
+     * candidate key.
+     * <p/>
+     * See {#getGreaterThanEqualToKeys} for more details.
+     *
+     * @param candidate A candidate key
+     * @return The set of {@link KeyValuePair}s associated with keys in the tree which are lexicographically greater or equal to the given candidate key, inclusive
+     */
+    Iterable<KeyValuePair<O>> getKeyValuePairsForGreaterThanEqualToKeys(CharSequence candidate);
 }

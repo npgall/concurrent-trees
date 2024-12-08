@@ -431,9 +431,20 @@ public class ConcurrentRadixTree<O> implements RadixTree<O>, PrettyPrintable, Se
     }
 
     @Override
-    public Iterable<CharSequence> getKeysGreaterThanEqualTo(CharSequence key) {
-        return () -> new TreeUtil.TreeIterator<>(this,key);
+    public Iterable<CharSequence> getGreaterThanEqualToKeys(CharSequence candidate) {
+        return () -> new TreeUtil.TreeIterator<>(this,candidate);
     }
+
+    @Override
+    public Iterable<O> getValuesForGreaterThanEqualToKeys(CharSequence candidate) {
+        return () -> new TreeUtil.TreeValueIterator<>(this,candidate);
+    }
+
+    @Override
+    public Iterable<KeyValuePair<O>> getKeyValuePairsForGreaterThanEqualToKeys(CharSequence candidate) {
+        return () -> new TreeUtil.TreeKVIterator<>(this,candidate);
+    }
+
 
     // ------------- Helper method for put() -------------
 
